@@ -1,7 +1,8 @@
-width = 3
-height = 3
-depth = 3
+width = 18
+height = 13
+depth = 1
 
-grid = [[[0 for x in range(width)]for y in range(height)] for z in range(depth)]
+grid = [[[0 for z in range(depth)]for y in range(height)] for x in range(width)]
 
-print grid
+for x in range(len(grid)):
+    print grid[x]
