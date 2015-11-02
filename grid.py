@@ -1,4 +1,5 @@
-from config1 import width, height, gates
+from data.config1 import width, height, gates
+
 depth = 1
 
 class Gate:
