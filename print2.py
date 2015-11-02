@@ -1,3 +1,9 @@
+"""
+Info for print 1
+Heuristics, Chips & Circuits, Fall 2015
+HaMaMa
+"""
+
 # Grid width and height (starting from zero).  
 height = 16 
 width = 17
