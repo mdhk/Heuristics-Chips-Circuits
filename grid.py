@@ -15,7 +15,6 @@ grid = [[[0 for z in range(depth)] for x in range(width)] for y in range(height)
 def set_gates(gates):
     for gate in gates:
         grid[gate[1]][gate[0]][0] = plt.plot(Gate((gates.index(gate) + 1), gate[0], gate[1]))
- 		plt.show()
 
 set_gates(gates)
 
