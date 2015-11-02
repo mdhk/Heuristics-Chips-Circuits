@@ -1,18 +1,13 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
-y_data = [ 
-     [[a,0],[b,1],[c,None],[d,6],[e,7]],
-     [[a,5],[b,2],[c,1],[d,None],[e,1]],
-     [[a,3],[b,None],[c,4],[d,9],[e,None]],
-     ]
+xs = np.arange(8)
+series1 = np.array([1, 3, 3, None, None, 5, 8, 9]).astype(np.double)
+s1mask = np.isfinite(series1)
+series2 = np.array([2, None, 5, None, 4, None, 3, 2]).astype(np.double)
+s2mask = np.isfinite(series2)
 
-x_data = [0, 1, 2, 3, 4]
+plt.plot(xs[s1mask], series1[s1mask], linestyle='-', marker='o')
+plt.plot(xs[s2mask], series2[s2mask], linestyle='-', marker='o')
 
-for i in range(5):
-    xv = []
-    yv = []
-    for j, v in enumerate(row[i][1] for row in y_data):
-        if v is not None:
-            xv.append(j)
-            yv.append(v)
-    ax.plot(xv, yv, label=y_data[0][i][0])
+plt.show()
