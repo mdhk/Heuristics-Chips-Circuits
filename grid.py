@@ -8,7 +8,9 @@ def set_gates(gates):
     for gate in gates:
          grid[gate[1]][gate[0]] = 1
 
+
 set_gates(gates)
 
 for x in range(len(grid)):
     print grid[x]
+
