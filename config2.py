@@ -5,8 +5,8 @@ HaMaMa
 """
 
 # Grid width and height (starting from zero).  
-height = 16 
-width = 17
+height = 17 
+width = 18
 
 # Gate coordinates, template: gate_x, gate_y
 import csv
@@ -17,6 +17,3 @@ with open('print2.csv', 'rb') as csvfile:
     for row in csvfile:
         row = map(int, row)
         gates.append(row)
-
-
-print gates
