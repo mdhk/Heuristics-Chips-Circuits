@@ -1,5 +1,5 @@
 from config1 import width, height, gates
-depth = 2
+depth = 1
 
 class Gate:
     def __init__(self, gate_name, gate_x, gate_y):
