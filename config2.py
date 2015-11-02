@@ -15,6 +15,7 @@ with open('print2.csv', 'rb') as csvfile:
     # Without QUOTE_NONNUMERIC the numbers become strings
     csvfile = csv.reader(csvfile, delimiter=',', quoting=csv.QUOTE_NONNUMERIC)
     for row in csvfile:
+        row = map(int, row)
         gates.append(row)
 
 
