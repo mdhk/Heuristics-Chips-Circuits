@@ -1,11 +1,11 @@
-from data.config2 import width, height, gates
+from data.testData import width, height, gates
 import visualizations.array_backed_grid as draw
 
 depth = 8
 
 class Gate:
     def __init__(self, gate_name, gate_x, gate_y):
-        self.name = "gate: " + str(gate_name)
+        self.name = str(gate_name)
         self.x = gate_x
         self.y = gate_y
     def __repr__(self):
@@ -23,6 +23,6 @@ for x in range(len(grid)):
     print grid[x]
 
 screen = draw.initGrid(width,height)
-draw.drawGrid(grid, screen, Gate)
+draw.drawGrid(grid, screen, Gate, depth)
 
 import IPython; IPython.embed()

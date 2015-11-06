@@ -32,7 +32,7 @@ def initGrid(width,height):
 
     return screen;
  
-def drawGrid(grid, screen, Gate):
+def drawGrid(grid, screen, Gate, depth):
 
     WHITE = (255, 255, 255)
     GREEN = (0, 255, 0)
@@ -46,17 +46,17 @@ def drawGrid(grid, screen, Gate):
     for row in range(len(grid)):
         for column in range(len(grid[0])):
             color = WHITE
-            # import IPython; IPython.embed()
-            # if grid[row][column] != [0,0,0,0,0,0,0,0]:
-            if isinstance(grid[row][column][0], Gate):
-                color = GREEN
-            pygame.draw.rect(screen,
-                             color,
-                             [(MARGIN + WIDTH) * column + MARGIN,
-                              (MARGIN + HEIGHT) * row + MARGIN,
-                              WIDTH,
-                              HEIGHT])
- 
+            for i in range(depth):            
+                # if grid[row][column] != [0,0,0,0,0,0,0,0]:
+                if isinstance(grid[row][column][i], Gate):
+                    color = GREEN
+                pygame.draw.rect(screen,
+                                 color,
+                                 [(MARGIN + WIDTH) * column + MARGIN,
+                                  (MARGIN + HEIGHT) * row + MARGIN,
+                                  WIDTH,
+                                  HEIGHT])
+     
     # Limit to 60 frames per second
     # clock.tick(60)
  
@@ -65,4 +65,4 @@ def drawGrid(grid, screen, Gate):
  
 # Be IDLE friendly. If you forget this line, the program will 'hang'
 # on exit.
-# pygame.quit()
+pygame.quit()
