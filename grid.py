@@ -1,4 +1,4 @@
-from data.config1 import width, height, gates
+from data.config2 import width, height, gates
 import visualizations.array_backed_grid as draw
 
 depth = 8
