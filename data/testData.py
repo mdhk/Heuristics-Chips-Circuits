@@ -4,7 +4,7 @@
 
 # grid width and height
 width = 5
-height = 5 
+height = 6
 
 # gate coordinates, template: [gate_number, gate_x, gate_y]
 gates = [
@@ -13,5 +13,3 @@ gates = [
         [2, 4],
         [3, 2],
         ]
-
-print gates
