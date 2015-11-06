@@ -25,4 +25,4 @@ for x in range(len(grid)):
 screen = draw.initGrid(width,height)
 draw.drawGrid(grid, screen, Gate, depth)
 
-# import IPython; IPython.embed()
+import IPython; IPython.embed()
