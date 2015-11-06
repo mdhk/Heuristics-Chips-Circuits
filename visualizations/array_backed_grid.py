@@ -21,7 +21,7 @@ def initGrid():
     pygame.init()
  
     # Set the HEIGHT and WIDTH of the screen
-    WINDOW_SIZE = [255, 255]
+    WINDOW_SIZE = [17 * 27, 13 * 25]
     screen = pygame.display.set_mode(WINDOW_SIZE)
     
     # Set title of screen
