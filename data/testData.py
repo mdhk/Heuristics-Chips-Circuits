@@ -13,3 +13,5 @@ gates = [
         [2, 4],
         [3, 2],
         ]
+
+print gates
