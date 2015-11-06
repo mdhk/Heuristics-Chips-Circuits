@@ -1,4 +1,4 @@
-from data.config2 import width, height, gates
+from data.testData import width, height, gates
 import visualizations.array_backed_grid as draw
 
 depth = 8
@@ -25,4 +25,4 @@ for x in range(len(grid)):
 screen = draw.initGrid(width,height)
 draw.drawGrid(grid, screen, Gate)
 
-import IPython; IPython.embed()
+# import IPython; IPython.embed()
