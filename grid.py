@@ -23,6 +23,6 @@ for x in range(len(grid)):
     print grid[x]
 
 screen = draw.initGrid(width,height)
-draw.drawGrid(grid, screen)
+draw.drawGrid(grid, screen, Gate)
 
 import IPython; IPython.embed()
