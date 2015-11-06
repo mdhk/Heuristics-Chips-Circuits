@@ -10,7 +10,7 @@
 """
 import pygame
  
-def initGrid():
+def initGrid(width,height):
     # Define some colors
     BLACK = (0, 0, 0)
     
@@ -21,7 +21,7 @@ def initGrid():
     pygame.init()
  
     # Set the HEIGHT and WIDTH of the screen
-    WINDOW_SIZE = [17 * 27, 13 * 25]
+    WINDOW_SIZE = [width * 27, height * 25]
     screen = pygame.display.set_mode(WINDOW_SIZE)
     
     # Set title of screen
@@ -46,7 +46,7 @@ def drawGrid(grid, screen):
     for row in range(len(grid)):
         for column in range(len(grid[0])):
             color = WHITE
-            if grid[row][column] != [0]:
+            if grid[row][column] != [0,0,0,0,0,0,0,0]:
                 color = GREEN
             pygame.draw.rect(screen,
                              color,

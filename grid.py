@@ -1,7 +1,7 @@
 from data.config1 import width, height, gates
 import visualizations.array_backed_grid as draw
 
-depth = 1
+depth = 8
 
 class Gate:
     def __init__(self, gate_name, gate_x, gate_y):
@@ -22,7 +22,7 @@ set_gates(gates, grid)
 for x in range(len(grid)):
     print grid[x]
 
-screen = draw.initGrid()
+screen = draw.initGrid(width,height)
 draw.drawGrid(grid, screen)
 
 import IPython; IPython.embed()
