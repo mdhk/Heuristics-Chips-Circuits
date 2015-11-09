@@ -32,7 +32,7 @@ def initGrid(width,height):
 
     return screen;
  
-def drawGrid(grid, screen, Gate, depth):
+def drawGrid(grid, screen, depth):
 
     WHITE = (255, 255, 255)
     GREEN = (0, 255, 0)
@@ -48,7 +48,7 @@ def drawGrid(grid, screen, Gate, depth):
             color = WHITE
             for i in range(depth):            
                 # if grid[row][column] != [0,0,0,0,0,0,0,0]:
-                if isinstance(grid[row][column][i], Gate):
+                if grid[row][column][i].name != '':
                     color = GREEN
                 pygame.draw.rect(screen,
                                  color,
