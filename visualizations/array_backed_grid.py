@@ -63,12 +63,12 @@ def drawGrid(grid, screen, Gate, depth):
     # Go ahead and update the screen with what we've drawn.
     pygame.display.flip()
 
-    from pygame.locals import *
-    while True:
-        event = pygame.event.wait()
-        if event.type == QUIT:
-            pygame.quit()
+    # from pygame.locals import *
+    # while True:
+    #     event = pygame.event.wait()
+    #     if event.type == QUIT:
+    #         pygame.quit()
  
 # Be IDLE friendly. If you forget this line, the program will 'hang'
 # on exit.
-pygame.quit()
+# pygame.quit()
