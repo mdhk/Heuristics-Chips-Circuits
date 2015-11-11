@@ -114,7 +114,7 @@ if __name__ == '__main__':
     
     HEIGHT = 4
     WIDTH = 5
-    DEPTH = 1
+    DEPTH = 8
 
     n = HEIGHT * WIDTH * DEPTH
     for i in range(n):
@@ -122,18 +122,31 @@ if __name__ == '__main__':
 
     # Create graph
     for i in range(n):
+        # i is real number e.g. 25
+        surf = WIDTH * HEIGHT
+        a = i % surf
         current = g.vert_dict[i]
-        if (i % WIDTH):
+
+        # In / Out connections
+        if (i >= surf):
+            current.add_neighbor(i - surf)
+        if (i < (surf * DEPTH - surf)):
+            current.add_neighbor(i + surf)
+
+        # Left / Right / Up / Down
+        if (a % WIDTH):
             current.add_neighbor(i - 1)
-        if (i % WIDTH != (WIDTH -1)):
+        if (a % WIDTH != (WIDTH - 1)):
             current.add_neighbor(i + 1)
-        if (i > WIDTH):
+        if (a > WIDTH):
             current.add_neighbor(i - WIDTH)
-        if (i < (WIDTH * HEIGHT - WIDTH)):
+        if (a < (surf - WIDTH)):
             current.add_neighbor(i + WIDTH)
 
+    # import IPython; IPython.embed()
+
     # FIND PATH 17 TO 7
-    begin = 7
+    begin = 2
     end = 17
 
     # Compute first path.
