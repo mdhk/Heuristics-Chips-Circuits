@@ -74,6 +74,23 @@ def dijkstra(aGraph, start, target):
                 v.visited]
         heapq.heapify(unvisited_queue)
 
+def disconnect_vertex(aGraph, v):
+    surf = WIDTH * HEIGHT
+    for i in v:
+        a = i % surf
+        if (i >= surf and aGraph.vert_dict[i - surf].adjacent.has_key(i)):
+            del(aGraph.vert_dict[i -surf].adjacent[i])
+        if (i < (surf * DEPTH - surf) and aGraph.vert_dict[i + surf].adjacent.has_key(i)):
+            del(aGraph.vert_dict[i + surf].adjacent[i])
+        if (a % WIDTH and aGraph.vert_dict[i - 1].adjacent.has_key(i)):
+            del(aGraph.vert_dict[i - 1].adjacent[i])
+        if (a % WIDTH != (WIDTH - 1) and aGraph.vert_dict[i + 1].adjacent.has_key(i)):
+            del(aGraph.vert_dict[i + 1].adjacent[i])
+        if (a > WIDTH and aGraph.vert_dict[i - WIDTH].adjacent.has_key(i)):
+            del(aGraph.vert_dict[i - WIDTH].adjacent[i])
+        if (a < (surf - WIDTH) and aGraph.vert_dict[i + WIDTH].adjacent.has_key(i)):
+            del(aGraph.vert_dict[i + WIDTH].adjacent[i])
+
 def apply_path(aGraph, end):
     target = aGraph.vert_dict[end]
     path = []
@@ -143,7 +160,7 @@ if __name__ == '__main__':
         if (a < (surf - WIDTH)):
             current.add_neighbor(i + WIDTH)
 
-    # import IPython; IPython.embed()
+    import IPython; IPython.embed()
 
     # FIND PATH 17 TO 7
     begin = 2
@@ -162,3 +179,43 @@ if __name__ == '__main__':
     dijkstra(g, g.vert_dict[begin], g.vert_dict[end])
     # Recreate and apply the found path. 
     apply_path(g, end)
+
+"""
+# CHIPS AND CIRCUITS testdata
+"""
+
+from data.testData import width, height, gates
+WIDTH = width
+HEIGHT = height
+DEPTH = 8
+
+g = Graph()
+
+n = HEIGHT * WIDTH * DEPTH
+for i in range(n):
+    g.add_vertex(i)
+
+# Create graph
+for i in range(n):
+    # i is real number e.g. 25
+    surf = WIDTH * HEIGHT
+    a = i % surf
+    current = g.vert_dict[i]
+
+    # In / Out connections
+    if (i >= surf):
+        current.add_neighbor(i - surf)
+    if (i < (surf * DEPTH - surf)):
+        current.add_neighbor(i + surf)
+
+    # Left / Right / Up / Down
+    if (a % WIDTH):
+        current.add_neighbor(i - 1)
+    if (a % WIDTH != (WIDTH - 1)):
+        current.add_neighbor(i + 1)
+    if (a > WIDTH):
+        current.add_neighbor(i - WIDTH)
+    if (a < (surf - WIDTH)):
+        current.add_neighbor(i + WIDTH)
+
+
