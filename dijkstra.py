@@ -1,7 +1,7 @@
 # Adapted from:
 # http://www.bogotobogo.com/python/python_Dijkstras_Shortest_Path_Algorithm.php.
 
-import sys
+import sys, time
 
 class Vertex:
     def __init__(self, id):
@@ -10,6 +10,8 @@ class Vertex:
         self.distance = sys.maxint
         self.visited = False
         self.previous = None
+        self.path = None
+        self.gate = False
 
     def add_neighbor(self, neighbor, weight = 1):
         self.adjacent[neighbor] = weight
@@ -48,15 +50,27 @@ def shortest(v, path):
 import heapq
 
 def dijkstra(aGraph, start, target):
+    # DEBUG
+    # distance = [0 for i in range(40)]
+
     start.set_distance(0)
 
     unvisited_queue = [(v.distance, v) for v in aGraph]
     heapq.heapify(unvisited_queue)
 
+    # DEBUG
+    # import IPython; IPython.embed()
+
     while len(unvisited_queue):
         uv = heapq.heappop(unvisited_queue)
         current = uv[1]
         current.set_visited()
+
+        # import IPython; IPython.embed()
+
+        # # DEBUG
+        # distance[current.distance] += 1
+        # print distance
 
         for next in current.adjacent:
             next = aGraph.vert_dict[next]
@@ -68,11 +82,18 @@ def dijkstra(aGraph, start, target):
                 next.set_distance(new_dist)
                 next.set_previous(current)
 
+        # DEBUG
+        # import IPython; IPython.embed()
+        
         while len(unvisited_queue):
             heapq.heappop(unvisited_queue)
         unvisited_queue = [(v.distance, v) for v in aGraph if not
                 v.visited]
         heapq.heapify(unvisited_queue)
+
+        # When target has been visited, break
+        if target.visited:
+            break
 
 def disconnect_vertex(aGraph, v):
     surf = WIDTH * HEIGHT
@@ -91,55 +112,34 @@ def disconnect_vertex(aGraph, v):
         if (a < (surf - WIDTH) and aGraph.vert_dict[i + WIDTH].adjacent.has_key(i)):
             del(aGraph.vert_dict[i + WIDTH].adjacent[i])
 
-def apply_path(aGraph, end):
+def apply_path(aGraph, end, p):
+    # Compute path.
     target = aGraph.vert_dict[end]
     path = []
     path.append(target.id)
-    # Traverse from target to begin of path. 
     shortest(target, path)
-
     print path
 
-    # Delete connections to nodes that are in the path.
-    # Currently also deletes connections to given gates (begin and end of
-    # path).
-    for i in range(len(path)):
-        for c in aGraph.vert_dict[path[i]].adjacent.keys():
-            if path[i] in aGraph.vert_dict[c].adjacent:
-                print 'delete connection from: ' + str(c) + ' to: ' + \
-                str(path[i])
-                del(aGraph.vert_dict[c].adjacent[path[i]])
+    # Delete connections to nodes in the path.
+    disconnect_vertex(aGraph, path)
 
-    # Clean all vertices for next search.
+    for i in path:
+        aGraph.vert_dict[i].path = p
+
+    # Prepare graph for next search.
     for v in aGraph:
         v.distance = sys.maxint
         v.visited = False
         v.previous = None
 
-if __name__ == '__main__':
-
-# TEST SET
-# 0  1  2  3  4
-# 5  6  7  8  9
-# 10 11 12 13 14
-# 15 16 17 18 19
-
-# FIND PATH FROM 17 TO 7
-# THEN FIND PATH 16 TO 18
-
-    g = Graph()
-    
-    HEIGHT = 4
-    WIDTH = 5
-    DEPTH = 8
-
+def connect_Graph(g):
+    # Connects all vertices of the graph in a grid-like manner.
     n = HEIGHT * WIDTH * DEPTH
     for i in range(n):
         g.add_vertex(i)
 
     # Create graph
     for i in range(n):
-        # i is real number e.g. 25
         surf = WIDTH * HEIGHT
         a = i % surf
         current = g.vert_dict[i]
@@ -149,7 +149,6 @@ if __name__ == '__main__':
             current.add_neighbor(i - surf)
         if (i < (surf * DEPTH - surf)):
             current.add_neighbor(i + surf)
-
         # Left / Right / Up / Down
         if (a % WIDTH):
             current.add_neighbor(i - 1)
@@ -160,62 +159,54 @@ if __name__ == '__main__':
         if (a < (surf - WIDTH)):
             current.add_neighbor(i + WIDTH)
 
+if __name__ == '__main__':
+    """
+    CHIPS AND CIRCUITS first print
+    """
+
+    from data.config1 import width, height, gates
+    from netlist1 import netlist
+    WIDTH = width
+    HEIGHT = height
+    DEPTH = 8
+
+    # # DEBUG
+    # netlist = [(0, 4)]
+    
+    g = Graph()
+    connect_Graph(g)
+
+    gateList = []
+    for c in gates:
+        # In config1, coordinates are [x, y]
+        # ONLY FOR PRINT 1
+        gateList.append(c[1] * WIDTH + c[0])
+
+    # Disconnect gates
+    disconnect_vertex(g, gateList)
+    for i in gateList:
+        g.vert_dict[i].gate = True
+
+    # Find shortest path between the gates in the netlist
+    p = 0
+    for n in netlist:
+        start_time = time.time()
+
+        begin = g.vert_dict[gateList[n[0]]]
+        end = g.vert_dict[gateList[n[1]]]
+        # Connect begin and end gates.
+        for i in begin.adjacent:
+            g.vert_dict[i].add_neighbor(gateList[n[0]])
+        for i in end.adjacent:
+            g.vert_dict[i].add_neighbor(gateList[n[1]])
+
+        # Find path.
+        dijkstra(g, begin, end)
+        apply_path(g, end.id, p)
+        p += 1
+
+        elapsed_time = time.time() - start_time
+        print 'time: ' + str(elapsed_time)
+        # import IPython; IPython.embed()
+
     import IPython; IPython.embed()
-
-    # FIND PATH 17 TO 7
-    begin = 2
-    end = 17
-
-    # Compute first path.
-    dijkstra(g, g.vert_dict[begin], g.vert_dict[end])
-    # Recreate and apply the found path. 
-    apply_path(g, end)
-
-    # FIND PATH 16 TO 18
-    begin = 16
-    end = 18
-
-    # Compute first path.
-    dijkstra(g, g.vert_dict[begin], g.vert_dict[end])
-    # Recreate and apply the found path. 
-    apply_path(g, end)
-
-"""
-# CHIPS AND CIRCUITS testdata
-"""
-
-from data.testData import width, height, gates
-WIDTH = width
-HEIGHT = height
-DEPTH = 8
-
-g = Graph()
-
-n = HEIGHT * WIDTH * DEPTH
-for i in range(n):
-    g.add_vertex(i)
-
-# Create graph
-for i in range(n):
-    # i is real number e.g. 25
-    surf = WIDTH * HEIGHT
-    a = i % surf
-    current = g.vert_dict[i]
-
-    # In / Out connections
-    if (i >= surf):
-        current.add_neighbor(i - surf)
-    if (i < (surf * DEPTH - surf)):
-        current.add_neighbor(i + surf)
-
-    # Left / Right / Up / Down
-    if (a % WIDTH):
-        current.add_neighbor(i - 1)
-    if (a % WIDTH != (WIDTH - 1)):
-        current.add_neighbor(i + 1)
-    if (a > WIDTH):
-        current.add_neighbor(i - WIDTH)
-    if (a < (surf - WIDTH)):
-        current.add_neighbor(i + WIDTH)
-
-
