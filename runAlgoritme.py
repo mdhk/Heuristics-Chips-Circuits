@@ -190,7 +190,7 @@ if __name__ == '__main__':
     from data.netlist import netlist_2 as netlist
     WIDTH = width
     HEIGHT = height
-    DEPTH = 4
+    DEPTH = 8
 
     g = Graph()
     connect_Graph(g)
@@ -242,7 +242,9 @@ if __name__ == '__main__':
             for i in path:
                 if i < (WIDTH * HEIGHT):
                     grid[i / WIDTH][i % WIDTH] = 1
-        draw.drawGrid(grid, screen, 1)
+
+        for i in range(DEPTH):
+            draw.drawGrid(grid, screen, i)
 
         elapsed_time = time.time() - start_time
         total_time += elapsed_time
