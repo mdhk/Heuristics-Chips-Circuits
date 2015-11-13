@@ -5,6 +5,20 @@ import pygame
 import sys, time
 import visualizations.array_backed_grid as draw
 
+class Graph:
+    def __init__(self):
+        self.vert_dict = {}
+        self.num_vertices = 0
+
+    def __iter__(self):
+        return iter(self.vert_dict.values())
+
+    def add_vertex(self, id):
+        self.num_vertices = self.num_vertices + 1
+        new_vertex = Vertex(id)
+        self.vert_dict[id] = new_vertex
+        return new_vertex
+
 class Vertex:
     def __init__(self, id):
         self.id = id
@@ -27,19 +41,49 @@ class Vertex:
     def set_visited(self):
         self.visited = True
 
-class Graph:
-    def __init__(self):
-        self.vert_dict = {}
-        self.num_vertices = 0
+def connect_Graph(g):
+    # Connects all vertices of the graph in a grid-like manner.
+    n = HEIGHT * WIDTH * DEPTH
+    for i in range(n):
+        g.add_vertex(i)
 
-    def __iter__(self):
-        return iter(self.vert_dict.values())
+    # Create graph
+    for i in range(n):
+        surf = WIDTH * HEIGHT
+        a = i % surf
+        current = g.vert_dict[i]
 
-    def add_vertex(self, id):
-        self.num_vertices = self.num_vertices + 1
-        new_vertex = Vertex(id)
-        self.vert_dict[id] = new_vertex
-        return new_vertex
+        # In / Out connections
+        if (i >= surf):
+            current.add_neighbor(i - surf)
+        if (i < (surf * DEPTH - surf)):
+            current.add_neighbor(i + surf)
+        # Left / Right / Up / Down
+        if (a % WIDTH):
+            current.add_neighbor(i - 1)
+        if (a % WIDTH != (WIDTH - 1)):
+            current.add_neighbor(i + 1)
+        if (a > WIDTH):
+            current.add_neighbor(i - WIDTH)
+        if (a < (surf - WIDTH)):
+            current.add_neighbor(i + WIDTH)
+
+def disconnect_vertex(aGraph, v):
+    surf = WIDTH * HEIGHT
+    for i in v:
+        a = i % surf
+        if (i >= surf and aGraph.vert_dict[i - surf].adjacent.has_key(i)):
+            del(aGraph.vert_dict[i -surf].adjacent[i])
+        if (i < (surf * DEPTH - surf) and aGraph.vert_dict[i + surf].adjacent.has_key(i)):
+            del(aGraph.vert_dict[i + surf].adjacent[i])
+        if (a % WIDTH and aGraph.vert_dict[i - 1].adjacent.has_key(i)):
+            del(aGraph.vert_dict[i - 1].adjacent[i])
+        if (a % WIDTH != (WIDTH - 1) and aGraph.vert_dict[i + 1].adjacent.has_key(i)):
+            del(aGraph.vert_dict[i + 1].adjacent[i])
+        if (a > WIDTH and aGraph.vert_dict[i - WIDTH].adjacent.has_key(i)):
+            del(aGraph.vert_dict[i - WIDTH].adjacent[i])
+        if (a < (surf - WIDTH) and aGraph.vert_dict[i + WIDTH].adjacent.has_key(i)):
+            del(aGraph.vert_dict[i + WIDTH].adjacent[i])
 
 # Calculate shortest path from a given node v to starting node.
 # Can be called after dijkstra finished for a given start-end pair of vertices.
@@ -89,7 +133,7 @@ def dijkstra(aGraph, start, target):
             break
 
 """
-BFS (?)
+BFS
 """
 from collections import deque
 
@@ -112,25 +156,6 @@ def bfs(aGraph, start, target):
     
     if not found:
         print '############################################## Not found! ############################################'
-
-
-
-def disconnect_vertex(aGraph, v):
-    surf = WIDTH * HEIGHT
-    for i in v:
-        a = i % surf
-        if (i >= surf and aGraph.vert_dict[i - surf].adjacent.has_key(i)):
-            del(aGraph.vert_dict[i -surf].adjacent[i])
-        if (i < (surf * DEPTH - surf) and aGraph.vert_dict[i + surf].adjacent.has_key(i)):
-            del(aGraph.vert_dict[i + surf].adjacent[i])
-        if (a % WIDTH and aGraph.vert_dict[i - 1].adjacent.has_key(i)):
-            del(aGraph.vert_dict[i - 1].adjacent[i])
-        if (a % WIDTH != (WIDTH - 1) and aGraph.vert_dict[i + 1].adjacent.has_key(i)):
-            del(aGraph.vert_dict[i + 1].adjacent[i])
-        if (a > WIDTH and aGraph.vert_dict[i - WIDTH].adjacent.has_key(i)):
-            del(aGraph.vert_dict[i - WIDTH].adjacent[i])
-        if (a < (surf - WIDTH) and aGraph.vert_dict[i + WIDTH].adjacent.has_key(i)):
-            del(aGraph.vert_dict[i + WIDTH].adjacent[i])
 
 def apply_path(aGraph, end, begin, p):
     # Remove connections to nodes in the found path, and state what path a
@@ -156,33 +181,6 @@ def apply_path(aGraph, end, begin, p):
         v.previous = None
 
     return path
-
-def connect_Graph(g):
-    # Connects all vertices of the graph in a grid-like manner.
-    n = HEIGHT * WIDTH * DEPTH
-    for i in range(n):
-        g.add_vertex(i)
-
-    # Create graph
-    for i in range(n):
-        surf = WIDTH * HEIGHT
-        a = i % surf
-        current = g.vert_dict[i]
-
-        # In / Out connections
-        if (i >= surf):
-            current.add_neighbor(i - surf)
-        if (i < (surf * DEPTH - surf)):
-            current.add_neighbor(i + surf)
-        # Left / Right / Up / Down
-        if (a % WIDTH):
-            current.add_neighbor(i - 1)
-        if (a % WIDTH != (WIDTH - 1)):
-            current.add_neighbor(i + 1)
-        if (a > WIDTH):
-            current.add_neighbor(i - WIDTH)
-        if (a < (surf - WIDTH)):
-            current.add_neighbor(i + WIDTH)
 
 if __name__ == '__main__':
     """
