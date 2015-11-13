@@ -1,7 +1,7 @@
 # Adapted from:
 # http://www.bogotobogo.com/python/python_Dijkstras_Shortest_Path_Algorithm.php.
 
-import sys
+import sys, time
 
 class Vertex:
     def __init__(self, id):
@@ -10,6 +10,8 @@ class Vertex:
         self.distance = sys.maxint
         self.visited = False
         self.previous = None
+        self.path = None
+        self.gate = False
 
     def add_neighbor(self, neighbor, weight = 1):
         self.adjacent[neighbor] = weight
@@ -37,13 +39,17 @@ class Graph:
         self.vert_dict[id] = new_vertex
         return new_vertex
 
-# Calculate shortest path from a given node v.
+# Calculate shortest path from a given node v to starting node.
 # Can be called after dijkstra finished for a given start-end pair of vertices.
-def shortest(v, path):
+def shortest(aGraph, v, path):
     if v.previous:
-        path.append(v.previous.id)
-        shortest(v.previous, path)
+        path.append(v.previous)
+        shortest(aGraph, aGraph.vert_dict[v.previous], path)
         return
+
+"""
+DIJKSTRA
+"""
 
 import heapq
 
@@ -66,63 +72,98 @@ def dijkstra(aGraph, start, target):
 
             if new_dist < next.distance:
                 next.set_distance(new_dist)
-                next.set_previous(current)
-
+                next.set_previous(current.id)
+        
+        # Note: probably not optimal to clear queue and build it up again every
+        # time.. 
         while len(unvisited_queue):
             heapq.heappop(unvisited_queue)
         unvisited_queue = [(v.distance, v) for v in aGraph if not
                 v.visited]
         heapq.heapify(unvisited_queue)
 
-def apply_path(aGraph, end):
+        # When target has been visited, break
+        if target.visited:
+            break
+
+"""
+BFS (?)
+"""
+from collections import deque
+
+def bfs(aGraph, start, target):
+    c = 0
+    max = 10000
+    # First In First Out queue
+    queue = deque([start.id])
+    traversed = []
+    found = False
+    while (not found and len(queue) and c < max):
+        current = queue.popleft()
+        traversed.append(current)
+        for v in aGraph.vert_dict[current].adjacent:
+            if v not in queue:
+                queue.append(v)
+                if aGraph.vert_dict[v].previous is None:
+                    aGraph.vert_dict[v].previous = current
+                if (v == target.id):
+                    start.previous = None
+                    found = True
+        c += 1 
+    
+    if not found:
+        print '############################################## Not found! ############################################'
+
+
+
+def disconnect_vertex(aGraph, v):
+    surf = WIDTH * HEIGHT
+    for i in v:
+        a = i % surf
+        if (i >= surf and aGraph.vert_dict[i - surf].adjacent.has_key(i)):
+            del(aGraph.vert_dict[i -surf].adjacent[i])
+        if (i < (surf * DEPTH - surf) and aGraph.vert_dict[i + surf].adjacent.has_key(i)):
+            del(aGraph.vert_dict[i + surf].adjacent[i])
+        if (a % WIDTH and aGraph.vert_dict[i - 1].adjacent.has_key(i)):
+            del(aGraph.vert_dict[i - 1].adjacent[i])
+        if (a % WIDTH != (WIDTH - 1) and aGraph.vert_dict[i + 1].adjacent.has_key(i)):
+            del(aGraph.vert_dict[i + 1].adjacent[i])
+        if (a > WIDTH and aGraph.vert_dict[i - WIDTH].adjacent.has_key(i)):
+            del(aGraph.vert_dict[i - WIDTH].adjacent[i])
+        if (a < (surf - WIDTH) and aGraph.vert_dict[i + WIDTH].adjacent.has_key(i)):
+            del(aGraph.vert_dict[i + WIDTH].adjacent[i])
+
+def apply_path(aGraph, end, begin, p):
+    # Remove connections to nodes in the found path, and state what path a
+    # given node participates in.
+    # Compute path.
     target = aGraph.vert_dict[end]
     path = []
     path.append(target.id)
-    # Traverse from target to begin of path. 
-    shortest(target, path)
 
+    shortest(aGraph, target, path)
     print path
 
-    # Delete connections to nodes that are in the path.
-    # Currently also deletes connections to given gates (begin and end of
-    # path).
-    for i in range(len(path)):
-        for c in aGraph.vert_dict[path[i]].adjacent.keys():
-            if path[i] in aGraph.vert_dict[c].adjacent:
-                print 'delete connection from: ' + str(c) + ' to: ' + \
-                str(path[i])
-                del(aGraph.vert_dict[c].adjacent[path[i]])
+    # Delete connections to nodes in the path.
+    disconnect_vertex(aGraph, path)
 
-    # Clean all vertices for next search.
+    for i in path:
+        aGraph.vert_dict[i].path = p
+
+    # Prepare graph for next search.
     for v in aGraph:
         v.distance = sys.maxint
         v.visited = False
         v.previous = None
 
-if __name__ == '__main__':
-
-# TEST SET
-# 0  1  2  3  4
-# 5  6  7  8  9
-# 10 11 12 13 14
-# 15 16 17 18 19
-
-# FIND PATH FROM 17 TO 7
-# THEN FIND PATH 16 TO 18
-
-    g = Graph()
-    
-    HEIGHT = 4
-    WIDTH = 5
-    DEPTH = 8
-
+def connect_Graph(g):
+    # Connects all vertices of the graph in a grid-like manner.
     n = HEIGHT * WIDTH * DEPTH
     for i in range(n):
         g.add_vertex(i)
 
     # Create graph
     for i in range(n):
-        # i is real number e.g. 25
         surf = WIDTH * HEIGHT
         a = i % surf
         current = g.vert_dict[i]
@@ -132,7 +173,6 @@ if __name__ == '__main__':
             current.add_neighbor(i - surf)
         if (i < (surf * DEPTH - surf)):
             current.add_neighbor(i + surf)
-
         # Left / Right / Up / Down
         if (a % WIDTH):
             current.add_neighbor(i - 1)
@@ -143,22 +183,59 @@ if __name__ == '__main__':
         if (a < (surf - WIDTH)):
             current.add_neighbor(i + WIDTH)
 
-    # import IPython; IPython.embed()
+if __name__ == '__main__':
+    """
+    CHIPS AND CIRCUITS first print
+    """
 
-    # FIND PATH 17 TO 7
-    begin = 2
-    end = 17
+    from data.config1 import width, height, gates
+    from data.netlist import netlist_3 as netlist
+    WIDTH = width
+    HEIGHT = height
+    DEPTH = 4
 
-    # Compute first path.
-    dijkstra(g, g.vert_dict[begin], g.vert_dict[end])
-    # Recreate and apply the found path. 
-    apply_path(g, end)
+    g = Graph()
+    connect_Graph(g)
 
-    # FIND PATH 16 TO 18
-    begin = 16
-    end = 18
+    gateList = []
+    for c in gates:
+        # In config1, coordinates are [x, y]
+        # ONLY FOR PRINT 1
+        gateList.append(c[1] * WIDTH + c[0])
 
-    # Compute first path.
-    dijkstra(g, g.vert_dict[begin], g.vert_dict[end])
-    # Recreate and apply the found path. 
-    apply_path(g, end)
+    # Disconnect gates
+    disconnect_vertex(g, gateList)
+    for i in gateList:
+        g.vert_dict[i].gate = True
+
+    # Find shortest path between the gates in the netlist
+    # Mark different paths with p
+    p = 0
+    total_time = 0
+    for n in netlist:
+        start_time = time.time()
+
+        begin = g.vert_dict[gateList[n[0]]]
+        end = g.vert_dict[gateList[n[1]]]
+        # Connect begin and end gates.
+        for i in begin.adjacent:
+            g.vert_dict[i].add_neighbor(gateList[n[0]])
+        for i in end.adjacent:
+            g.vert_dict[i].add_neighbor(gateList[n[1]])
+
+        # Find path.
+        print 'Find path between ' + str(n[0] + 1) + ' and ' + str(n[1] + 1)
+        ############################
+        # Choose algorithm and find shortest path between start and target node
+        ############################
+        dijkstra(g, begin, end)
+        # bfs(g, begin, end)
+
+        apply_path(g, end.id, begin.id, p)
+        p += 1
+
+        elapsed_time = time.time() - start_time
+        total_time += elapsed_time
+        print 'time: ' + str(elapsed_time)
+
+    print 'total time: ' + str(total_time)

@@ -9,8 +9,8 @@ height = 6
 
 # gate coordinates, template: [gate_number, gate_x, gate_y]
 gates = [
-		[1, 1],
-		[3, 2],
+        [1, 1],
+        [3, 2],
         [1, 3],
         [2, 4],
         ]
