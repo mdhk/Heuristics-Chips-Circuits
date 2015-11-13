@@ -21,8 +21,8 @@ def set_gates(gates, grid):
 
 set_gates(gates, grid)
 
-# for x in range(len(grid)):
-#     print grid[x]
+for x in range(len(grid)):
+    print grid[x]
 
 screen = draw.initGrid(width,height)
 draw.drawGrid(grid, screen, depth)

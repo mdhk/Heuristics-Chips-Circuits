@@ -2,6 +2,7 @@
 # http://www.bogotobogo.com/python/python_Dijkstras_Shortest_Path_Algorithm.php.
 
 import sys, time
+import visualizations.array_backed_grid as draw
 
 class Vertex:
     def __init__(self, id):
@@ -156,6 +157,8 @@ def apply_path(aGraph, end, begin, p):
         v.visited = False
         v.previous = None
 
+    return path
+
 def connect_Graph(g):
     # Connects all vertices of the graph in a grid-like manner.
     n = HEIGHT * WIDTH * DEPTH
@@ -189,7 +192,7 @@ if __name__ == '__main__':
     """
 
     from data.config1 import width, height, gates
-    from data.netlist import netlist_3 as netlist
+    from data.netlist import netlist_2 as netlist
     WIDTH = width
     HEIGHT = height
     DEPTH = 4
@@ -212,6 +215,12 @@ if __name__ == '__main__':
     # Mark different paths with p
     p = 0
     total_time = 0
+
+    # Init visualization.
+    screen = draw.initGrid(WIDTH, HEIGHT)
+    grid = [[0 for b in range(WIDTH)] for a in range(HEIGHT)]
+
+    path = []
     for n in netlist:
         start_time = time.time()
 
@@ -228,14 +237,22 @@ if __name__ == '__main__':
         ############################
         # Choose algorithm and find shortest path between start and target node
         ############################
-        dijkstra(g, begin, end)
-        # bfs(g, begin, end)
+        # dijkstra(g, begin, end)
+        bfs(g, begin, end)
 
-        apply_path(g, end.id, begin.id, p)
+        path = apply_path(g, end.id, begin.id, p)
         p += 1
+
+        if len(path) > 1:
+            for i in path:
+                if i < (WIDTH * HEIGHT):
+                    grid[i / WIDTH][i % WIDTH] = 1
+        draw.drawGrid(grid, screen, 1)
 
         elapsed_time = time.time() - start_time
         total_time += elapsed_time
         print 'time: ' + str(elapsed_time)
 
     print 'total time: ' + str(total_time)
+
+    import IPython; IPython.embed();

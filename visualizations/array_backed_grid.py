@@ -9,6 +9,7 @@
  Explanation video: http://youtu.be/mdTeqiWyFnc
 """
 import pygame
+from random import randint
  
 def initGrid(width,height):
     # Define some colors
@@ -37,6 +38,7 @@ def drawGrid(grid, screen, depth):
     WHITE = (255, 255, 255)
     GREEN = (0, 255, 0)
     RED = (255, 0, 0)
+    PATH = (randint(0, 255), randint(0, 255), randint(0, 255))
 
     MARGIN = 5;
     WIDTH = 20;
@@ -48,8 +50,11 @@ def drawGrid(grid, screen, depth):
             color = WHITE
             for i in range(depth):            
                 # if grid[row][column] != [0,0,0,0,0,0,0,0]:
-                if grid[row][column][i].name != '':
-                    color = GREEN
+                # if grid[row][column][i].name != '':
+                if grid[row][column] != 0:
+                    if grid[row][column] == 1:
+                        grid[row][column] = PATH
+                    color = grid[row][column]
                 pygame.draw.rect(screen,
                                  color,
                                  [(MARGIN + WIDTH) * column + MARGIN,
