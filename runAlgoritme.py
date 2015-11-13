@@ -88,7 +88,7 @@ def dijkstra(aGraph, start, target):
             break
 
 """
-BFS (?)
+BFS
 """
 from collections import deque
 
