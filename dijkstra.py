@@ -93,24 +93,21 @@ BFS (?)
 from collections import deque
 
 def bfs(aGraph, start, target):
-    c = 0
-    max = 10000
     # First In First Out queue
     queue = deque([start.id])
     traversed = []
     found = False
-    while (not found and len(queue) and c < max):
+    while (not found and len(queue)):
         current = queue.popleft()
         traversed.append(current)
         for v in aGraph.vert_dict[current].adjacent:
-            if v not in queue:
+            if v not in traversed and v not in queue:
                 queue.append(v)
                 if aGraph.vert_dict[v].previous is None:
                     aGraph.vert_dict[v].previous = current
                 if (v == target.id):
                     start.previous = None
                     found = True
-        c += 1 
     
     if not found:
         print '############################################## Not found! ############################################'
