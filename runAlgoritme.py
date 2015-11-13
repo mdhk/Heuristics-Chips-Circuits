@@ -1,6 +1,7 @@
 # Adapted from:
 # http://www.bogotobogo.com/python/python_Dijkstras_Shortest_Path_Algorithm.php.
 
+import pygame
 import sys, time
 import visualizations.array_backed_grid as draw
 
@@ -252,4 +253,9 @@ if __name__ == '__main__':
 
     print 'total time: ' + str(total_time)
 
-    import IPython; IPython.embed();
+   # import IPython; IPython.embed();
+
+    while True:
+        event = pygame.event.wait()
+        if event.type == pygame.QUIT:
+            pygame.quit()
