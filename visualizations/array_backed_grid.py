@@ -48,19 +48,16 @@ def drawGrid(grid, screen, depth):
     for row in range(len(grid)):
         for column in range(len(grid[0])):
             color = WHITE
-            for i in range(depth):            
+            for dep in range(depth):            
                 # if grid[row][column] != [0,0,0,0,0,0,0,0]:
-                # if grid[row][column][i].name != '':
-                if grid[row][column] != 0:
-                    if grid[row][column] == 1:
-                        grid[row][column] = PATH
-                    color = grid[row][column]
-                pygame.draw.rect(screen,
-                                 color,
+                if grid[row][column][dep] != 0:
+                    if grid[row][column][dep] == 1:
+                        grid[row][column][dep] = PATH
+                        color = grid[row][column][dep]
+                        pygame.draw.rect(screen,color,
                                  [(MARGIN + WIDTH) * column + MARGIN,
                                   (MARGIN + HEIGHT) * row + MARGIN,
-                                  WIDTH,
-                                  HEIGHT])
+                                  WIDTH,HEIGHT])
      
     # Limit to 60 frames per second
     # clock.tick(60)
@@ -68,11 +65,6 @@ def drawGrid(grid, screen, depth):
     # Go ahead and update the screen with what we've drawn.
     pygame.display.flip()
 
-    # from pygame.locals import *
-    # while True:
-    #     event = pygame.event.wait()
-    #     if event.type == QUIT:
-    #         pygame.quit()
  
 # Be IDLE friendly. If you forget this line, the program will 'hang'
 # on exit.

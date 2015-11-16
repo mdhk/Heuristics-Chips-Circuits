@@ -214,7 +214,7 @@ if __name__ == '__main__':
 
     # Init visualization.
     screen = draw.initGrid(WIDTH, HEIGHT)
-    grid = [[0 for b in range(WIDTH)] for a in range(HEIGHT)]
+    grid = [[[0 for c in range(DEPTH)] for b in range(WIDTH)] for a in range(HEIGHT)]
 
     path = []
     for n in netlist:
@@ -241,11 +241,10 @@ if __name__ == '__main__':
 
         if len(path) > 1:
             for i in path:
-                if i < (WIDTH * HEIGHT):
-                    grid[i / WIDTH][i % WIDTH] = 1
+                print "i is " +str(i)
+                grid[(i % (WIDTH * HEIGHT))/WIDTH][i % WIDTH][i/(WIDTH * HEIGHT)] = 1
 
-        for i in range(DEPTH):
-            draw.drawGrid(grid, screen, i)
+        draw.drawGrid(grid, screen, DEPTH)
 
         elapsed_time = time.time() - start_time
         total_time += elapsed_time
