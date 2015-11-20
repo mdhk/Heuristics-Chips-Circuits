@@ -94,6 +94,43 @@ def shortest(aGraph, v, path):
         return
 
 """
+A*
+Inspiratie:
+    http://www.redblobgames.com/pathfinding/a-star/implementation.html
+"""
+
+def heuristic(goal, next):
+    # Input is in the form of a vertex object.
+    # Output geeft de delta x, delta y en delta z
+    return abs(goal.x - next.x) + abs(goal.y - next.y) + abs(goal.z - next.z)
+
+
+"""
+BFS
+"""
+from collections import deque
+
+def bfs(aGraph, start, target):
+    # First In First Out queue
+    queue = deque([start.id])
+    traversed = []
+    found = False
+    while (not found and len(queue)):
+        current = queue.popleft()
+        traversed.append(current)
+        for v in aGraph.vert_dict[current].adjacent:
+            if v not in traversed and v not in queue:
+                queue.append(v)
+                if aGraph.vert_dict[v].previous is None:
+                    aGraph.vert_dict[v].previous = current
+                if (v == target.id):
+                    start.previous = None
+                    found = True
+    
+    if not found:
+        print '############################################## Not found! ############################################'
+
+"""
 DIJKSTRA
 """
 
@@ -131,31 +168,6 @@ def dijkstra(aGraph, start, target):
         # When target has been visited, break
         if target.visited:
             break
-
-"""
-BFS
-"""
-from collections import deque
-
-def bfs(aGraph, start, target):
-    # First In First Out queue
-    queue = deque([start.id])
-    traversed = []
-    found = False
-    while (not found and len(queue)):
-        current = queue.popleft()
-        traversed.append(current)
-        for v in aGraph.vert_dict[current].adjacent:
-            if v not in traversed and v not in queue:
-                queue.append(v)
-                if aGraph.vert_dict[v].previous is None:
-                    aGraph.vert_dict[v].previous = current
-                if (v == target.id):
-                    start.previous = None
-                    found = True
-    
-    if not found:
-        print '############################################## Not found! ############################################'
 
 def apply_path(aGraph, end, begin, p):
     # Remove connections to nodes in the found path, and state what path a
