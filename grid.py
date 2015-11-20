@@ -1,10 +1,10 @@
-from data.testData import width, height, gates
+from data.testData import width, height, gates, netlist
 import visualizations.array_backed_grid as draw
 
 depth = 8
 
 class Vertex:
-    goal = gate_goal
+    # goal = gate_goal
     def __init__(self, vertex_label='', gate_x='', gate_y=''):
         self.name = str(vertex_label)
         self.x = gate_x
@@ -18,9 +18,9 @@ grid = [[[Vertex() for z in range(depth)] for x in range(width)] for y in range(
 
 def set_gates(gates, grid):
     for gate in gates:
-        startgate = [pair[0] for pair in netlist].index(gate[0])
-        endgatelist = [pair[1] for pair in netlist]
-        gate_goal = endgatelist[startgate]
+        # startgate = [pair[0] for pair in netlist].index(gate[0])
+        # endgatelist = [pair[1] for pair in netlist]
+        # gate_goal = endgatelist[startgate]
         grid[gate[1]][gate[0]][0] = Vertex((gates.index(gate) + 1), gate[0], gate[1])
 
 set_gates(gates, grid)

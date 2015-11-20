@@ -44,19 +44,22 @@ def drawGrid(grid, screen, depth):
     WIDTH = 20;
     HEIGHT = 20;
 
+    # grid = [[[0 for c in range(DEPTH)] for b in range(WIDTH)] for a in range(HEIGHT)]
     # Draw the grid
-    for row in range(len(grid)):
-        for column in range(len(grid[0])):
+    for x in range(len(grid[0])):
+        for y in range(len(grid)):
             color = WHITE
-            for dep in range(depth):            
+            for z in [depth]:    
+                print "z is " + str(z)       
                 # if grid[row][column] != [0,0,0,0,0,0,0,0]:
-                if grid[row][column][dep] != 0:
-                    if grid[row][column][dep] == 1:
-                        grid[row][column][dep] = PATH
-                        color = grid[row][column][dep]
+                #  grid[height][width][depth]
+                if grid[y][x][z] != 0:
+                    if grid[y][x][z] == 1:
+                        grid[y][x][z] = PATH
+                        color = grid[y][x][z]
                         pygame.draw.rect(screen,color,
-                                 [(MARGIN + WIDTH) * column + MARGIN,
-                                  (MARGIN + HEIGHT) * row + MARGIN,
+                                 [(MARGIN + WIDTH) * x + MARGIN,
+                                  (MARGIN + HEIGHT) * y + MARGIN,
                                   WIDTH,HEIGHT])
      
     # Limit to 60 frames per second
