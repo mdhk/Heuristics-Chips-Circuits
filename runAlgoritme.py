@@ -28,6 +28,9 @@ class Vertex:
         self.previous = None
         self.path = None
         self.gate = False
+        self.x = id % SURF % WIDTH 
+        self.y = id % SURF / WIDTH 
+        self.z = id / SURF
 
     def add_neighbor(self, neighbor, weight = 1):
         self.adjacent[neighbor] = weight
@@ -99,11 +102,36 @@ Inspiratie:
     http://www.redblobgames.com/pathfinding/a-star/implementation.html
 """
 
-def heuristic(goal, next):
+from Queue import PriorityQueue
+
+def heuristicManhattan(goal, next):
     # Input is in the form of a vertex object.
     # Output geeft de delta x, delta y en delta z
     return abs(goal.x - next.x) + abs(goal.y - next.y) + abs(goal.z - next.z)
 
+def aStar(aGraph, start, target):
+    pq = PriorityQueue()
+    pq.put( start.id, 0)
+    costSoFar = {}
+    costSoFar[start.id] = 0
+
+    while not pq.empty():
+        cur = pq.get()
+
+        if cur == target.id:
+            break
+
+        for next in aGraph.vert_dict[cur].adjacent:
+            newCost = costSoFar[cur] + 1
+            if next not in costSoFar or newCost < costSoFar[next]:
+                costSoFar[next] = newCost
+                priority = newCost + heuristicManhattan(target,
+                        aGraph.vert_dict[next])
+                pq.put(next, priority)
+                aGraph.vert_dict[next].previous = cur
+
+    if not target.previous:
+        print '############################################## Not found! ############################################'
 
 """
 BFS
@@ -196,13 +224,14 @@ def apply_path(aGraph, end, begin, p):
 
 if __name__ == '__main__':
     """
-    CHIPS AND CIRCUITS first print
+    CHIPS AND CIRCUITS
     """
 
     from data.config1 import width, height, gates
     from data.netlist import netlist_2 as netlist
     WIDTH = width
     HEIGHT = height
+    SURF = width * height
     DEPTH = 8
 
     g = Graph()
@@ -246,14 +275,15 @@ if __name__ == '__main__':
         # Choose algorithm and find shortest path between start and target node
         ############################
         # dijkstra(g, begin, end)
-        bfs(g, begin, end)
+        aStar(g, begin, end)
+        # import IPython; IPython.embed();
+        # bfs(g, begin, end)
 
         path = apply_path(g, end.id, begin.id, p)
         p += 1
 
         if len(path) > 1:
             for i in path:
-                print "i is " +str(i)
                 grid[(i % (WIDTH * HEIGHT))/WIDTH][i % WIDTH][i/(WIDTH * HEIGHT)] = 1
 
         draw.drawGrid(grid, screen, DEPTH)
