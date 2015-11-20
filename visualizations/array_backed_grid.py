@@ -13,7 +13,7 @@ from random import randint
  
 def initGrid(width,height):
     # Define some colors
-    BLACK = (0, 0, 0)
+    WHITE = (255, 255, 255)
     
     # This sets the margin between each cell
     MARGIN = 5
@@ -29,15 +29,13 @@ def initGrid(width,height):
     pygame.display.set_caption("Chips and Circuits")
     
     # Set the screen background
-    screen.fill(BLACK)
+    screen.fill(WHITE)
 
     return screen;
  
 def drawGrid(grid, screen, depth):
 
     WHITE = (255, 255, 255)
-    GREEN = (0, 255, 0)
-    RED = (255, 0, 0)
     PATH = (randint(0, 255), randint(0, 255), randint(0, 255))
 
     MARGIN = 5;
@@ -49,7 +47,7 @@ def drawGrid(grid, screen, depth):
     for x in range(len(grid[0])):
         for y in range(len(grid)):
             color = WHITE
-            for z in [depth]:    
+            for z in [0]:    
                 print "z is " + str(z)       
                 # if grid[row][column] != [0,0,0,0,0,0,0,0]:
                 #  grid[height][width][depth]
@@ -61,6 +59,7 @@ def drawGrid(grid, screen, depth):
                                  [(MARGIN + WIDTH) * x + MARGIN,
                                   (MARGIN + HEIGHT) * y + MARGIN,
                                   WIDTH,HEIGHT])
+           
      
     # Limit to 60 frames per second
     # clock.tick(60)
