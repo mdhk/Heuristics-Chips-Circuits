@@ -47,8 +47,7 @@ def drawGrid(grid, screen, depth):
     for x in range(len(grid[0])):
         for y in range(len(grid)):
             color = WHITE
-            for z in [0]:    
-                # if grid[row][column] != [0,0,0,0,0,0,0,0]:
+            for z in [depth]:    
                 #  grid[height][width][depth]
                 if grid[y][x][z] != 0:
                     if grid[y][x][z] == 1:
