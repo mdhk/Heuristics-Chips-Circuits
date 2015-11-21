@@ -2,78 +2,86 @@
 CHIPS AND CIRCUITS
 """
 
+from config import *
 from core import *
-from data.config1 import width, height, gates
-from data.netlist import netlist_2 as netlist
-from Algorithms import aStar
 
-WIDTH = width
-HEIGHT = height
-SURF = width * height
-DEPTH = 8
+"""
+INITIALIZE GRAPH AND VISUALIZATION
+"""
+
 depth = 0
 
+# Create graph and connect it.
 g = Graph()
-connect_Graph(g)
+connectGraph(g)
 
+# Convert x-y coordinates of gates to their id and disconnect these vertices
+# from the graph.
 gateList = []
 for c in gates:
-    # In config1, coordinates are [x, y]
-    # ONLY FOR PRINT 1
     gateList.append(c[1] * WIDTH + c[0])
-
-# Disconnect gates
-disconnect_vertex(g, gateList)
+disconnectVertex(g, gateList)
 for i in gateList:
-    g.vert_dict[i].gate = True
+    g.vertDict[i].gate = True
 
-# Find shortest path between the gates in the netlist
 # Mark different paths with p
 p = 0
-total_time = 0
+# Count found paths
+f = 0
+totalTime = 0
 
-# Init visualization.
+# Initialize visualization.
 screen = draw.initGrid(WIDTH, HEIGHT)
 grid = [[[0 for c in range(DEPTH)] for b in range(WIDTH)] for a in range(HEIGHT)]
 
 path = []
-for n in netlist:
-    start_time = time.time()
 
-    begin = g.vert_dict[gateList[n[0]]]
-    end = g.vert_dict[gateList[n[1]]]
-    # Connect begin and end gates.
-    for i in begin.adjacent:
-        g.vert_dict[i].add_neighbor(gateList[n[0]])
-    for i in end.adjacent:
-        g.vert_dict[i].add_neighbor(gateList[n[1]])
+# import IPython; IPython.embed()
+
+"""
+SOLVE
+"""
+
+for n in netlist:
+    startTime = time.time()
+
+    start = g.vertDict[gateList[n[0]]]
+    target = g.vertDict[gateList[n[1]]]
+    # Connect start and target gates.
+    for i in start.adjacent:
+        g.vertDict[i].addNeighbor(gateList[n[0]])
+    for i in target.adjacent:
+        g.vertDict[i].addNeighbor(gateList[n[1]])
 
     # Find path.
-    print 'Find path between ' + str(n[0] + 1) + ' and ' + str(n[1] + 1)
-    ############################
-    # Choose algorithm and find shortest path between start and target node
-    ############################
-    # dijkstra(g, begin, end)
-    aStar(g, begin, end)
-    # bfs(g, begin, end)
+    message = 'Find path between ' + str(n[0] + 1) + ' and ' + str(n[1] + 1)
+    print(message.rjust(27)),
 
-    path = apply_path(g, end.id, begin.id, p)
+    findPath(g, start, target)
+
+    path = applyPath(g, target.id, start.id, p)
     p += 1
+    if len(path) is not 1:
+        print path
+        f += 1
+    else:
+        print '          PATH NOT FOUND '
 
     if len(path) > 1:
         for i in path:
-            grid[(i % (WIDTH * HEIGHT))/WIDTH][i % WIDTH][i/(WIDTH * HEIGHT)] = 1
+            grid[(i % SURF) / WIDTH][i % WIDTH][i / SURF] = 1
 
     draw.drawGrid(grid, screen, depth)
 
-    elapsed_time = time.time() - start_time
-    total_time += elapsed_time
-    print 'time: ' + str(elapsed_time)
+    elapsedTime = time.time() - startTime
+    totalTime += elapsedTime
+    # print 'Time: ' + str(elapsedTime)
 
-print 'total time: ' + str(total_time)
+print '\n\nTotal time: ' + str(totalTime) + ' seconds.'
+print '\n\nSuccesfully connected ' + str(f) + ' of ' + str(len(netlist)) + '\
+ required paths.'
 
-# import IPython; IPython.embed();
-
+# Wait for mouse click to close visualization or view other layer
 while True:
     event = pygame.event.wait()
     if event.type == pygame.QUIT:

@@ -57,7 +57,6 @@ def drawGrid(grid, screen, depth):
                                  [(MARGIN + WIDTH) * x + MARGIN,
                                   (MARGIN + HEIGHT) * y + MARGIN,
                                   WIDTH,HEIGHT])
-           
      
     # Limit to 60 frames per second
     # clock.tick(60)
