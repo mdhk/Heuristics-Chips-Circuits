@@ -9,8 +9,6 @@ from core import *
 INITIALIZE GRAPH AND VISUALIZATION
 """
 
-depth = 0
-
 # Create graph and connect it.
 g = Graph()
 connectGraph(g)
@@ -35,11 +33,11 @@ screen = draw.initGrid(WIDTH, HEIGHT)
 grid = [[[0 for c in range(DEPTH)] for b in range(WIDTH)] for a in range(HEIGHT)]
 # Color all gates bright red.
 for i in gates:
-    print i
     grid[i[1]][i[0]][0] = (255, 0, 0)
 
 
 path = []
+depth = 0 
 
 # import IPython; IPython.embed()
 
