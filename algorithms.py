@@ -4,12 +4,37 @@ Inspiratie:
     http://www.redblobgames.com/pathfinding/a-star/implementation.html
 """
 
-from Queue import PriorityQueue
+# from Queue import PriorityQueue
+import heapq
 
-def heuristicManhattan(target, next):
+class PriorityQueue:
+    def __init__(self):
+        self.elements = []
+    
+    def empty(self):
+        return len(self.elements) == 0
+    
+    def put(self, item, priority):
+        heapq.heappush(self.elements, (priority, item))
+    
+    def get(self):
+        return heapq.heappop(self.elements)[1]
+
+def normalManhattan(target, next, current):
     # Input is in the form of a vertex object.
-    # Output geeft de delta x, delta y en delta z
+    # Output is delta x, delta y and delta z
     return abs(target.x - next.x) + abs(target.y - next.y) + abs(target.z - next.z)
+
+# DOES NOT WORK YET
+def biasManhattan(target, next, current):
+    manh = abs(target.x - next.x) + abs(target.y - next.y) + abs(target.z - next.z)
+    bias = 0
+    if not (next.z > current.z) and next.z < 4:
+       bias = 40 
+    heur = manh + bias
+    return heur
+
+heuristic = normalManhattan
 
 def aStar(graph, start, target):
     pq = PriorityQueue()
@@ -27,8 +52,8 @@ def aStar(graph, start, target):
             newCost = costSoFar[cur] + 1
             if next not in costSoFar or newCost < costSoFar[next]:
                 costSoFar[next] = newCost
-                priority = newCost + heuristicManhattan(target,
-                        graph.vertDict[next])
+                priority = newCost + heuristic(target,
+                        graph.vertDict[next], graph.vertDict[cur])
                 pq.put(next, priority)
                 graph.vertDict[next].previous = cur
 
