@@ -33,6 +33,11 @@ totalTime = 0
 # Initialize visualization.
 screen = draw.initGrid(WIDTH, HEIGHT)
 grid = [[[0 for c in range(DEPTH)] for b in range(WIDTH)] for a in range(HEIGHT)]
+# Color all gates bright red.
+for i in gates:
+    print i
+    grid[i[1]][i[0]][0] = (255, 0, 0)
+
 
 path = []
 
@@ -68,7 +73,7 @@ for n in netlist:
         print '          PATH NOT FOUND '
 
     if len(path) > 1:
-        for i in path:
+        for i in path[1:-1]:
             grid[(i % SURF) / WIDTH][i % WIDTH][i / SURF] = 1
 
     draw.drawGrid(grid, screen, depth)
@@ -87,7 +92,15 @@ while True:
     if event.type == pygame.QUIT:
         pygame.quit()
     elif event.type == pygame.MOUSEBUTTONDOWN:
-        # User clicks the mouse. Go to the next layer
-        screen.fill([255,255,255])
-        depth = depth + 1
-        draw.drawGrid(grid, screen, depth)
+        # Visualize the layer up or down from current (left and right click
+        # respectively).
+        if event.button == 1:
+            screen.fill([255,255,255])
+            depth += 1
+            draw.drawGrid(grid, screen, depth)
+        if event.button == 3:
+            screen.fill([255,255,255])
+            depth -= 1
+            draw.drawGrid(grid, screen, depth)
+        print 'Showing layer: ' + str(depth)
+

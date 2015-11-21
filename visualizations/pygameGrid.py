@@ -11,9 +11,10 @@
 import pygame
 from random import randint
  
+WHITE = (255, 255, 255)
+
 def initGrid(width,height):
     # Define some colors
-    WHITE = (255, 255, 255)
     
     # This sets the margin between each cell
     MARGIN = 5
@@ -35,31 +36,28 @@ def initGrid(width,height):
  
 def drawGrid(grid, screen, depth):
 
-    WHITE = (255, 255, 255)
-    PATH = (randint(0, 255), randint(0, 255), randint(0, 255))
+    randColor = (0, randint(0, 255), randint(0, 255))
 
     MARGIN = 5;
     WIDTH = 20;
     HEIGHT = 20;
+    DEPTH = 8;
 
-    # grid = [[[0 for c in range(DEPTH)] for b in range(WIDTH)] for a in range(HEIGHT)]
-    # Draw the grid
+    # Fill the grid. 
     for x in range(len(grid[0])):
         for y in range(len(grid)):
-            color = WHITE
-            for z in [depth]:    
-                #  grid[height][width][depth]
-                if grid[y][x][z] != 0:
-                    if grid[y][x][z] == 1:
-                        grid[y][x][z] = PATH
-                        color = grid[y][x][z]
-                        pygame.draw.rect(screen,color,
-                                 [(MARGIN + WIDTH) * x + MARGIN,
-                                  (MARGIN + HEIGHT) * y + MARGIN,
-                                  WIDTH,HEIGHT])
-     
-    # Limit to 60 frames per second
-    # clock.tick(60)
+            for z in range(DEPTH):    
+                if grid[y][x][z] == 1:
+                    grid[y][x][z] = randColor
+
+    # Draw the (entire) grid.
+    for x in range(len(grid[0])):
+        for y in range(len(grid)):
+            if grid[y][x][depth] != 0:
+                pygame.draw.rect(screen, grid[y][x][depth],
+                        [(MARGIN + WIDTH) * x + MARGIN,
+                            (MARGIN + HEIGHT) * y + MARGIN,
+                            WIDTH,HEIGHT])
  
     # Go ahead and update the screen with what we've drawn.
     pygame.display.flip()
