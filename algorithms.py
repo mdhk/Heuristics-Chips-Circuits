@@ -4,8 +4,9 @@ Inspiratie:
     http://www.redblobgames.com/pathfinding/a-star/implementation.html
 """
 
-# from Queue import PriorityQueue
 import heapq
+
+# from Queue import PriorityQueue
 
 class PriorityQueue:
     def __init__(self):
@@ -42,11 +43,9 @@ heuristic = normalManhattan
 weird_aStar
 """
 
-from config import *
-from core import *
-
 def weird_aStar(graph, start, target, p):
-    SURF = 306
+    from core import *
+    from config import *
     temp = start
     current = temp
     while (current.adjacent.has_key(current.id + SURF)):
@@ -55,9 +54,9 @@ def weird_aStar(graph, start, target, p):
         current = next
         temp.id = current.id
 
-    applyPath(graph, target.id, temp.id, p)
-
-    start.id = current.id
+    applyPath(graph, current.id, start.id, p)
+    print current.id
+    start = current
 
     pq = PriorityQueue()
     pq.put(start.id, 0)
