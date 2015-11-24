@@ -62,7 +62,7 @@ for n in netlist:
     message = 'Find path between ' + str(n[0] + 1) + ' and ' + str(n[1] + 1)
     print(message.rjust(27)),
 
-    algorithm(g, start, target)
+    algorithm(g, start, target, p)
 
     path = applyPath(g, target.id, start.id, p)
     p += 1
@@ -87,6 +87,8 @@ print '\n\nTotal time: ' + str(totalTime) + ' seconds.'
 print '\n\nCosts algorithm: ' + str(c)
 print '\n\nSuccesfully connected ' + str(f) + ' of ' + str(len(netlist)) + '\
  required paths.'
+print SURF
+
 
 # Wait for mouse click to close visualization or view other layer
 while True:
@@ -105,4 +107,5 @@ while True:
             depth -= 1
             draw.drawGrid(grid, screen, depth)
         print 'Showing layer: ' + str(depth)
+
 

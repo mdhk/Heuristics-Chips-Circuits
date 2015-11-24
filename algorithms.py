@@ -29,13 +29,59 @@ def normalManhattan(target, next, current):
 def biasManhattan(target, next, current):
     manh = abs(target.x - next.x) + abs(target.y - next.y) + abs(target.z - next.z)
     bias = 0
-    if not (next.z > current.z) and next.z < 4:
-       bias = 40 
+    if (next.z > current.z or next.z < current.z):
+       bias = -10 * (abs(target.z - next.z))
+    if (current.z == next.z):
+        bias = 10 * (abs(target.x - next.x) + abs(target.y - next.y))
     heur = manh + bias
     return heur
 
 heuristic = normalManhattan
 
+"""
+weird_aStar
+"""
+
+from config import *
+from core import *
+
+def weird_aStar(graph, start, target, p):
+    SURF = 306
+    temp = start
+    current = temp
+    while (current.adjacent.has_key(current.id + SURF)):
+        next = graph.vertDict[current.id + SURF]
+        next.previous = current.id
+        current = next
+        temp.id = current.id
+
+    applyPath(graph, target.id, temp.id, p)
+
+    start.id = current.id
+
+    pq = PriorityQueue()
+    pq.put(start.id, 0)
+    costSoFar = {}
+    costSoFar[start.id] = 0
+
+    while not pq.empty():
+        cur = pq.get()
+
+        if cur == target.id:
+            break
+
+        for next in graph.vertDict[cur].adjacent:
+            newCost = costSoFar[cur] + 1
+            if next not in costSoFar or newCost < costSoFar[next]:
+                costSoFar[next] = newCost
+                priority = newCost + heuristic(target,
+                        graph.vertDict[next], graph.vertDict[cur])
+                pq.put(next, priority)
+                graph.vertDict[next].previous = cur
+
+"""
+aStar
+"""
 def aStar(graph, start, target):
     pq = PriorityQueue()
     pq.put(start.id, 0)
