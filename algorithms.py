@@ -23,18 +23,18 @@ class PriorityQueue:
 def normalManhattan(target, next, current):
     # Input is in the form of a vertex object.
     # Output is delta x, delta y and delta z
-    return abs(target.x - next.x) + abs(target.y - next.y) + abs(target.z - next.z)
+    return abs(target.x - next.x) + abs(target.y - next.y) + next.z
 
 # DOES NOT WORK YET
 def biasManhattan(target, next, current):
-    manh = abs(target.x - next.x) + abs(target.y - next.y) + abs(target.z - next.z)
+    manh = abs(target.x - next.x) + abs(target.y - next.y) + next.z
     bias = 0
-    if not (next.z > current.z) and next.z < 4:
-       bias = 40 
-    heur = manh + bias
+    if (next.z > current.z):
+       bias = 40
+    heur = manh - bias
     return heur
 
-heuristic = normalManhattan
+heuristic = biasManhattan
 
 def aStar(graph, start, target):
     pq = PriorityQueue()

@@ -87,6 +87,7 @@ print '\n\nTotal time: ' + str(totalTime) + ' seconds.'
 print '\n\nCosts algorithm: ' + str(c)
 print '\n\nSuccesfully connected ' + str(f) + ' of ' + str(len(netlist)) + '\
  required paths.'
+print 'Showing layer: ' + str(depth)
 
 # Wait for mouse click to close visualization or view other layer
 while True:
