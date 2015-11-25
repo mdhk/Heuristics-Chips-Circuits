@@ -38,7 +38,7 @@ heuristic = normalManhattan
 
 def aStar(graph, start, target):
     pq = PriorityQueue()
-    pq.put( start.id, 0)
+    pq.put(start.id, 0)
     costSoFar = {}
     costSoFar[start.id] = 0
 

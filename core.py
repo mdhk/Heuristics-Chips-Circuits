@@ -12,7 +12,7 @@ disconnecting vertices (e.g. gates and paths)
 """
 
 from config import *
-import pygame, sys, time
+import pygame, sys, time, random
 import visualizations.pygameGrid as draw
 
 class Graph:

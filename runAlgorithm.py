@@ -2,7 +2,6 @@
 CHIPS AND CIRCUITS
 """
 
-from config import *
 from core import *
 
 """
@@ -26,6 +25,8 @@ for i in gateList:
 p = 0
 # Count found paths
 f = 0
+# Count costs total
+c = 0
 totalTime = 0
 
 # Initialize visualization.
@@ -45,6 +46,7 @@ depth = 0
 SOLVE
 """
 
+random.shuffle(netlist)
 for n in netlist:
     startTime = time.time()
 
@@ -60,13 +62,14 @@ for n in netlist:
     message = 'Find path between ' + str(n[0] + 1) + ' and ' + str(n[1] + 1)
     print(message.rjust(27)),
 
-    findPath(g, start, target)
+    algorithm(g, start, target)
 
     path = applyPath(g, target.id, start.id, p)
     p += 1
     if len(path) is not 1:
         print path
         f += 1
+        c += len(path) - 1
     else:
         print '          PATH NOT FOUND '
 
@@ -81,6 +84,7 @@ for n in netlist:
     # print 'Time: ' + str(elapsedTime)
 
 print '\n\nTotal time: ' + str(totalTime) + ' seconds.'
+print '\n\nCosts algorithm: ' + str(c)
 print '\n\nSuccesfully connected ' + str(f) + ' of ' + str(len(netlist)) + '\
  required paths.'
 
