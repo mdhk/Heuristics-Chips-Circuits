@@ -83,11 +83,14 @@ for n in netlist:
     totalTime += elapsedTime
     # print 'Time: ' + str(elapsedTime)
 
-print '\n\nTotal time: ' + str(totalTime) + ' seconds.'
-print '\n\nCosts algorithm: ' + str(c)
-print '\n\nSuccesfully connected ' + str(f) + ' of ' + str(len(netlist)) + '\
+print '\nTotal time: ' + str(totalTime) + ' seconds.'
+print '\nCosts algorithm: ' + str(c) + '.'
+print '\nSuccesfully connected ' + str(f) + ' of ' + str(len(netlist)) + '\
  required paths.'
-print 'Showing layer: ' + str(depth)
+print '\nSize surface: ' + str(SURF) + '.'
+print '\nShowing layer: ' + str(depth)
+
+
 
 # Wait for mouse click to close visualization or view other layer
 while True:
@@ -106,4 +109,5 @@ while True:
             depth -= 1
             draw.drawGrid(grid, screen, depth)
         print 'Showing layer: ' + str(depth)
+
 

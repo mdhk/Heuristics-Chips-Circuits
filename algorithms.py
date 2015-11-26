@@ -4,8 +4,9 @@ Inspiratie:
     http://www.redblobgames.com/pathfinding/a-star/implementation.html
 """
 
-# from Queue import PriorityQueue
 import heapq
+
+# from Queue import PriorityQueue
 
 class PriorityQueue:
     def __init__(self):
@@ -29,13 +30,56 @@ def normalManhattan(target, next, current):
 def biasManhattan(target, next, current):
     manh = abs(target.x - next.x) + abs(target.y - next.y) + next.z
     bias = 0
-    if (next.z > current.z):
-       bias = 40
-    heur = manh - bias
+    if (next.z > current.z or next.z < current.z):
+       bias = -10 * (abs(target.z - next.z))
+    if (current.z == next.z):
+        bias = 10 * (abs(target.x - next.x) + abs(target.y - next.y))
+    heur = manh + bias
     return heur
 
 heuristic = biasManhattan
 
+"""
+weird_aStar
+"""
+
+def weird_aStar(graph, start, target, p):
+    from core import *
+    temp = start
+    current = temp
+    while (current.adjacent.has_key(current.id + SURF)):
+        next = graph.vertDict[current.id + SURF]
+        next.previous = current.id
+        current = next
+        temp.id = current.id
+
+    applyPath(graph, current.id, start.id, p)
+    print current.id
+    start = current
+
+    pq = PriorityQueue()
+    pq.put(start.id, 0)
+    costSoFar = {}
+    costSoFar[start.id] = 0
+
+    while not pq.empty():
+        cur = pq.get()
+
+        if cur == target.id:
+            break
+
+        for next in graph.vertDict[cur].adjacent:
+            newCost = costSoFar[cur] + 1
+            if next not in costSoFar or newCost < costSoFar[next]:
+                costSoFar[next] = newCost
+                priority = newCost + heuristic(target,
+                        graph.vertDict[next], graph.vertDict[cur])
+                pq.put(next, priority)
+                graph.vertDict[next].previous = cur
+
+"""
+aStar
+"""
 def aStar(graph, start, target):
     pq = PriorityQueue()
     pq.put(start.id, 0)
