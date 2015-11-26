@@ -36,52 +36,62 @@ grid = [[[0 for c in range(DEPTH)] for b in range(WIDTH)] for a in range(HEIGHT)
 for i in gates:
     grid[i[1]][i[0]][0] = (255, 0, 0)
 
-
-path = []
 depth = 0 
-
-# import IPython; IPython.embed()
 
 """
 SOLVE
 """
 
 random.shuffle(netlist)
+
 for n in netlist:
     startTime = time.time()
 
     start = g.vertDict[gateList[n[0]]]
     target = g.vertDict[gateList[n[1]]]
-    # Connect start and target gates.
-    for i in start.adjacent:
-        g.vertDict[i].addNeighbor(gateList[n[0]])
-    for i in target.adjacent:
-        g.vertDict[i].addNeighbor(gateList[n[1]])
 
-    # Find path.
+    # Allow connections to target gate (but only from non-gates and from
+    # vertices without a pre-existing path.
+    connectVertex(g, target.id)
+
     message = 'Find path between ' + str(n[0] + 1) + ' and ' + str(n[1] + 1)
     print(message.rjust(27)),
 
+    # Use algorithm to compute a path between start and target.
     algorithm(g, start, target)
 
-    path = applyPath(g, target.id, start.id, p)
+    # Extract the previously computed path from graph g
+    path = []
+    path.append(target.id)
+    tracePath(g, target, path)
+
+    # Disconnect connections to the vertices in path
+    disconnectVertex(g, path)
+
+    # Assign all vertices in the path (not the gates) the path id 
+    for i in path[1:-1]:
+        g.vertDict[i].path = p
     p += 1
-    if len(path) is not 1:
+
+    if len(path) > 1:
         print path
         f += 1
         c += len(path) - 1
     else:
         print '          PATH NOT FOUND '
 
+    # Prepare graph for next search.
+    for v in g:
+        v.previous = None
+
+    # Fill grid for subsequent visualization.
     if len(path) > 1:
         for i in path[1:-1]:
             grid[(i % SURF) / WIDTH][i % WIDTH][i / SURF] = 1
-
     draw.drawGrid(grid, screen, depth)
 
     elapsedTime = time.time() - startTime
     totalTime += elapsedTime
-    # print 'Time: ' + str(elapsedTime)
 
 print '\nTotal time: ' + str(totalTime) + ' seconds.'
 print '\nCosts algorithm: ' + str(c) + '.'
@@ -89,6 +99,7 @@ print '\nSuccesfully connected ' + str(f) + ' of ' + str(len(netlist)) + '\
  required paths.'
 print '\nSize surface: ' + str(SURF) + '.'
 print '\nShowing layer: ' + str(depth)
+
 
 
 
@@ -109,5 +120,3 @@ while True:
             depth -= 1
             draw.drawGrid(grid, screen, depth)
         print 'Showing layer: ' + str(depth)
-
-

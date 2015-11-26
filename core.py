@@ -18,13 +18,11 @@ import visualizations.pygameGrid as draw
 class Graph:
     def __init__(self):
         self.vertDict = {}
-        self.nVertices = 0
 
     def __iter__(self):
         return iter(self.vertDict.values())
 
     def addVertex(self, id):
-        self.nVertices = self.nVertices + 1
         newVertex = Vertex(id)
         self.vertDict[id] = newVertex
         return newVertex
@@ -44,9 +42,6 @@ class Vertex:
 
     def addNeighbor(self, neighbor, weight = 1):
         self.adjacent[neighbor] = weight
-
-    def setDistance(self, dist):
-        self.distance = dist
 
 def connectGraph(g):
     # Connects all vertices of the graph in a grid-like manner.
@@ -74,6 +69,16 @@ def connectGraph(g):
         if (a < (SURF - WIDTH)):
             current.addNeighbor(i + WIDTH)
 
+def connectVertex(g, id):
+    # Connects a given vertex v (with id 'id') to its neighbors, provided that
+    # the neighbors are not gates and are not taken by a path.
+    v = g.vertDict[id]
+    for i in v.adjacent:
+        current = g.vertDict[i]
+        if (not current.path) and (not current.gate):
+            current.addNeighbor(id)
+
+# Delete all connections to vertex v.
 def disconnectVertex(g, v):
     surf = WIDTH * HEIGHT
     for i in v:
@@ -92,33 +97,32 @@ def disconnectVertex(g, v):
             del(g.vertDict[i + WIDTH].adjacent[i])
 
 # Calculate shortest path from a given node v to starting node.
-# Can be called after dijkstra finished for a given start-end pair of vertices.
 def tracePath(g, v, path):
     if v.previous:
         path.append(v.previous)
         tracePath(g, g.vertDict[v.previous], path)
         return
 
-def applyPath(g, end, begin, p):
-    # Remove connections to nodes in the found path, and state what path a
-    # given node participates in.
-    # Compute path.
-    target = g.vertDict[end]
-    path = []
-    path.append(target.id)
+# def applyPath(g, start, target, p):
+#     # Remove connections to nodes in the found path, and state what path a
+#     # given node participates in.
+#     # Compute path.
+#     target = g.vertDict[target]
+#     path = []
+#     path.append(target.id)
 
-    tracePath(g, target, path)
+#     tracePath(g, target, path)
 
-    # Delete connections to nodes in the path.
-    disconnectVertex(g, path)
+#     # Delete connections to nodes in the path.
+#     disconnectVertex(g, path)
 
-    for i in path:
-        g.vertDict[i].path = p
+#     for i in path:
+#         g.vertDict[i].path = p
 
-    # Prepare graph for next search.
-    for v in g:
-        v.distance = sys.maxint
-        v.visited = False
-        v.previous = None
+#     # Prepare graph for next search.
+#     for v in g:
+#         v.distance = sys.maxint
+#         v.visited = False
+#         v.previous = None
 
-    return path
+#     return path

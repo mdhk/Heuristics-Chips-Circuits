@@ -147,7 +147,7 @@ def dijkstra(graph, start, target):
             new_dist = current.distance + 1
 
             if new_dist < next.distance:
-                next.setDistance(new_dist)
+                next.distance = new_dist
                 next.previous = current.id
         
         # Note: probably not optimal to clear queue and build it up again every
