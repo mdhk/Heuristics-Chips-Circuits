@@ -21,10 +21,17 @@ class PriorityQueue:
     def get(self):
         return heapq.heappop(self.elements)[1]
 
-def normalManhattan(target, next, current):
+def normalManhattan(target, next):
     # Input is in the form of a vertex object.
     # Output is delta x, delta y and delta z
     return abs(target.x - next.x) + abs(target.y - next.y) + next.z
+
+def weirdManhattan(target, next, current):
+    initial = abs(target.x - next.x) + abs(target.y - next.y) + abs(target.z - next.z)
+    bias = 0
+    if current.z > next.z:
+        bias = 100 
+    return initial + bias
 
 # DOES NOT WORK YET
 def biasManhattan(target, next, current):
@@ -37,7 +44,7 @@ def biasManhattan(target, next, current):
     heur = manh + bias
     return heur
 
-heuristic = biasManhattan
+heuristic = weirdManhattan
 
 """
 weird_aStar
@@ -76,6 +83,18 @@ def weird_aStar(graph, start, target, p):
                         graph.vertDict[next], graph.vertDict[cur])
                 pq.put(next, priority)
                 graph.vertDict[next].previous = cur
+
+# Move to a lower layer without changing x and y coordinate.
+# Returns id of lowest reached node
+def toLowestLayer(graph, start):
+    current = start
+    down = current.id + graph.SURF
+    while(current.adjacent.has_key(down)):
+        next = graph.vertDict[down]
+        next.previous = current.id
+        current = next
+        down = current.id + graph.SURF
+    return current
 
 """
 aStar
