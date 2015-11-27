@@ -128,3 +128,14 @@ def applyPath(g, start, target, p):
         v.previous = None
 
     return path
+
+
+def connectallVertex(g, id):
+    # Connects a given vertex v (with id 'id') to its neighbors, provided that
+    # the neighbors are not gates and are not taken by a path.
+    v = g.vertDict[id]
+    for i in v.adjacent:
+        current = g.vertDict[i]
+        if (not current.gate):
+            current.addNeighbor(id)
+
