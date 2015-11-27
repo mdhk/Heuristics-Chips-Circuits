@@ -75,7 +75,8 @@ def connectVertex(g, id):
     v = g.vertDict[id]
     for i in v.adjacent:
         current = g.vertDict[i]
-        if (not current.path) and (not current.gate):
+        # if (not current.path) and (not current.gate):
+        if not current.gate:
             current.addNeighbor(id)
 
 # Delete all connections to vertex v.
@@ -103,26 +104,26 @@ def tracePath(g, v, path):
         tracePath(g, g.vertDict[v.previous], path)
         return
 
-# def applyPath(g, start, target, p):
-#     # Remove connections to nodes in the found path, and state what path a
-#     # given node participates in.
-#     # Compute path.
-#     target = g.vertDict[target]
-#     path = []
-#     path.append(target.id)
+def applyPath(g, start, target, p):
+    # Remove connections to nodes in the found path, and state what path a
+    # given node participates in.
+    # Compute path.
+    target = g.vertDict[target]
+    path = []
+    path.append(target.id)
 
-#     tracePath(g, target, path)
+    tracePath(g, target, path)
 
-#     # Delete connections to nodes in the path.
-#     disconnectVertex(g, path)
+    # Delete connections to nodes in the path.
+    disconnectVertex(g, path)
 
-#     for i in path:
-#         g.vertDict[i].path = p
+    for i in path:
+        g.vertDict[i].path = p
 
-#     # Prepare graph for next search.
-#     for v in g:
-#         v.distance = sys.maxint
-#         v.visited = False
-#         v.previous = None
+    # Prepare graph for next search.
+    for v in g:
+        v.distance = sys.maxint
+        v.visited = False
+        v.previous = None
 
-#     return path
+    return path
