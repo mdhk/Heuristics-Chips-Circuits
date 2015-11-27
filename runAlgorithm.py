@@ -93,10 +93,14 @@ for n in netlist:
     elapsedTime = time.time() - startTime
     totalTime += elapsedTime
 
-print '\n\nTotal time: ' + str(totalTime) + ' seconds.'
-print '\n\nCosts algorithm: ' + str(c)
-print '\n\nSuccesfully connected ' + str(f) + ' of ' + str(len(netlist)) + '\
+print '\nTotal time: ' + str(totalTime) + ' seconds.'
+print '\nCosts algorithm: ' + str(c) + '.'
+print '\nSuccesfully connected ' + str(f) + ' of ' + str(len(netlist)) + '\
  required paths.'
+print '\nSize surface: ' + str(SURF) + '.'
+print '\nShowing layer: ' + str(depth)
+
+
 
 
 # Wait for mouse click to close visualization or view other layer

@@ -24,7 +24,7 @@ class PriorityQueue:
 def normalManhattan(target, next):
     # Input is in the form of a vertex object.
     # Output is delta x, delta y and delta z
-    return abs(target.x - next.x) + abs(target.y - next.y) + abs(target.z - next.z)
+    return abs(target.x - next.x) + abs(target.y - next.y) + next.z
 
 def weirdManhattan(target, next, current):
     initial = abs(target.x - next.x) + abs(target.y - next.y) + abs(target.z - next.z)
@@ -35,7 +35,7 @@ def weirdManhattan(target, next, current):
 
 # DOES NOT WORK YET
 def biasManhattan(target, next, current):
-    manh = abs(target.x - next.x) + abs(target.y - next.y) + abs(target.z - next.z)
+    manh = abs(target.x - next.x) + abs(target.y - next.y) + next.z
     bias = 0
     if (next.z > current.z or next.z < current.z):
        bias = -10 * (abs(target.z - next.z))
@@ -52,7 +52,6 @@ weird_aStar
 
 def weird_aStar(graph, start, target, p):
     from core import *
-    from config import *
     temp = start
     current = temp
     while (current.adjacent.has_key(current.id + SURF)):
