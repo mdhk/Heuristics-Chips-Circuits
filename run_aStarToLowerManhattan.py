@@ -18,7 +18,7 @@ def run_aStarManhattan_Many():
     V = 1
 
     # Create graph and connect it.
-    g = Graph()
+    g = Graph(WIDTH, HEIGHT, DEPTH, SURF)
     connectGraph(g)
     g.SURF = SURF
     g.WIDTH = WIDTH
