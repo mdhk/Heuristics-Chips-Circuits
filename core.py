@@ -11,24 +11,27 @@ Furthermore, it includes several essential functions:
 disconnecting vertices (e.g. gates and paths)
 """
 
-from config import *
 import pygame, sys, time, random
 import visualizations.pygameGrid as draw
 
 class Graph:
-    def __init__(self):
+    def __init__(self, width, height, depth, surf):
         self.vertDict = {}
+        self.WIDTH = width
+        self.HEIGHT = height
+        self.DEPTH = depth
+        self.SURF = surf
 
     def __iter__(self):
         return iter(self.vertDict.values())
 
-    def addVertex(self, id):
-        newVertex = Vertex(id)
+    def addVertex(self, id, width, surf):
+        newVertex = Vertex(id, width, surf)
         self.vertDict[id] = newVertex
         return newVertex
 
 class Vertex:
-    def __init__(self, id):
+    def __init__(self, id, WIDTH, SURF):
         self.id = id
         self.adjacent = {}
         self.distance = sys.maxint
@@ -45,29 +48,29 @@ class Vertex:
 
 def connectGraph(g):
     # Connects all vertices of the graph in a grid-like manner.
-    n = HEIGHT * WIDTH * DEPTH
+    n = g.HEIGHT * g.WIDTH * g.DEPTH
     for i in range(n):
-        g.addVertex(i)
+        g.addVertex(i, g.WIDTH, g.SURF)
 
     # Create graph
     for i in range(n):
-        a = i % SURF
+        a = i % g.SURF
         current = g.vertDict[i]
 
         # In / Out connections
-        if (i >= SURF):
-            current.addNeighbor(i - SURF)
-        if (i < (SURF * DEPTH - SURF)):
-            current.addNeighbor(i + SURF)
+        if (i >= g.SURF):
+            current.addNeighbor(i - g.SURF)
+        if (i < (g.SURF * g.DEPTH - g.SURF)):
+            current.addNeighbor(i + g.SURF)
         # Left / Right / Up / Down
-        if (a % WIDTH):
+        if (a % g.WIDTH):
             current.addNeighbor(i - 1)
-        if (a % WIDTH != (WIDTH - 1)):
+        if (a % g.WIDTH != (g.WIDTH - 1)):
             current.addNeighbor(i + 1)
-        if (a > WIDTH):
-            current.addNeighbor(i - WIDTH)
-        if (a < (SURF - WIDTH)):
-            current.addNeighbor(i + WIDTH)
+        if (a > g.WIDTH):
+            current.addNeighbor(i - g.WIDTH)
+        if (a < (g.SURF - g.WIDTH)):
+            current.addNeighbor(i + g.WIDTH)
 
 def connectVertex(g, id):
     # Connects a given vertex v (with id 'id') to its neighbors, provided that
@@ -75,27 +78,25 @@ def connectVertex(g, id):
     v = g.vertDict[id]
     for i in v.adjacent:
         current = g.vertDict[i]
-        # if (not current.path) and (not current.gate):
-        if not current.gate:
+        if (not current.path) and (not current.gate):
             current.addNeighbor(id)
 
-# Delete all connections to vertex v.
+# Delete all connections to vertices in list v.
 def disconnectVertex(g, v):
-    surf = WIDTH * HEIGHT
     for i in v:
-        a = i % surf
-        if (i >= surf and g.vertDict[i - surf].adjacent.has_key(i)):
-            del(g.vertDict[i -surf].adjacent[i])
-        if (i < (surf * DEPTH - surf) and g.vertDict[i + surf].adjacent.has_key(i)):
-            del(g.vertDict[i + surf].adjacent[i])
-        if (a % WIDTH and g.vertDict[i - 1].adjacent.has_key(i)):
+        a = i % g.SURF
+        if (i >= g.SURF and g.vertDict[i - g.SURF].adjacent.has_key(i)):
+            del(g.vertDict[i - g.SURF].adjacent[i])
+        if (i < (g.SURF * g.DEPTH - g.SURF) and g.vertDict[i + g.SURF].adjacent.has_key(i)):
+            del(g.vertDict[i + g.SURF].adjacent[i])
+        if (a % g.WIDTH and g.vertDict[i - 1].adjacent.has_key(i)):
             del(g.vertDict[i - 1].adjacent[i])
-        if (a % WIDTH != (WIDTH - 1) and g.vertDict[i + 1].adjacent.has_key(i)):
+        if (a % g.WIDTH != (g.WIDTH - 1) and g.vertDict[i + 1].adjacent.has_key(i)):
             del(g.vertDict[i + 1].adjacent[i])
-        if (a > WIDTH and g.vertDict[i - WIDTH].adjacent.has_key(i)):
-            del(g.vertDict[i - WIDTH].adjacent[i])
-        if (a < (surf - WIDTH) and g.vertDict[i + WIDTH].adjacent.has_key(i)):
-            del(g.vertDict[i + WIDTH].adjacent[i])
+        if (a > g.WIDTH and g.vertDict[i - g.WIDTH].adjacent.has_key(i)):
+            del(g.vertDict[i - g.WIDTH].adjacent[i])
+        if (a < (g.SURF - g.WIDTH) and g.vertDict[i + g.WIDTH].adjacent.has_key(i)):
+            del(g.vertDict[i + g.WIDTH].adjacent[i])
 
 # Calculate shortest path from a given node v to starting node.
 def tracePath(g, v, path):

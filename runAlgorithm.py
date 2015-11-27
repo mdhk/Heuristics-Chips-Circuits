@@ -3,13 +3,19 @@ CHIPS AND CIRCUITS
 """
 
 from core import *
+from data.config1 import width as WIDTH, height as HEIGHT, gates
+from data.netlist import netlist_1 as netlist
+from algorithms import aStar as algorithm
+
+DEPTH = 8
+SURF = WIDTH * HEIGHT
 
 """
 INITIALIZE GRAPH AND VISUALIZATION
 """
 
 # Create graph and connect it.
-g = Graph()
+g = Graph(WIDTH, HEIGHT, DEPTH, SURF)
 connectGraph(g)
 
 # Convert x-y coordinates of gates to their id and disconnect these vertices
