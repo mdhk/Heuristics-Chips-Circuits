@@ -4,7 +4,7 @@ CHIPS AND CIRCUITS
 
 from core import *
 from data.config1 import width as WIDTH, height as HEIGHT, gates
-from data.netlist import netlist_1 as netlist
+from data.netlist import netlist_2 as netlist
 import algorithms
 
 DEPTH = 8
@@ -15,7 +15,7 @@ INITIALIZE GRAPH AND VISUALIZATION
 """
 
 def run_aStarManhattan_Many():
-    V = 1
+    V = 0
 
     # Create graph and connect it.
     g = Graph(WIDTH, HEIGHT, DEPTH, SURF)
@@ -165,7 +165,7 @@ def run_aStarManhattan_Many():
 if __name__ == "__main__":
     startTime = time.time()
     results = []
-    for i in range(1):
+    for i in range(5000):
         results.append(run_aStarManhattan_Many())
     print '\n\nTotal time: ' + str(time.time() - startTime) + ' seconds.'
 
