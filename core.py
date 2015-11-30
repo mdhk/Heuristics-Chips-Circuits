@@ -49,28 +49,15 @@ class Vertex:
 def connectGraph(g):
     # Connects all vertices of the graph in a grid-like manner.
     n = g.HEIGHT * g.WIDTH * g.DEPTH
+    # Add vertices
     for i in range(n):
         g.addVertex(i, g.WIDTH, g.SURF)
 
-    # Create graph
-    for i in range(n):
-        a = i % g.SURF
-        current = g.vertDict[i]
-
-        # In / Out connections
-        if (i >= g.SURF):
-            current.addNeighbor(i - g.SURF)
-        if (i < (g.SURF * g.DEPTH - g.SURF)):
-            current.addNeighbor(i + g.SURF)
-        # Left / Right / Up / Down
-        if (a % g.WIDTH):
-            current.addNeighbor(i - 1)
-        if (a % g.WIDTH != (g.WIDTH - 1)):
-            current.addNeighbor(i + 1)
-        if (a > g.WIDTH):
-            current.addNeighbor(i - g.WIDTH)
-        if (a < (g.SURF - g.WIDTH)):
-            current.addNeighbor(i + g.WIDTH)
+    # Connect graph
+    for v in g:
+        neighbors = computeNeighbors(g, v.id)
+        for n in neighbors:
+            v.addNeighbor(n)
 
 def connectVertex(g, id):
     # Connects a given vertex v (with id 'id') to its neighbors, provided that
@@ -83,20 +70,12 @@ def connectVertex(g, id):
 
 # Delete all connections to vertices in list v.
 def disconnectVertex(g, v):
+    neighbors = []
     for i in v:
-        a = i % g.SURF
-        if (i >= g.SURF and g.vertDict[i - g.SURF].adjacent.has_key(i)):
-            del(g.vertDict[i - g.SURF].adjacent[i])
-        if (i < (g.SURF * g.DEPTH - g.SURF) and g.vertDict[i + g.SURF].adjacent.has_key(i)):
-            del(g.vertDict[i + g.SURF].adjacent[i])
-        if (a % g.WIDTH and g.vertDict[i - 1].adjacent.has_key(i)):
-            del(g.vertDict[i - 1].adjacent[i])
-        if (a % g.WIDTH != (g.WIDTH - 1) and g.vertDict[i + 1].adjacent.has_key(i)):
-            del(g.vertDict[i + 1].adjacent[i])
-        if (a > g.WIDTH and g.vertDict[i - g.WIDTH].adjacent.has_key(i)):
-            del(g.vertDict[i - g.WIDTH].adjacent[i])
-        if (a < (g.SURF - g.WIDTH) and g.vertDict[i + g.WIDTH].adjacent.has_key(i)):
-            del(g.vertDict[i + g.WIDTH].adjacent[i])
+        neighbors = computeNeighbors(g, i)
+        for n in neighbors:
+            if g.vertDict[n].adjacent.has_key(i):
+                del(g.vertDict[n].adjacent[i])
 
 def computeNeighbors(g, id):
     # Compute the neighbors of a given vertex
@@ -104,13 +83,13 @@ def computeNeighbors(g, id):
     neighbors = []
     if current.z is not 0:
         neighbors.append(id - g.SURF)
-    if current.z is not g.DEPTH:
+    if current.z is not (g.DEPTH - 1):
         neighbors.append(id + g.SURF)
-    if current.x is not 0:
+    if current.x is not (g.WIDTH - 1):
         neighbors.append(id + 1)
-    if current.x is not g.WIDTH: 
+    if current.x is not 0: 
         neighbors.append(id - 1)
-    if current.y is not g.HEIGHT:
+    if current.y is not (g.HEIGHT - 1):
         neighbors.append(id + g.WIDTH)
     if current.y is not 0:
         neighbors.append(id - g.WIDTH)
