@@ -15,7 +15,7 @@ INITIALIZE GRAPH AND VISUALIZATION
 """
 
 def run_aStarManhattan_Many():
-    V = 0
+    V = 1
 
     # Create graph and connect it.
     g = Graph(WIDTH, HEIGHT, DEPTH, SURF)
@@ -135,7 +135,6 @@ def run_aStarManhattan_Many():
             draw.drawGrid(grid, screen, depth)
             elapsedTime = time.time() - startTime
             totalTime += elapsedTime
-    import IPython; IPython.embed()
 
     if V:
         print '\n\nTotal time: ' + str(totalTime) + ' seconds.'
@@ -161,7 +160,6 @@ def run_aStarManhattan_Many():
                 print 'Showing layer: ' + str(depth)
 
     return f
-
 
 if __name__ == "__main__":
     startTime = time.time()

@@ -1,13 +1,22 @@
 """
 A*
-Inspiratie:
-    http://www.redblobgames.com/pathfinding/a-star/implementation.html
+Heuristieken
 """
 
+# Move to a lower layer without changing x and y coordinate.
+# Returns id of lowest reached node
+def toLowestLayer(graph, start):
+    current = start
+    down = current.id + graph.SURF
+    while(current.adjacent.has_key(down)):
+        next = graph.vertDict[down]
+        next.previous = current.id
+        current = next
+        down = current.id + graph.SURF
+    return current
+
+
 import heapq
-
-# from Queue import PriorityQueue
-
 class PriorityQueue:
     def __init__(self):
         self.elements = []
@@ -21,7 +30,7 @@ class PriorityQueue:
     def get(self):
         return heapq.heappop(self.elements)[1]
 
-def normalManhattan(target, next):
+def normalManhattan(target, next, current):
     # Input is in the form of a vertex object.
     # Output is delta x, delta y and delta z
     return abs(target.x - next.x) + abs(target.y - next.y) + next.z
@@ -44,62 +53,57 @@ def biasManhattan(target, next, current):
     heur = manh + bias
     return heur
 
-heuristic = weirdManhattan
 
-"""
-weird_aStar
-"""
+# MAG WEG??
+# """
+# weird_aStar
+# """
 
-def weird_aStar(graph, start, target, p):
-    from core import *
-    temp = start
-    current = temp
-    while (current.adjacent.has_key(current.id + SURF)):
-        next = graph.vertDict[current.id + SURF]
-        next.previous = current.id
-        current = next
-        temp.id = current.id
+# def weird_aStar(graph, start, target, p):
+#     from core import *
+#     temp = start
+#     current = temp
+#     while (current.adjacent.has_key(current.id + SURF)):
+#         next = graph.vertDict[current.id + SURF]
+#         next.previous = current.id
+#         current = next
+#         temp.id = current.id
 
-    applyPath(graph, current.id, start.id, p)
-    print current.id
-    start = current
+#     applyPath(graph, current.id, start.id, p)
+#     print current.id
+#     start = current
 
-    pq = PriorityQueue()
-    pq.put(start.id, 0)
-    costSoFar = {}
-    costSoFar[start.id] = 0
+#     pq = PriorityQueue()
+#     pq.put(start.id, 0)
+#     costSoFar = {}
+#     costSoFar[start.id] = 0
 
-    while not pq.empty():
-        cur = pq.get()
+#     while not pq.empty():
+#         cur = pq.get()
 
-        if cur == target.id:
-            break
+#         if cur == target.id:
+#             break
 
-        for next in graph.vertDict[cur].adjacent:
-            newCost = costSoFar[cur] + 1
-            if next not in costSoFar or newCost < costSoFar[next]:
-                costSoFar[next] = newCost
-                priority = newCost + heuristic(target,
-                        graph.vertDict[next], graph.vertDict[cur])
-                pq.put(next, priority)
-                graph.vertDict[next].previous = cur
-
-# Move to a lower layer without changing x and y coordinate.
-# Returns id of lowest reached node
-def toLowestLayer(graph, start):
-    current = start
-    down = current.id + graph.SURF
-    while(current.adjacent.has_key(down)):
-        next = graph.vertDict[down]
-        next.previous = current.id
-        current = next
-        down = current.id + graph.SURF
-    return current
+#         for next in graph.vertDict[cur].adjacent:
+#             newCost = costSoFar[cur] + 1
+#             if next not in costSoFar or newCost < costSoFar[next]:
+#                 costSoFar[next] = newCost
+#                 priority = newCost + heuristic(target,
+#                         graph.vertDict[next], graph.vertDict[cur])
+#                 pq.put(next, priority)
+#                 graph.vertDict[next].previous = cur
 
 """
 aStar
+Inspiratie:
+    http://www.redblobgames.com/pathfinding/a-star/implementation.html
 """
+# Choose heuristic function.
+heuristic = normalManhattan
+
 def aStar(graph, start, target):
+    # aStar uses a heuristic to find the shortest path.
+    # Start is a Vertex instance of the starting vertex.
     pq = PriorityQueue()
     pq.put(start.id, 0)
     costSoFar = {}
@@ -108,7 +112,7 @@ def aStar(graph, start, target):
     while not pq.empty():
         cur = pq.get()
 
-        if cur == target.id:
+        if cur is target.id:
             break
 
         for next in graph.vertDict[cur].adjacent:
@@ -119,6 +123,35 @@ def aStar(graph, start, target):
                         graph.vertDict[next], graph.vertDict[cur])
                 pq.put(next, priority)
                 graph.vertDict[next].previous = cur
+
+"""
+aStarList
+"""
+
+heuristic = normalManhattan
+
+def aStarList(graph, start, targets, target):
+    pq = PriorityQueue()
+    pq.put(start.id, 0)
+    costSoFar = {}
+    costSoFar[start.id] = 0
+
+    while not pq.empty():
+        cur = pq.get()
+
+        if cur in targets:
+            break
+
+        for next in graph.vertDict[cur].adjacent:
+            newCost = costSoFar[cur] + 1
+            if next not in costSoFar or newCost < costSoFar[next]:
+                costSoFar[next] = newCost
+                priority = newCost + heuristic(target,
+                        graph.vertDict[next], graph.vertDict[cur])
+                pq.put(next, priority)
+                graph.vertDict[next].previous = cur
+
+    return cur
 
 """
 BFS
