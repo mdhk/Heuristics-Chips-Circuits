@@ -44,3 +44,11 @@ GEDAAN
             list of node id of gates
     output:
         lijst van de manhattan distance tussen de node pairs van de netlist (op volgorde van de netlist)
+
+- NIEUWE FUNCTIE: numberOfPaths(netlist, gateList)
+    reken uit hoeveel paden elke gate heeft
+        input:
+            netlist
+            gateList (eigenlijk alleen nodig om het aantal gates te berekenen (len(gateList)))
+        output:
+            lijst met het aantal paden per gate

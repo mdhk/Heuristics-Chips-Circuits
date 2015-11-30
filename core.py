@@ -165,3 +165,14 @@ def netlistManhattan(g, netlist, gateList):
         b = g.vertDict[gateList[n[1]]]
         netlistManhattan .append(abs(a.x - b.x) + abs(a.y - b.y))
     return netlistManhattan
+
+# Return number of paths per gate.
+def numberOfPaths(netlist, gateList):
+    nGates = len(gateList) 
+    nOfPathsList = [0 for x in range(nGates)]
+    for n in netlist:
+        print n
+        nOfPathsList[n[0]] += 1
+        nOfPathsList[n[1]] += 1
+    return nOfPathsList
+

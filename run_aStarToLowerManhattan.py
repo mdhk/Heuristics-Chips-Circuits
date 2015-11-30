@@ -4,7 +4,7 @@ CHIPS AND CIRCUITS
 
 from core import *
 from data.config1 import width as WIDTH, height as HEIGHT, gates
-from data.netlist import netlist_2 as netlist
+from data.netlist import netlist_1 as netlist
 import algorithms
 
 DEPTH = 8
