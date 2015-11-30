@@ -135,6 +135,7 @@ def run_aStarManhattan_Many():
             draw.drawGrid(grid, screen, depth)
             elapsedTime = time.time() - startTime
             totalTime += elapsedTime
+    import IPython; IPython.embed()
 
     if V:
         print '\n\nTotal time: ' + str(totalTime) + ' seconds.'
@@ -165,8 +166,9 @@ def run_aStarManhattan_Many():
 if __name__ == "__main__":
     startTime = time.time()
     results = []
-    for i in range(5000):
+    for i in range(1):
         results.append(run_aStarManhattan_Many())
+    import IPython; IPython.embed()
     print '\n\nTotal time: ' + str(time.time() - startTime) + ' seconds.'
 
     results.sort()

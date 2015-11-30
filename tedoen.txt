@@ -1,0 +1,22 @@
+Losse functies of aanpassingen die (aan bv. core.py) toegevoegd zouden kunnen worden:
+(Schrijf hier ideeen bij die ook toegevoegd kunnen worden)
+
+TE DOEN
+
+- AANPASSING: kortste pad algorithms (vooral aStar, bfs is extra):
+    input:
+        Lijst van target nodes (ipv een enkele target node)
+    output: 
+        Het id nummer van de target node waarnaar het pad gevonden is (dus te achterhalen met tracepath)
+
+
+
+
+
+
+GEDAAN
+    NIEUWE FUNCTIE: findNeighbors: vind de neighbors van een node
+    input:
+        id nummer van een node
+    output: 
+        alle neighbors van die node, regardless of er wel of geen verbindingen zijn

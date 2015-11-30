@@ -98,6 +98,25 @@ def disconnectVertex(g, v):
         if (a < (g.SURF - g.WIDTH) and g.vertDict[i + g.WIDTH].adjacent.has_key(i)):
             del(g.vertDict[i + g.WIDTH].adjacent[i])
 
+def computeNeighbors(g, id):
+    # Compute the neighbors of a given vertex
+    current = g.vertDict[id]
+    neighbors = []
+    if current.z is not 0:
+        neighbors.append(id - g.SURF)
+    if current.z is not g.DEPTH:
+        neighbors.append(id + g.SURF)
+    if current.x is not 0:
+        neighbors.append(id + 1)
+    if current.x is not g.WIDTH: 
+        neighbors.append(id - 1)
+    if current.y is not g.HEIGHT:
+        neighbors.append(id + g.WIDTH)
+    if current.y is not 0:
+        neighbors.append(id - g.WIDTH)
+    return neighbors
+
+
 # Calculate shortest path from a given node v to starting node.
 def tracePath(g, v, path):
     if v.previous:
