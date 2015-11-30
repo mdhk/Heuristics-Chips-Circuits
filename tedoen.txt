@@ -2,6 +2,7 @@ Losse functies of aanpassingen die (aan bv. core.py) toegevoegd zouden kunnen wo
 (Schrijf hier ideeen bij die ook toegevoegd kunnen worden)
 
 TE DOEN
+            
 
 
 
@@ -31,3 +32,15 @@ GEDAAN
         
     output: 
         Het id nummer van een van de nodes uit 'targets' waarnaar het pad gevonden is (dus te achterhalen met tracepath)
+
+- NIEUWE FUNCTIE: netlistManhattan(graph, netlist, gateList)
+    vind de manhattan distance tussen de netlist vertex paren
+    input:
+        Graph:
+            x
+        netlist:
+            list of node pairs
+        gateList:
+            list of node id of gates
+    output:
+        lijst van de manhattan distance tussen de node pairs van de netlist (op volgorde van de netlist)

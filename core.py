@@ -158,3 +158,10 @@ def connectallVertex(g, id):
         if (not current.gate):
             current.addNeighbor(id)
 
+def netlistManhattan(g, netlist, gateList):
+    netlistManhattan = []
+    for n in netlist:
+        a = g.vertDict[gateList[n[0]]]
+        b = g.vertDict[gateList[n[1]]]
+        netlistManhattan .append(abs(a.x - b.x) + abs(a.y - b.y))
+    return netlistManhattan
