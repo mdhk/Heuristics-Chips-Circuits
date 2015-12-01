@@ -21,11 +21,22 @@ Steps:
 """
 
 from core import *
-from data.config1 import width as WIDTH, height as HEIGHT, gates
-from data.netlist import netlist_1 as netlist
-TOFIND = 30 # Loop until TOFIND paths are found.
+from data.netlist import *
 import algorithms
 import random
+
+# get user input
+user_input = user_input()
+
+# set config from user input
+if user_input["config"] == 1:
+    from data.config1 import width as WIDTH, height as HEIGHT, gates
+elif user_input["config"] == 2:
+    from data.config2 import width as WIDTH, height as HEIGHT, gates
+
+# set netlist and number of paths to find from user input
+netlist = netlists[user_input["netlist"] - 1]
+TOFIND = user_input["TOFIND"]
 
 DEPTH = 8
 SURF = WIDTH * HEIGHT
