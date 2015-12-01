@@ -172,6 +172,7 @@ def removePath(g, p):
             connectNonGateVertex(g, v.id)
             v.path = None
 
+# Get input from user
 def user_input():
     print "In order to compute a solution for a certain circuit board, first \
 enter some details about your desired configuration. Which print do you want \
@@ -233,3 +234,12 @@ implement? Enter a number from 4 to 6:"
 
     user_input = {"config": config, "netlist": netlist, "TOFIND": TOFIND}
     return user_input
+
+# Convert the netlist from gates (e.g. 0 to 25) to vertex id's
+def netlistConvert(WIDTH, netlist, gates):
+    newnetlist = []
+    for n in netlist:
+        first = gates[n[0]]
+        second = gates[n[1]]
+        newnetlist.append([first[0] + first[0] * WIDTH, second[0] + second[0] * WIDTH])
+    return newnetlist
