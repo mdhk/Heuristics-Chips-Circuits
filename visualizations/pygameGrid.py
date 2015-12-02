@@ -36,7 +36,7 @@ def initGrid(width,height):
  
 def drawGrid(grid, screen, depth):
 
-    randColor = (0, randint(0, 255), randint(0, 255))
+    randColor = (randint(0, 200), randint(0, 255), randint(0, 255))
 
     MARGIN = 5;
     WIDTH = 20;

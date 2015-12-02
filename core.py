@@ -79,6 +79,15 @@ def connectNonGateVertex(g, id):
         if not current.gate:
             current.addNeighbor(id)
 
+# Connects a given vertex v (with id 'id') to its neighbors, provided that
+# the neighbors do not have a path.
+def connectNonPathVertex(g, id):
+    neighbors = computeNeighbors(g, id)
+    for i in neighbors:
+        current = g.vertDict[i]
+        if not current.path:
+            current.addNeighbor(id)
+
 # Delete all connections to vertices in list v.
 def disconnectVertex(g, v):
     neighbors = []
