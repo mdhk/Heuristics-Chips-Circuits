@@ -59,13 +59,24 @@ def connectGraph(g):
         for n in neighbors:
             v.addNeighbor(n)
 
+# Connects a given vertex v (with id 'id') to its neighbors, provided that
+# the neighbors are not gates and are not taken by a path.
 def connectVertex(g, id):
-    # Connects a given vertex v (with id 'id') to its neighbors, provided that
-    # the neighbors are not gates and are not taken by a path.
-    v = g.vertDict[id]
-    for i in v.adjacent:
+    neighbors = computeNeighbors(g, id)
+    # v = g.vertDict[id]
+    # for i in v.adjacent:
+    for i in neighbors:
         current = g.vertDict[i]
         if (not current.path) and (not current.gate):
+            current.addNeighbor(id)
+
+# Connects a given vertex v (with id 'id') to its neighbors, provided that
+# the neighbors are not gates.
+def connectNonGateVertex(g, id):
+    neighbors = computeNeighbors(g, id)
+    for i in neighbors:
+        current = g.vertDict[i]
+        if not current.gate:
             current.addNeighbor(id)
 
 # Delete all connections to vertices in list v.
@@ -77,8 +88,8 @@ def disconnectVertex(g, v):
             if g.vertDict[n].adjacent.has_key(i):
                 del(g.vertDict[n].adjacent[i])
 
+# Compute the neighbors of a given vertex
 def computeNeighbors(g, id):
-    # Compute the neighbors of a given vertex
     current = g.vertDict[id]
     neighbors = []
     if current.z is not 0:
@@ -103,9 +114,9 @@ def tracePath(g, v, path):
         tracePath(g, g.vertDict[v.previous], path)
         return
 
+# Remove connections to nodes in the found path, and state what path a
+# given node participates in.
 def applyPath(g, start, target, p):
-    # Remove connections to nodes in the found path, and state what path a
-    # given node participates in.
     # Compute path.
     target = g.vertDict[target]
     path = []
@@ -128,15 +139,7 @@ def applyPath(g, start, target, p):
     return path
 
 
-def connectallVertex(g, id):
-    # Connects a given vertex v (with id 'id') to its neighbors, provided that
-    # the neighbors are not gates and are not taken by a path.
-    v = g.vertDict[id]
-    for i in v.adjacent:
-        current = g.vertDict[i]
-        if (not current.gate):
-            current.addNeighbor(id)
-
+# For the given netlist, return the manhattan distance between the gates. 
 def netlistManhattan(g, netlist, gateList):
     netlistManhattan = []
     for n in netlist:
@@ -155,3 +158,11 @@ def numberOfPaths(netlist, gateList):
         nOfPathsList[n[1]] += 1
     return nOfPathsList
 
+# Remove a given path with path id 'p' from the graph, and reconnect all
+# vertices in the path (to non-gates and non-path-occupied vertices).
+def removePath(g, p):
+    for v in g:
+        if v.path == p:
+            # Reconnect connections to this vertex from its non-gate neighbors. 
+            connectNonGateVertex(g, v.id)
+            v.path = None

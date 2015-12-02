@@ -10,6 +10,13 @@ TE DOEN
 
 
 GEDAAN
+- NIEUWE FUCNTIE: removePath(g, p)
+    verwijder een eerder gevonden pad.
+    input: g
+        x
+    output: p
+        id van het te verwijderen pad
+
 - NIEUWE FUNCTIE: findNeighbors(id)
     vind de neighbors van een node
     input:
