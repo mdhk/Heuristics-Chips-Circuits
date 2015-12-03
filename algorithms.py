@@ -158,12 +158,13 @@ BFS
 """
 from collections import deque
 
-def bfs(graph, start, target):
+def bfs(graph, start, targets):
+    # NOTE: targets (formerly target) used to be a vertex instance, but is now
+    # a list of id's e.g. [93] or [341, 542, 4]
     # First In First Out queue
     queue = deque([start.id])
     traversed = []
-    found = False
-    while (not found and len(queue)):
+    while len(queue):
         current = queue.popleft()
         traversed.append(current)
         for v in graph.vertDict[current].adjacent:
@@ -171,9 +172,9 @@ def bfs(graph, start, target):
                 queue.append(v)
                 if graph.vertDict[v].previous is None:
                     graph.vertDict[v].previous = current
-                if (v == target.id):
+                if (v in targets):
                     start.previous = None
-                    found = True
+                    return v
 
 """
 DIJKSTRA
