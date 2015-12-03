@@ -22,21 +22,26 @@ Steps:
 
 from core import *
 from data.config1 import width as WIDTH, height as HEIGHT, gates
-from data.netlist import netlist_2 as netlist
-TOFIND = 40 # Loop until TOFIND paths are found.
+from data.netlist import netlist_1 as netlist
+TOFIND = 30 # Loop until TOFIND paths are found.
 import algorithms
+import random
 
 DEPTH = 8
 SURF = WIDTH * HEIGHT
 # Show visualization (V = 1) or not (V = 0)
 V = 1
+# Selective disconnect gateNeighbors
+# If 1, only the number of neighbors equal to the number of paths still to be
+# connected to/from a given gate are guaranteed to be unobstructed. 
+S = 1
 # Initialize variables that never change.
 gateList = []
 for c in gates:
     gateList.append(c[1] * WIDTH + c[0])
 
 """
-INITIALIZE GRAPH AND VISUALIZATION
+INITIALIZE GRAPH
 """
 
 def run():
@@ -56,11 +61,24 @@ def run():
     disconnectVertex(g, gateList)
     for i in gateList:
         g.vertDict[i].gate = True
+    # import IPython; IPython.embed()
 
-    # Disconnect neighbors of gates.
-    for i in gateList:
-        neighbors = computeNeighbors(g, i)
-        disconnectVertex(g, neighbors)
+    if S:
+        # Compute number of paths per gate.
+        pGate = numberOfPaths(netlist, gateList)
+        selectedNeighbors = []
+        for i in range(len(pGate)):
+            cur = g.vertDict[gateList[i]]
+            if len(cur.adjacent) < pGate[i]:
+                selectedNeighbors.append([])
+                continue
+            selectedNeighbors.append(random.sample(cur.adjacent, pGate[i]))
+            disconnectVertex(g, selectedNeighbors[i])
+    else:
+        # Diconnect all neighbors of gates.
+        for i in gateList:
+            neighbors = computeNeighbors(g, i)
+            disconnectVertex(g, neighbors)
 
     # Mark different paths with p
     p = 0
@@ -108,20 +126,24 @@ def run():
         path.append(target.id)
         tracePath(g, target, path)
 
-
         # Disconnect connections to the vertices in path
         disconnectVertex(g, path)
-
-        # Disconnect connections to the neighbors of start and target
-        # NOTE: should be improved to e.g. not happen when the given gate does
-        # not need any more paths.
-        disconnectVertex(g, computeNeighbors(g, start.id))
-        disconnectVertex(g, computeNeighbors(g, target.id))
 
         # Assign all vertices in the path (not the gates) the path id 
         for i in path[1:-1]:
             g.vertDict[i].path = p
         p += 1
+
+        # Disconnect connections to the neighbors of start and target
+        # NOTE: should be improved to e.g. not happen when the given gate does
+        # not need any more paths. And should take into account neighboring
+        # gates.
+        if S:
+            disconnectVertex(g, selectedNeighbors[gateList.index(start.id)])
+            disconnectVertex(g, selectedNeighbors[gateList.index(target.id)])
+        else:
+            disconnectVertex(g, computeNeighbors(g, start.id))
+            disconnectVertex(g, computeNeighbors(g, target.id))
 
         g.paths[p] = path
 
@@ -154,6 +176,8 @@ if __name__ == "__main__":
         if g.found is TOFIND:
             break
 
+    # import IPython; IPython.embed()
+
     g.totalTime = time.time() - startTime
     print '\nTotal time: ' + str(g.totalTime) + ' seconds.\n'
     for p in g.paths:
@@ -174,6 +198,7 @@ if __name__ == "__main__":
         # omdat de kleur per call elke keer 1x random wordt beslist. 
         draw.drawGrid(grid, screen, depth)
 
+    # import IPython; IPython.embed()
     while True:
         event = pygame.event.wait()
         if event.type == pygame.QUIT:
@@ -200,4 +225,3 @@ if __name__ == "__main__":
 #     import pylab
 #     pylab.savefig('pathsfound.png')
 
-    # import IPython; IPython.embed()

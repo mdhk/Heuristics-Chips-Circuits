@@ -63,8 +63,6 @@ def connectGraph(g):
 # the neighbors are not gates and are not taken by a path.
 def connectVertex(g, id):
     neighbors = computeNeighbors(g, id)
-    # v = g.vertDict[id]
-    # for i in v.adjacent:
     for i in neighbors:
         current = g.vertDict[i]
         if (not current.path) and (not current.gate):
@@ -147,7 +145,6 @@ def applyPath(g, start, target, p):
 
     return path
 
-
 # For the given netlist, return the manhattan distance between the gates. 
 def netlistManhattan(g, netlist, gateList):
     netlistManhattan = []
@@ -162,7 +159,6 @@ def numberOfPaths(netlist, gateList):
     nGates = len(gateList) 
     nOfPathsList = [0 for x in range(nGates)]
     for n in netlist:
-        print n
         nOfPathsList[n[0]] += 1
         nOfPathsList[n[1]] += 1
     return nOfPathsList
