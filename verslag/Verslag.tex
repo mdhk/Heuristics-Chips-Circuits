@@ -47,7 +47,8 @@
 % Set up the header and footer
 \pagestyle{fancy}
 \lhead{\hmwkTitle\ (\hmwkClassTime)} % Top center head
-\rhead{\firstxmark} % Top right header
+\renewcommand{\sectionmark}[1]{\markright{#1}}
+\rhead{\rightmark} % Top right header
 \lfoot{\lastxmark} % Bottom left footer
 \cfoot{} % Bottom center footer
 \rfoot{\thepage\ /\ \protect\pageref{LastPage}} % Bottom right footer
