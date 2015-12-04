@@ -173,10 +173,10 @@ def removePath(g, p):
             v.path = None
 
 # Convert the netlist from gates (e.g. 0 to 25) to vertex id's
-def netlistConvert(g, netlist, gates):
+def netlistConvert(WIDTH, netlist, gates):
     newnetlist = []
     for n in netlist:
         first = gates[n[0]]
         second = gates[n[1]]
-        newnetlist.append([first[0] + first[0] * g.WIDTH, second[0] + second[0] * g.WIDTH])
+        newnetlist.append([first[0] + first[0] * WIDTH, second[0] + second[0] * WIDTH])
     return newnetlist
