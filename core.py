@@ -13,6 +13,7 @@ disconnecting vertices (e.g. gates and paths)
 
 import pygame, sys, time, random
 import visualizations.pygameGrid as draw
+from algorithms import aStar as algorithm
 
 class Graph:
     def __init__(self, width, height, depth, surf):
@@ -132,10 +133,44 @@ def applyPath(g, start, target, p):
 
 def connectallVertex(g, id):
     # Connects a given vertex v (with id 'id') to its neighbors, provided that
-    # the neighbors are not gates and are not taken by a path.
+    # the neighbors are not gates.
     v = g.vertDict[id]
     for i in v.adjacent:
         current = g.vertDict[i]
         if (not current.gate):
             current.addNeighbor(id)
 
+def verticesWithShortestPath(g, pathlen, pathsvert, vertices_shortest_path):
+    # amount paths on every vertex
+    totalpathsvert = []
+    for i in range(len(pathsvert)):
+        totalpathsvert.append(len(pathsvert[i]))
+
+    # x returnt de index van de vertex waar de meeste paden over lopen
+    x = totalpathsvert.index(max(totalpathsvert))
+    # y is een lijst met de meeste paden die over vertex x lopen
+    y = pathsvert[x]
+    # z slaat de lengtes op van de paden die op de bepaalde vertex lopen
+    z = []
+    for i in y:
+        z.append(pathlen[i])
+    # v returnt de lengte van de kortste pad
+    v = min(z)
+    # slaat de pad op die het kortst is 
+    index_shortest_path = z.index(v)
+    verticesWithShortestPath.shortest_path = y[index_shortest_path]
+
+    for vertex in range(len(pathsvert)):
+        for path in range(len(pathsvert[vertex])):
+            if (verticesWithShortestPath.shortest_path == pathsvert[vertex][path]):
+                vertices_shortest_path.append(vertex)
+
+    # print '\nThe most paths are going over vertex: ' + str(x)
+    # print '\nPaths over ' + str(x) + ': ' + str(y)
+    # print '\nLengths paths over ' + str(x) + ': ' + str(z)
+    # print '\nMin length: ' + str(v) + ' from path ' + str(verticesWithShortestPath.shortest_path)
+    # print '\nVertices shortest path: ' + str(vertices_shortest_path)
+    # print '\nPaths on every vertex: ' + str(pathsvert)
+    # print '\nTotal paths on every vertex: ' + str(totalpathsvert)
+
+    return vertices_shortest_path
