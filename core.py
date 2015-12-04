@@ -38,6 +38,7 @@ class Vertex:
         self.visited = False
         self.previous = None
         self.path = None
+        self.occupied = False
         self.gate = False
         self.x = id % SURF % WIDTH 
         self.y = id % SURF / WIDTH 
@@ -59,13 +60,13 @@ def connectGraph(g):
         for n in neighbors:
             v.addNeighbor(n)
 
-# Connects a given vertex v (with id 'id') to its neighbors, provided that
-# the neighbors are not gates and are not taken by a path.
+# Add connections to id from its neighbors, given that the neighbors are not
+# gates and do not have paths
 def connectVertex(g, id):
     neighbors = computeNeighbors(g, id)
     for i in neighbors:
         current = g.vertDict[i]
-        if (not current.path) and (not current.gate):
+        if (not current.path) and (not current.gate) and (not current.occupied):
             current.addNeighbor(id)
 
 # Connects a given vertex v (with id 'id') to its neighbors, provided that
@@ -83,7 +84,7 @@ def connectNonPathVertex(g, id):
     neighbors = computeNeighbors(g, id)
     for i in neighbors:
         current = g.vertDict[i]
-        if not current.path:
+        if not current.path and not current.occupied:
             current.addNeighbor(id)
 
 # Delete all connections to vertices in list v.
@@ -121,36 +122,37 @@ def tracePath(g, v, path):
         tracePath(g, g.vertDict[v.previous], path)
         return
 
-# Remove connections to nodes in the found path, and state what path a
-# given node participates in.
-def applyPath(g, start, target, p):
-    # Compute path.
-    target = g.vertDict[target]
-    path = []
-    path.append(target.id)
+# # Remove connections to nodes in the found path, and state what path a
+# # given node participates in.
+# def applyPath(g, start, target, p):
+#     # Compute path.
+#     target = g.vertDict[target]
+#     path = []
+#     path.append(target.id)
 
-    tracePath(g, target, path)
+#     tracePath(g, target, path)
 
-    # Delete connections to nodes in the path.
-    disconnectVertex(g, path)
+#     # Delete connections to nodes in the path.
+#     disconnectVertex(g, path)
 
-    for i in path:
-        g.vertDict[i].path = p
+#     for i in path:
+#         g.vertDict[i].path = p
 
-    # Prepare graph for next search.
-    for v in g:
-        v.distance = sys.maxint
-        v.visited = False
-        v.previous = None
+#     # Prepare graph for next search.
+#     for v in g:
+#         v.distance = sys.maxint
+#         v.visited = False
+#         v.previous = None
 
-    return path
+#     return path
 
 # For the given netlist, return the manhattan distance between the gates. 
-def netlistManhattan(g, netlist, gateList):
+# ONLY WORKS IF NETLIST IS IN CORRECT FORMAT (vertex.id)
+def netlistManhattan(g, netlist):
     netlistManhattan = []
     for n in netlist:
-        a = g.vertDict[gateList[n[0]]]
-        b = g.vertDict[gateList[n[1]]]
+        a = g.vertDict[n[0]]
+        b = g.vertDict[n[1]]
         netlistManhattan .append(abs(a.x - b.x) + abs(a.y - b.y))
     return netlistManhattan
 
@@ -178,5 +180,5 @@ def netlistConvert(WIDTH, netlist, gates):
     for n in netlist:
         first = gates[n[0]]
         second = gates[n[1]]
-        newnetlist.append([first[0] + first[0] * WIDTH, second[0] + second[0] * WIDTH])
+        newnetlist.append([first[0] + first[1] * WIDTH, second[0] + second[1] * WIDTH])
     return newnetlist
