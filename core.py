@@ -13,6 +13,7 @@ disconnecting vertices (e.g. gates and paths)
 
 import pygame, sys, time, random
 import visualizations.pygameGrid as draw
+from algorithms import aStar as algorithm
 
 class Graph:
     def __init__(self, width, height, depth, surf):
@@ -146,6 +147,42 @@ def tracePath(g, v, path):
 
 #     return path
 
+
+def verticesWithShortestPath(g, pathlen, pathsvert, vertices_shortest_path):
+    # amount paths on every vertex
+    totalpathsvert = []
+    for i in range(len(pathsvert)):
+        totalpathsvert.append(len(pathsvert[i]))
+
+    # x returnt de index van de vertex waar de meeste paden over lopen
+    x = totalpathsvert.index(max(totalpathsvert))
+    # y is een lijst met de meeste paden die over vertex x lopen
+    y = pathsvert[x]
+    # z slaat de lengtes op van de paden die op de bepaalde vertex lopen
+    z = []
+    for i in y:
+        z.append(pathlen[i])
+    # v returnt de lengte van de kortste pad
+    v = min(z)
+    # slaat de pad op die het kortst is 
+    index_shortest_path = z.index(v)
+    verticesWithShortestPath.shortest_path = y[index_shortest_path]
+
+    for vertex in range(len(pathsvert)):
+        for path in range(len(pathsvert[vertex])):
+            if (verticesWithShortestPath.shortest_path == pathsvert[vertex][path]):
+                vertices_shortest_path.append(vertex)
+
+    # print '\nThe most paths are going over vertex: ' + str(x)
+    # print '\nPaths over ' + str(x) + ': ' + str(y)
+    # print '\nLengths paths over ' + str(x) + ': ' + str(z)
+    # print '\nMin length: ' + str(v) + ' from path ' + str(verticesWithShortestPath.shortest_path)
+    # print '\nVertices shortest path: ' + str(vertices_shortest_path)
+    # print '\nPaths on every vertex: ' + str(pathsvert)
+    # print '\nTotal paths on every vertex: ' + str(totalpathsvert)
+
+    return vertices_shortest_path
+
 # For the given netlist, return the manhattan distance between the gates. 
 # ONLY WORKS IF NETLIST IS IN CORRECT FORMAT (vertex.id)
 def netlistManhattan(g, netlist):
@@ -174,6 +211,70 @@ def removePath(g, p):
             connectNonGateVertex(g, v.id)
             v.path = None
 
+
+# Get input from user
+def user_input():
+    print "In order to compute a solution for a certain circuit board, first \
+enter some details about your desired configuration. Which print do you want \
+to use? \nEnter 1 for print 1 (18 x 13) or 2 for print 2 (18 x 17):"
+    config = 0
+    netlist = 0
+    while config != 1 and config != 2:
+        try:
+            config = int(raw_input())
+        except ValueError:
+            print "Please enter a number (1 or 2):"
+            continue
+        if config != 1 and config != 2:
+            print "Please enter 1 or 2:"
+            continue
+        else:
+            continue
+
+    if config == 1:
+        print "You have chosen print 1. Which netlist would you like to \
+implement? Enter a number from 1 to 3:"
+        while netlist != 1 and netlist != 2 and netlist != 3:
+            try:
+                netlist = int(raw_input())
+            except ValueError:
+                print "Please enter a number (1, 2 or 3):"
+                continue
+            if netlist != 1 and netlist != 2 and netlist != 3:
+                print "Please enter 1, 2 or 3:"
+                continue
+            else:
+                continue
+    elif config == 2:
+        print "You have chosen print 2. Which netlist would you like to \
+implement? Enter a number from 4 to 6:"
+        while netlist != 4 and netlist != 5 and netlist != 6:
+            try:
+                netlist = int(raw_input())
+            except ValueError:
+                print "Please enter a number (4, 5 or 6):"
+                continue
+            if netlist != 4 and netlist != 5 and netlist != 6:
+                print "Please enter 4, 5 or 6:"
+                continue
+            else:
+                continue
+
+    # Loop until TOFIND paths are found.
+    if netlist == 1:
+        TOFIND = 30
+    elif netlist == 2:
+        TOFIND = 40
+    elif netlist == 3 or netlist == 4:
+        TOFIND = 50
+    elif netlist == 5:
+        TOFIND = 60
+    elif netlist == 6:
+        TOFIND = 70
+
+    user_input = {"config": config, "netlist": netlist, "TOFIND": TOFIND}
+    return user_input
+
 # Convert the netlist from gates (e.g. 0 to 25) to vertex id's
 def netlistConvert(WIDTH, netlist, gates):
     newnetlist = []
@@ -182,3 +283,4 @@ def netlistConvert(WIDTH, netlist, gates):
         second = gates[n[1]]
         newnetlist.append([first[0] + first[1] * WIDTH, second[0] + second[1] * WIDTH])
     return newnetlist
+

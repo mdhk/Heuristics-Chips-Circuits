@@ -33,7 +33,7 @@ class PriorityQueue:
 def normalManhattan(target, next, current):
     # Input is in the form of a vertex object.
     # Output is delta x, delta y and delta z
-    return abs(target.x - next.x) + abs(target.y - next.y) + next.z
+    return abs(target.x - next.x) + abs(target.y - next.y) + abs(target.z - next.z)
 
 def weirdManhattan(target, next, current):
     initial = abs(target.x - next.x) + abs(target.y - next.y) + abs(target.z - next.z)
@@ -54,44 +54,6 @@ def biasManhattan(target, next, current):
     return heur
 
 
-# MAG WEG??
-# """
-# weird_aStar
-# """
-
-# def weird_aStar(graph, start, target, p):
-#     from core import *
-#     temp = start
-#     current = temp
-#     while (current.adjacent.has_key(current.id + SURF)):
-#         next = graph.vertDict[current.id + SURF]
-#         next.previous = current.id
-#         current = next
-#         temp.id = current.id
-
-#     applyPath(graph, current.id, start.id, p)
-#     print current.id
-#     start = current
-
-#     pq = PriorityQueue()
-#     pq.put(start.id, 0)
-#     costSoFar = {}
-#     costSoFar[start.id] = 0
-
-#     while not pq.empty():
-#         cur = pq.get()
-
-#         if cur == target.id:
-#             break
-
-#         for next in graph.vertDict[cur].adjacent:
-#             newCost = costSoFar[cur] + 1
-#             if next not in costSoFar or newCost < costSoFar[next]:
-#                 costSoFar[next] = newCost
-#                 priority = newCost + heuristic(target,
-#                         graph.vertDict[next], graph.vertDict[cur])
-#                 pq.put(next, priority)
-#                 graph.vertDict[next].previous = cur
 
 """
 aStar
