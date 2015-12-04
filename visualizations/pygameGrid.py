@@ -36,7 +36,7 @@ def initGrid(width,height):
  
 def drawGrid(grid, screen, depth):
 
-    randColor = (0, randint(0, 255), randint(0, 255))
+    randColor = (randint(0, 254), randint(0, 255), randint(0, 255))
 
     MARGIN = 5;
     WIDTH = 20;
@@ -54,7 +54,12 @@ def drawGrid(grid, screen, depth):
     for x in range(len(grid[0])):
         for y in range(len(grid)):
             if grid[y][x][depth] != 0:
-                pygame.draw.rect(screen, grid[y][x][depth],
+                if grid[y][x][depth] == (255, 0, 0):
+                    pygame.draw.circle(screen, grid[y][x][depth],[(MARGIN +
+                        WIDTH) * x + 3 * MARGIN, (MARGIN + HEIGHT) * y + 3 * MARGIN],
+                        10, 0)
+                else:
+                    pygame.draw.rect(screen, grid[y][x][depth],
                         [(MARGIN + WIDTH) * x + MARGIN,
                             (MARGIN + HEIGHT) * y + MARGIN,
                             WIDTH,HEIGHT])

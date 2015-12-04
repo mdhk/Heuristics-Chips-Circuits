@@ -1,0 +1,61 @@
+Losse functies of aanpassingen die (aan bv. core.py) toegevoegd zouden kunnen worden:
+(Schrijf hier ideeen bij die ook toegevoegd kunnen worden)
+
+TE DOEN
+            
+
+
+
+
+
+
+GEDAAN
+- NIEUWE FUCNTIE: removePath(g, p)
+    verwijder een eerder gevonden pad.
+    input: g
+        x
+    output: p
+        id van het te verwijderen pad
+
+- NIEUWE FUNCTIE: findNeighbors(id)
+    vind de neighbors van een node
+    input:
+        id nummer van een node
+    output: 
+        alle neighbors van die node, regardless of er wel of geen verbindingen zijn
+
+- NIEUWE FUNCTIE: aStarList(graph, start, targets, target)
+    in algorithms.py
+    kortste pad algorithm (aStar) dat het kortste pad naar een node in een lijst zoekt:
+    input:
+        Graph:
+            x
+        Start:
+            Vertex instantie, begin van pad
+        Targets: 
+            Lijst van target nodes (ipv een enkele target node)
+        Target: 
+            Vertex instantie, waarmee de heuristiek (Manhattan) wordt berekend (bijv een van de nodes in 'Targets')
+        
+    output: 
+        Het id nummer van een van de nodes uit 'targets' waarnaar het pad gevonden is (dus te achterhalen met tracepath)
+
+- NIEUWE FUNCTIE: netlistManhattan(graph, netlist, gateList)
+    vind de manhattan distance tussen de netlist vertex paren
+    input:
+        Graph:
+            x
+        netlist:
+            list of node pairs
+        gateList:
+            list of node id of gates
+    output:
+        lijst van de manhattan distance tussen de node pairs van de netlist (op volgorde van de netlist)
+
+- NIEUWE FUNCTIE: numberOfPaths(netlist, gateList)
+    reken uit hoeveel paden elke gate heeft
+        input:
+            netlist
+            gateList (eigenlijk alleen nodig om het aantal gates te berekenen (len(gateList)))
+        output:
+            lijst met het aantal paden per gate

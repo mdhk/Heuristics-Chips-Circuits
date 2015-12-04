@@ -121,11 +121,9 @@ def run_aStarManhattan_Many():
                 print '          PATH NOT FOUND '
             None
 
-
         # Prepare graph for next search.
         for v in g:
             v.previous = None
-
 
         if V:
             # Fill grid for subsequent visualization.
@@ -135,6 +133,8 @@ def run_aStarManhattan_Many():
             draw.drawGrid(grid, screen, depth)
             elapsedTime = time.time() - startTime
             totalTime += elapsedTime
+    
+    # import IPython; IPython.embed()
 
     if V:
         print '\n\nTotal time: ' + str(totalTime) + ' seconds.'
@@ -160,7 +160,6 @@ def run_aStarManhattan_Many():
                 print 'Showing layer: ' + str(depth)
 
     return f
-
 
 if __name__ == "__main__":
     startTime = time.time()

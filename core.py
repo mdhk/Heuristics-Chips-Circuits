@@ -50,54 +50,70 @@ class Vertex:
 def connectGraph(g):
     # Connects all vertices of the graph in a grid-like manner.
     n = g.HEIGHT * g.WIDTH * g.DEPTH
+    # Add vertices
     for i in range(n):
         g.addVertex(i, g.WIDTH, g.SURF)
 
-    # Create graph
-    for i in range(n):
-        a = i % g.SURF
-        current = g.vertDict[i]
+    # Connect graph
+    for v in g:
+        neighbors = computeNeighbors(g, v.id)
+        for n in neighbors:
+            v.addNeighbor(n)
 
-        # In / Out connections
-        if (i >= g.SURF):
-            current.addNeighbor(i - g.SURF)
-        if (i < (g.SURF * g.DEPTH - g.SURF)):
-            current.addNeighbor(i + g.SURF)
-        # Left / Right / Up / Down
-        if (a % g.WIDTH):
-            current.addNeighbor(i - 1)
-        if (a % g.WIDTH != (g.WIDTH - 1)):
-            current.addNeighbor(i + 1)
-        if (a > g.WIDTH):
-            current.addNeighbor(i - g.WIDTH)
-        if (a < (g.SURF - g.WIDTH)):
-            current.addNeighbor(i + g.WIDTH)
-
+# Connects a given vertex v (with id 'id') to its neighbors, provided that
+# the neighbors are not gates and are not taken by a path.
 def connectVertex(g, id):
-    # Connects a given vertex v (with id 'id') to its neighbors, provided that
-    # the neighbors are not gates and are not taken by a path.
-    v = g.vertDict[id]
-    for i in v.adjacent:
+    neighbors = computeNeighbors(g, id)
+    for i in neighbors:
         current = g.vertDict[i]
         if (not current.path) and (not current.gate):
             current.addNeighbor(id)
 
+# Connects a given vertex v (with id 'id') to its neighbors, provided that
+# the neighbors are not gates.
+def connectNonGateVertex(g, id):
+    neighbors = computeNeighbors(g, id)
+    for i in neighbors:
+        current = g.vertDict[i]
+        if not current.gate:
+            current.addNeighbor(id)
+
+# Connects a given vertex v (with id 'id') to its neighbors, provided that
+# the neighbors do not have a path.
+def connectNonPathVertex(g, id):
+    neighbors = computeNeighbors(g, id)
+    for i in neighbors:
+        current = g.vertDict[i]
+        if not current.path:
+            current.addNeighbor(id)
+
 # Delete all connections to vertices in list v.
 def disconnectVertex(g, v):
+    neighbors = []
     for i in v:
-        a = i % g.SURF
-        if (i >= g.SURF and g.vertDict[i - g.SURF].adjacent.has_key(i)):
-            del(g.vertDict[i - g.SURF].adjacent[i])
-        if (i < (g.SURF * g.DEPTH - g.SURF) and g.vertDict[i + g.SURF].adjacent.has_key(i)):
-            del(g.vertDict[i + g.SURF].adjacent[i])
-        if (a % g.WIDTH and g.vertDict[i - 1].adjacent.has_key(i)):
-            del(g.vertDict[i - 1].adjacent[i])
-        if (a % g.WIDTH != (g.WIDTH - 1) and g.vertDict[i + 1].adjacent.has_key(i)):
-            del(g.vertDict[i + 1].adjacent[i])
-        if (a > g.WIDTH and g.vertDict[i - g.WIDTH].adjacent.has_key(i)):
-            del(g.vertDict[i - g.WIDTH].adjacent[i])
-        if (a < (g.SURF - g.WIDTH) and g.vertDict[i + g.WIDTH].adjacent.has_key(i)):
-            del(g.vertDict[i + g.WIDTH].adjacent[i])
+        neighbors = computeNeighbors(g, i)
+        for n in neighbors:
+            if g.vertDict[n].adjacent.has_key(i):
+                del(g.vertDict[n].adjacent[i])
+
+# Compute the neighbors of a given vertex
+def computeNeighbors(g, id):
+    current = g.vertDict[id]
+    neighbors = []
+    if current.z is not 0:
+        neighbors.append(id - g.SURF)
+    if current.z is not (g.DEPTH - 1):
+        neighbors.append(id + g.SURF)
+    if current.x is not (g.WIDTH - 1):
+        neighbors.append(id + 1)
+    if current.x is not 0: 
+        neighbors.append(id - 1)
+    if current.y is not (g.HEIGHT - 1):
+        neighbors.append(id + g.WIDTH)
+    if current.y is not 0:
+        neighbors.append(id - g.WIDTH)
+    return neighbors
+
 
 # Calculate shortest path from a given node v to starting node.
 def tracePath(g, v, path):
@@ -106,9 +122,9 @@ def tracePath(g, v, path):
         tracePath(g, g.vertDict[v.previous], path)
         return
 
+# Remove connections to nodes in the found path, and state what path a
+# given node participates in.
 def applyPath(g, start, target, p):
-    # Remove connections to nodes in the found path, and state what path a
-    # given node participates in.
     # Compute path.
     target = g.vertDict[target]
     path = []
@@ -130,15 +146,6 @@ def applyPath(g, start, target, p):
 
     return path
 
-
-def connectallVertex(g, id):
-    # Connects a given vertex v (with id 'id') to its neighbors, provided that
-    # the neighbors are not gates.
-    v = g.vertDict[id]
-    for i in v.adjacent:
-        current = g.vertDict[i]
-        if (not current.gate):
-            current.addNeighbor(id)
 
 def verticesWithShortestPath(g, pathlen, pathsvert, vertices_shortest_path):
     # amount paths on every vertex
@@ -174,3 +181,104 @@ def verticesWithShortestPath(g, pathlen, pathsvert, vertices_shortest_path):
     # print '\nTotal paths on every vertex: ' + str(totalpathsvert)
 
     return vertices_shortest_path
+
+# For the given netlist, return the manhattan distance between the gates. 
+def netlistManhattan(g, netlist, gateList):
+    netlistManhattan = []
+    for n in netlist:
+        a = g.vertDict[gateList[n[0]]]
+        b = g.vertDict[gateList[n[1]]]
+        netlistManhattan .append(abs(a.x - b.x) + abs(a.y - b.y))
+    return netlistManhattan
+
+# Return number of paths per gate.
+def numberOfPaths(netlist, gateList):
+    nGates = len(gateList) 
+    nOfPathsList = [0 for x in range(nGates)]
+    for n in netlist:
+        nOfPathsList[n[0]] += 1
+        nOfPathsList[n[1]] += 1
+    return nOfPathsList
+
+# Remove a given path with path id 'p' from the graph, and reconnect all
+# vertices in the path (to non-gates and non-path-occupied vertices).
+def removePath(g, p):
+    for v in g:
+        if v.path == p:
+            # Reconnect connections to this vertex from its non-gate neighbors. 
+            connectNonGateVertex(g, v.id)
+            v.path = None
+
+
+# Get input from user
+def user_input():
+    print "In order to compute a solution for a certain circuit board, first \
+enter some details about your desired configuration. Which print do you want \
+to use? \nEnter 1 for print 1 (18 x 13) or 2 for print 2 (18 x 17):"
+    config = 0
+    netlist = 0
+    while config != 1 and config != 2:
+        try:
+            config = int(raw_input())
+        except ValueError:
+            print "Please enter a number (1 or 2):"
+            continue
+        if config != 1 and config != 2:
+            print "Please enter 1 or 2:"
+            continue
+        else:
+            continue
+
+    if config == 1:
+        print "You have chosen print 1. Which netlist would you like to \
+implement? Enter a number from 1 to 3:"
+        while netlist != 1 and netlist != 2 and netlist != 3:
+            try:
+                netlist = int(raw_input())
+            except ValueError:
+                print "Please enter a number (1, 2 or 3):"
+                continue
+            if netlist != 1 and netlist != 2 and netlist != 3:
+                print "Please enter 1, 2 or 3:"
+                continue
+            else:
+                continue
+    elif config == 2:
+        print "You have chosen print 2. Which netlist would you like to \
+implement? Enter a number from 4 to 6:"
+        while netlist != 4 and netlist != 5 and netlist != 6:
+            try:
+                netlist = int(raw_input())
+            except ValueError:
+                print "Please enter a number (4, 5 or 6):"
+                continue
+            if netlist != 4 and netlist != 5 and netlist != 6:
+                print "Please enter 4, 5 or 6:"
+                continue
+            else:
+                continue
+
+    # Loop until TOFIND paths are found.
+    if netlist == 1:
+        TOFIND = 30
+    elif netlist == 2:
+        TOFIND = 40
+    elif netlist == 3 or netlist == 4:
+        TOFIND = 50
+    elif netlist == 5:
+        TOFIND = 60
+    elif netlist == 6:
+        TOFIND = 70
+
+    user_input = {"config": config, "netlist": netlist, "TOFIND": TOFIND}
+    return user_input
+
+# Convert the netlist from gates (e.g. 0 to 25) to vertex id's
+def netlistConvert(WIDTH, netlist, gates):
+    newnetlist = []
+    for n in netlist:
+        first = gates[n[0]]
+        second = gates[n[1]]
+        newnetlist.append([first[0] + first[0] * WIDTH, second[0] + second[0] * WIDTH])
+    return newnetlist
+

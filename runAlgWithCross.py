@@ -6,6 +6,7 @@ from core import *
 from data.config1 import width as WIDTH, height as HEIGHT, gates
 from data.netlist import netlist_1 as netlist
 
+
 DEPTH = 8
 SURF = WIDTH * HEIGHT
 
@@ -54,6 +55,7 @@ for i in gates:
 depth = 0 
 
 
+
 def solve(g,netlist, vertices_shortest_path):
     # Count found paths
     f = 0
@@ -68,7 +70,7 @@ def solve(g,netlist, vertices_shortest_path):
 
         # Allow connections to target gate (but only from non-gates and from
         # vertices without a pre-existing path.
-        connectallVertex(g, target.id)
+        connectNonGateVertex(g, target.id)
 
         message = 'Find path between ' + str(n[0] + 1) + ' and ' + str(n[1] + 1)
         print(message.rjust(27)),
