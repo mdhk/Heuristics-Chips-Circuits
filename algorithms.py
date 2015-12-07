@@ -124,7 +124,7 @@ def bfs(graph, start, targets):
     # NOTE: targets (formerly target) used to be a vertex instance, but is now
     # a list of id's e.g. [93] or [341, 542, 4]
     # First In First Out queue
-    queue = deque([start.id])
+    queue = deque([start])
     traversed = []
     while len(queue):
         current = queue.popleft()
@@ -135,7 +135,6 @@ def bfs(graph, start, targets):
                 if graph.vertDict[v].previous is None:
                     graph.vertDict[v].previous = current
                 if (v in targets):
-                    start.previous = None
                     return v
 
 """
