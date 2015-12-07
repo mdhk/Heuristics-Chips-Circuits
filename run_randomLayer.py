@@ -120,9 +120,9 @@ def run():
             newnetlist[i][1] = foundSecond
 
             for vp in pathFirst:
-                g.vertDict[vp].path = i
+                g.vertDict[vp].path = i + 1
             for vp in pathSecond:
-                g.vertDict[vp].path = i
+                g.vertDict[vp].path = i + 1
 
     # Find paths between the (updated) netlist vertex pairs.
     for n in newnetlist:
@@ -181,11 +181,11 @@ if __name__ == "__main__":
     while True:
         g = run()
         iterations += 1
+        found.append(g.found)
         if g.found > m:
-            found.append(g.found)
             print 'Current max: ' + str(g.found) + 'paths '
             m = g.found
-        if g.found is TOFIND:
+        if m is TOFIND:
             break
 
     g.totalTime = time.time() - startTime
@@ -197,7 +197,7 @@ if __name__ == "__main__":
     for i in range(n):
         cur = []
         for v in g:
-            if v.path is i:
+            if v.path is i + 1:
                 cur.append(v.id)
         allpaths[i] = cur
     for m in allpaths:
@@ -205,13 +205,13 @@ if __name__ == "__main__":
 
     import IPython; IPython.embed()
 
-    draw.allVisualization(g, gates, TOFIND)
-
-    results.sort()
+    found.sort()
     from itertools import groupby
-    resultsSorted = [len(list(group)) for key, group in groupby(results)]
+    foundSorted = [len(list(group)) for key, group in groupby(found)]
     import matplotlib.pyplot as plt
-    plt.hist(results)
+    plt.hist(found)
     import pylab
     pylab.savefig('run_randomLayer_results_netlist2.png')
+
+    draw.allVisualization(g, gates, TOFIND)
 
