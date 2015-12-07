@@ -162,7 +162,7 @@ def verticesWithShortestPath(g, pathlen, pathsvert, vertices_shortest_path):
     for i in y:
         z.append(pathlen[i])
     # v returnt de lengte van de kortste pad
-    v = min(z)
+    v = max(z)
     # slaat de pad op die het kortst is 
     index_shortest_path = z.index(v)
     verticesWithShortestPath.shortest_path = y[index_shortest_path]
@@ -282,3 +282,32 @@ def netlistConvert(WIDTH, netlist, gates):
         newnetlist.append([first[0] + first[0] * WIDTH, second[0] + second[0] * WIDTH])
     return newnetlist
 
+def netlistConvert2(g, netlist, gateList):
+    new_netlist = []
+    for i in netlist:
+        new_netlist.append((gateList[i[0]],gateList[i[1]]))
+    return new_netlist
+
+def netlistCalcDist(g, new_netlist):
+    netlistManhattan = []   
+    for j in new_netlist:
+        netlistManhattan.append(abs(g.vertDict[j[0]].x - g.vertDict[j[1]].x) + abs(g.vertDict[j[0]].y - g.vertDict[j[1]].y))
+    return netlistManhattan
+
+def short2longNetlist(new_netlist, netlistManhattan):
+    dist_short_to_long_netlist = []
+    for k in range(len(netlistManhattan)):
+        l = netlistManhattan.index(min(netlistManhattan))
+        dist_short_to_long_netlist.append(new_netlist[l])
+        del netlistManhattan[l]
+        del new_netlist[l]
+    return dist_short_to_long_netlist
+
+def long2shortNetlist(new_netlist, netlistManhattan):
+    dist_long_to_short_netlist = []
+    for k in range(len(netlistManhattan)):
+        l = netlistManhattan.index(max(netlistManhattan))
+        dist_long_to_short_netlist.append(new_netlist[l])
+        del netlistManhattan[l]
+        del new_netlist[l]
+    return dist_long_to_short_netlist

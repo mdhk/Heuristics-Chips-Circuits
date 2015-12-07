@@ -27,6 +27,14 @@ disconnectVertex(g, gateList)
 for i in gateList:
     g.vertDict[i].gate = True
 
+random.shuffle(netlist)
+a = netlistConvert2(g, netlist, gateList)
+print "a " + str(a)
+b = netlistCalcDist(g, a)
+print "b " + str(b)
+newnet = long2shortNetlist(a, b)
+print "newnet: " + str(newnet)
+
 # Mark different paths with p
 p = 0
 # Count found paths
@@ -48,28 +56,28 @@ depth = 0
 SOLVE
 """
 
-random.shuffle(netlist)
+# import IPython;
+# IPython.embed();
 
-for n in netlist:
+for n in newnet:
     startTime = time.time()
-
-    start = g.vertDict[gateList[n[0]]]
-    target = g.vertDict[gateList[n[1]]]
-
+    start = n[0]
+    target = n[1]
+    print "target:" + str(target)
     # Allow connections to target gate (but only from non-gates and from
     # vertices without a pre-existing path.
-    connectVertex(g, target.id)
+    connectVertex(g, target)
 
     message = 'Find path between ' + str(n[0] + 1) + ' and ' + str(n[1] + 1)
     print(message.rjust(27)),
 
     # Use algorithm to compute a path between start and target.
-    algorithm(g, start, target)
+    algorithm(g, g.vertDict[start], g.vertDict[target])
 
     # Extract the previously computed path from graph g
     path = []
-    path.append(target.id)
-    tracePath(g, target, path)
+    path.append(target)
+    tracePath(g, g.vertDict[target], path)
 
     # Disconnect connections to the vertices in path
     disconnectVertex(g, path)
