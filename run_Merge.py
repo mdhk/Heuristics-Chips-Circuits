@@ -194,39 +194,44 @@ if __name__ == "__main__":
     for p in g.paths:
         print g.paths[p]
 
-    # Initialize visualization.
-    screen = draw.initGrid(WIDTH, HEIGHT)
-    grid = [[[0 for c in range(DEPTH)] for b in range(WIDTH)] for a in range(HEIGHT)]
-    # Color all gates bright red.
-    for i in gates:
-        grid[i[1]][i[0]][0] = (255, 0, 0)
-    depth = 0 
+    draw.allVisualization(g, gates, TOFIND)
 
-    for p in g.paths:
-        for i in g.paths[p][1:-1]:
-            grid[(i % SURF) / WIDTH][i % WIDTH][i / SURF] = 1
-        # Onhandig dat dit elke keer moet worden geroepen, maar dat komt
-        # omdat de kleur per call elke keer 1x random wordt beslist. 
-        draw.drawGrid(grid, screen, depth)
 
-    # import IPython; IPython.embed()
-    while True:
-        event = pygame.event.wait()
-        if event.type == pygame.QUIT:
-            pygame.quit()
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            # Visualize the layer up or down from current (left and right click
-            # respectively).
-            if event.button == 1 and depth != 7:
-                screen.fill([255,255,255])
-                depth += 1
-                draw.drawGrid(grid, screen, depth)
-                print 'Showing layer: ' + str(depth)
-            if event.button == 3 and depth != 0:
-                screen.fill([255,255,255])
-                depth -= 1
-                draw.drawGrid(grid, screen, depth)
-                print 'Showing layer: ' + str(depth)
+
+
+    # # Initialize visualization.
+    # screen = draw.initGrid(WIDTH, HEIGHT)
+    # grid = [[[0 for c in range(DEPTH)] for b in range(WIDTH)] for a in range(HEIGHT)]
+    # # Color all gates bright red.
+    # for i in gates:
+    #     grid[i[1]][i[0]][0] = (255, 0, 0)
+    # depth = 0 
+
+    # for p in g.paths:
+    #     for i in g.paths[p][1:-1]:
+    #         grid[(i % SURF) / WIDTH][i % WIDTH][i / SURF] = 1
+    #     # Onhandig dat dit elke keer moet worden geroepen, maar dat komt
+    #     # omdat de kleur per call elke keer 1x random wordt beslist. 
+    #     draw.drawGrid(grid, screen, depth)
+
+    # # import IPython; IPython.embed()
+    # while True:
+    #     event = pygame.event.wait()
+    #     if event.type == pygame.QUIT:
+    #         pygame.quit()
+    #     elif event.type == pygame.MOUSEBUTTONDOWN:
+    #         # Visualize the layer up or down from current (left and right click
+    #         # respectively).
+    #         if event.button == 1 and depth != 7:
+    #             screen.fill([255,255,255])
+    #             depth += 1
+    #             draw.drawGrid(grid, screen, depth)
+    #             print 'Showing layer: ' + str(depth)
+    #         if event.button == 3 and depth != 0:
+    #             screen.fill([255,255,255])
+    #             depth -= 1
+    #             draw.drawGrid(grid, screen, depth)
+    #             print 'Showing layer: ' + str(depth)
 
 #     results.sort()
 #     from itertools import groupby

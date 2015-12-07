@@ -27,9 +27,9 @@ Steps:
 """
 
 from core import *
-from data.config2 import width as WIDTH, height as HEIGHT, gates
-from data.netlist import netlist_5 as netlist
-TOFIND = 60 # Loop until TOFIND paths are found.
+from data.config1 import width as WIDTH, height as HEIGHT, gates
+from data.netlist import netlist_3 as netlist
+TOFIND = 47 # Loop until TOFIND paths are found.
 import algorithms
 import random
 
@@ -69,7 +69,8 @@ def run():
         g.vertDict[i].gate = True
 
     # Path, found, cost, time
-    p,f,c, totalTime = 0,0,0,0
+    # Start p with 1
+    p,f,c, totalTime = 1,0,0,0
 
     # GO TO RANDOM LAYER FIRST
     # newnetlist = []
@@ -87,9 +88,11 @@ def run():
 
 
     for i in range(len(netlist)):
+        # CHANGE PARAMETER
         if netlistM[i] > 4:
             # Go to random layer
-            l = random.choice(range(1, 8))
+            # CHANGE PARAMETER
+            l = random.choice(range(0, 8))
             layerV = range(g.SURF * l, g.SURF * (l + 1))
             
             for j in range(2):
@@ -106,7 +109,6 @@ def run():
                 # import IPython; IPython.embed()
                 for vp in path:
                     g.vertDict[vp].path = i
-                    g.vertDict[vp].occupied = True
 
     # import IPython; IPython.embed()
 
@@ -124,7 +126,7 @@ def run():
         # Allow connections to neighbors of the target and start gates,
         # exept from nodes with a path
         for nb in computeNeighbors(g, start.id):
-            if not g.vertDict[nb].occupied and not g.vertDict[nb].gate:
+            if not g.vertDict[nb].gate:
                 start.addNeighbor(nb)
         for nb in computeNeighbors(g, target.id):
             if not g.vertDict[nb].path and not g.vertDict[nb].gate:
@@ -161,7 +163,7 @@ def run():
                     # print 'CURRENT NODE ALREADY HAS PATH'
                     # import IPython; IPython.embed()
                 cur.path = p
-                cur.occupied = True
+                # cur.occupied = True
         p += 1
 
         # Disconnect connections to the neighbors of start and target
@@ -198,9 +200,10 @@ if __name__ == "__main__":
     startTime = time.time()
 
     found = []
-    m = 0
+    m, iterations = 0, 0
     while True:
         g = run()
+        iterations += 1
         if g.found > m:
             found.append(g.found)
             print 'Current max: ' + str(g.found) + 'paths '
@@ -210,13 +213,14 @@ if __name__ == "__main__":
 
     g.totalTime = time.time() - startTime
     print '\nTotal time: ' + str(g.totalTime) + ' seconds.\n'
+    print str(iterations) + ' iterations'
 
     n = len(netlist)
     allpaths = [[] for x in range(n)]
     for i in range(n):
         cur = []
         for v in g:
-            if v.occupied and v.path is i:
+            if v.path is i:
                 cur.append(v.id)
         allpaths[i] = cur
     for m in allpaths:

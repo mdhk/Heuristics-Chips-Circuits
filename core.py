@@ -39,7 +39,7 @@ class Vertex:
         self.visited = False
         self.previous = None
         self.path = None
-        self.occupied = False
+        # self.occupied = False
         self.gate = False
         self.x = id % SURF % WIDTH 
         self.y = id % SURF / WIDTH 
@@ -67,7 +67,7 @@ def connectVertex(g, id):
     neighbors = computeNeighbors(g, id)
     for i in neighbors:
         current = g.vertDict[i]
-        if (not current.path) and (not current.gate) and (not current.occupied):
+        if (not current.path) and (not current.gate):# and (not current.occupied):
             current.addNeighbor(id)
 
 # Connects a given vertex v (with id 'id') to its neighbors, provided that
@@ -85,7 +85,7 @@ def connectNonPathVertex(g, id):
     neighbors = computeNeighbors(g, id)
     for i in neighbors:
         current = g.vertDict[i]
-        if not current.path and not current.occupied:
+        if not current.path: # and not current.occupied:
             current.addNeighbor(id)
 
 # Delete all connections to vertices in list v.
