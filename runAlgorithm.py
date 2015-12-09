@@ -14,6 +14,11 @@ SURF = WIDTH * HEIGHT
 INITIALIZE GRAPH AND VISUALIZATION
 """
 
+# to debug some function, use this:
+# import IPython;
+# IPython.embed(); 
+
+
 # Create graph and connect it.
 g = Graph(WIDTH, HEIGHT, DEPTH, SURF)
 connectGraph(g)
@@ -28,12 +33,20 @@ for i in gateList:
     g.vertDict[i].gate = True
 
 random.shuffle(netlist)
-a = netlistConvert2(g, netlist, gateList)
-print "a " + str(a)
-b = netlistCalcDist(g, a)
-print "b " + str(b)
-newnet = long2shortNetlist(a, b)
-print "newnet: " + str(newnet)
+
+z = mostConnexionNetlist(g, netlist, gateList)
+    
+
+
+"""
+to run program with netlist ordered from short to long
+"""
+# a = netlistConvert2(g, netlist, gateList)
+# b = netlistCalcDist(g, a)
+# newnet = short2longNetlist(a, b)
+
+
+
 
 # Mark different paths with p
 p = 0
@@ -56,10 +69,9 @@ depth = 0
 SOLVE
 """
 
-# import IPython;
-# IPython.embed();
 
-for n in newnet:
+
+for n in z:
     startTime = time.time()
     start = n[0]
     target = n[1]

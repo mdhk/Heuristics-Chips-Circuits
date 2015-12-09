@@ -313,3 +313,21 @@ def long2shortNetlist(new_netlist, netlistManhattan):
         del netlistManhattan[l]
         del new_netlist[l]
     return dist_long_to_short_netlist
+
+
+def mostConnexionNetlist(g, netlist, gateList):
+    a = netlistConvert2(g, netlist, gateList)
+    numpaths = numberOfPaths(netlist, gateList)
+    most_connexions_netlist = []
+
+    for i in range(len(numpaths)):
+        index_most_con = numpaths.index(max(numpaths))
+        gate_most_con = gateList[index_most_con]
+        for j in a:
+            if (j[0] == gate_most_con) or (j[1] == gate_most_con):
+                most_connexions_netlist.append(j)
+                a.remove(j)
+
+        del numpaths[index_most_con]
+        del gateList[index_most_con]
+    return most_connexions_netlist
