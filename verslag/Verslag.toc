@@ -1,5 +1,13 @@
-\contentsline {section}{Inleiding}{3}
-\contentsline {section}{Toestandsruimte}{3}
-\contentsline {section}{Algoritmes}{3}
-\contentsline {section}{Oplossing}{3}
-\contentsline {section}{Conclusie}{3}
+\contentsline {section}{1. Inleiding}{3}
+\contentsline {section}{2. Methodes}{3}
+\contentsline {subsection}{2.1 Vooraf: algoritmes}{3}
+\contentsline {subsubsection}{2.1.1 BFS}{3}
+\contentsline {subsubsection}{2.1.2 A*}{3}
+\contentsline {subsubsection}{2.1.3 Netlists sorteren}{3}
+\contentsline {subsubsection}{2.1.4 Kruisingen toestaan}{3}
+\contentsline {subsubsection}{2.1.5 Loskoppelen gate-buren}{3}
+\contentsline {subsubsection}{2.1.6 Toewijzing random layers}{3}
+\contentsline {subsection}{2.2 Achteraf: optimalisatie}{3}
+\contentsline {subsection}{Bla}{3}
+\contentsline {subsection}{Bla}{3}
+\contentsline {section}{Resultaten en conclusie}{3}
