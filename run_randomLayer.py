@@ -27,11 +27,12 @@ Steps:
 """
 
 from core import *
-from data.config1 import width as WIDTH, height as HEIGHT, gates
-from data.netlist import netlist_2 as netlist
-TOFIND = 40 # Loop until TOFIND paths are found.
+from data.config2 import width as WIDTH, height as HEIGHT, gates
+from data.netlist import netlist_4 as netlist
+TOFIND = 46 # Loop until TOFIND paths are found.
 import algorithms
-import random
+import random, copy
+import hillclimbers
 
 DEPTH = 8
 SURF = WIDTH * HEIGHT
@@ -46,11 +47,6 @@ for c in gates:
 # Convert netlist to vertex id format
 netlist = netlistConvert(WIDTH, netlist, gates)
 
-
-"""
-INITIALIZE GRAPH
-"""
-
 def run():
     startTime = time.time()
 
@@ -60,7 +56,7 @@ def run():
     g.SURF = SURF
     g.WIDTH = WIDTH
     g.HEIGHT = HEIGHT
-    g.paths = {}
+    g.connectedPaths = [False for x in range(len(netlist))]
 
     # Shuffle netlist.
     random.shuffle(netlist)
@@ -77,9 +73,7 @@ def run():
     p,f,c, totalTime = 1,0,0,0
 
     # Copy netlist (without maintaining references)
-    newnetlist = []
-    for n in netlist:
-        newnetlist.append(n[:])
+    newnetlist = copy.deepcopy(netlist)
 
     # If possible, generate a shortest path from both gate pairs in the netlist
     # iteration to a random layer. 
@@ -87,7 +81,7 @@ def run():
         # Depending on manhattan distance between netlist gate pairs. 
         if netlistM[i] > 4:
             # Choose random layer.
-            l = random.choice(range(0, 8))
+            l = random.choice(range(1, 8))
             # Create list of all nodes in layer l.
             layerV = range(g.SURF * l, g.SURF * (l + 1))
 
@@ -151,16 +145,19 @@ def run():
         tracePath(g, target, path)
         disconnectVertex(g, path)
 
+        if len(path) > 1:
+            f += 1
+            c += len(path) - 1
+            g.connectedPaths[p - 1] = True
+        # else:
+        #     print 'not found'
+
         # Assign all vertices in the path (not the gates) the path id 
         for i in path:
             cur = g.vertDict[i]
             if not cur.gate:
                 cur.path = p
         p += 1
-
-        if len(path) > 1:
-            f += 1
-            c += len(path) - 1
 
         # Prepare graph for next search.
         for v in g:
@@ -185,14 +182,28 @@ if __name__ == "__main__":
         if g.found > m:
             print 'Current max: ' + str(g.found) + 'paths '
             m = g.found
-        if m is TOFIND:
+        if g.found is TOFIND:
             break
+
+    # import IPython; IPython.embed()
+    n = len(netlist)
+
+    # # Hillclimber session
+    # found = g.found
+    # while not found == n:
+    #     gcopy = copy.deepcopy(g)
+    #     nRemovePaths = random.randint(2,15)
+    #     hillclimbers.standardHillClimber(gcopy, netlist, n, nRemovePaths)
+    #     if gcopy.found > g.found:
+    #         g = copy.deepcopy(g.found)
+    #         found = g.found
+    #         print found
+    #     print 'new: ' + str(gcopy.found)
 
     g.totalTime = time.time() - startTime
     print '\nTotal time: ' + str(g.totalTime) + ' seconds.\n'
     print str(iterations) + ' iterations'
 
-    n = len(netlist)
     allpaths = [[] for x in range(n)]
     for i in range(n):
         cur = []
@@ -205,13 +216,15 @@ if __name__ == "__main__":
 
     import IPython; IPython.embed()
 
-    found.sort()
-    from itertools import groupby
-    foundSorted = [len(list(group)) for key, group in groupby(found)]
-    import matplotlib.pyplot as plt
-    plt.hist(found)
-    import pylab
-    pylab.savefig('run_randomLayer_results_netlist2.png')
+    # found.sort()
+    # from itertools import groupby
+    # foundSorted = [len(list(group)) for key, group in groupby(found)]
+    # import matplotlib.pyplot as plt
+    # plt.hist(found)
+    # import pylab
+    # pylab.savefig('run_randomLayer_results_netlist6_61.png')
+
+    import toThreejs
+    toThreejs.convert(g)
 
     draw.allVisualization(g, gates, TOFIND)
-
