@@ -14,6 +14,11 @@ SURF = WIDTH * HEIGHT
 INITIALIZE GRAPH AND VISUALIZATION
 """
 
+# to debug some function, use this:
+# import IPython;
+# IPython.embed(); 
+
+
 # Create graph and connect it.
 g = Graph(WIDTH, HEIGHT, DEPTH, SURF)
 connectGraph(g)
@@ -26,6 +31,22 @@ for c in gates:
 disconnectVertex(g, gateList)
 for i in gateList:
     g.vertDict[i].gate = True
+
+random.shuffle(netlist)
+
+z = mostConnexionNetlist(g, netlist, gateList)
+    
+
+
+"""
+to run program with netlist ordered from short to long
+"""
+# a = netlistConvert2(g, netlist, gateList)
+# b = netlistCalcDist(g, a)
+# newnet = short2longNetlist(a, b)
+
+
+
 
 # Mark different paths with p
 p = 0
@@ -48,28 +69,27 @@ depth = 0
 SOLVE
 """
 
-random.shuffle(netlist)
 
-for n in netlist:
+
+for n in z:
     startTime = time.time()
-
-    start = g.vertDict[gateList[n[0]]]
-    target = g.vertDict[gateList[n[1]]]
-
+    start = n[0]
+    target = n[1]
+    print "target:" + str(target)
     # Allow connections to target gate (but only from non-gates and from
     # vertices without a pre-existing path.
-    connectVertex(g, target.id)
+    connectVertex(g, target)
 
     message = 'Find path between ' + str(n[0] + 1) + ' and ' + str(n[1] + 1)
     print(message.rjust(27)),
 
     # Use algorithm to compute a path between start and target.
-    algorithm(g, start, target)
+    algorithm(g, g.vertDict[start], g.vertDict[target])
 
     # Extract the previously computed path from graph g
     path = []
-    path.append(target.id)
-    tracePath(g, target, path)
+    path.append(target)
+    tracePath(g, g.vertDict[target], path)
 
     # Disconnect connections to the vertices in path
     disconnectVertex(g, path)

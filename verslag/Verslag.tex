@@ -33,6 +33,7 @@
 \usepackage{listings} % Required for insertion of code
 \usepackage{courier} % Required for the courier font
 \usepackage{lipsum} % Used for inserting dummy 'Lorem ipsum' text into the template
+\usepackage{tocloft}
 
 % Margins
 \topmargin=-0.45in
@@ -181,7 +182,8 @@
 	%\setcounter{tocdepth}{1} % Uncomment this line if you don't want subsections listed in the ToC
 	
 	\newpage
-	\renewcommand{\contentsname}{Inhoudsopgave}
+	\renewcommand{\cftdot}{.}
+	\renewcommand{\contentsname}{INHOUDSOPGAVE}
 	\tableofcontents
 	\newpage
 	
@@ -191,23 +193,39 @@
 	
 	% To have just one problem per page, simply put a \clearpage after each problem
 
-	\section{Inleiding}
+	\section{1. Inleiding}
 	
 	Hallo hallo
 	
-	\section{Toestandsruimte}
+	\section{2. Methodes}
 	
-	Bla
+	\subsection{2.1 Vooraf: algoritmes}
 	
-	\section{Algoritmes}
+	\subsubsection{2.1.1 BFS}
+	
+	\subsubsection{2.1.2 A*}
+	
+	\subsubsection{2.1.3 Netlists sorteren}
+	Netlist ordenen kort-lang: 24,25,26; lang-kort 17-18
+	
+	\subsubsection{2.1.4 Kruisingen toestaan}
+	
+	\subsubsection{2.1.5 Loskoppelen gate-buren}
+	
+	\subsubsection{2.1.6 Toewijzing random layers}
+	
+	\subsection{2.2 Achteraf: optimalisatie}
+	
+	
+	\subsection{Bla}
 	
 	Bla bla
 	
-	\section{Oplossing}
+	\subsection{Bla}
 	
 	Bla bla bla
 	
-	\section{Conclusie}
+	\section{Resultaten en conclusie}
 	
 	Bla!
 	
