@@ -92,7 +92,7 @@ def run():
             disconnectVertex(g, neighbors)
 
     # Mark different paths with p
-    p = 0
+    p = 1
     # Count found paths
     f = 0
     # Count costs total
@@ -118,9 +118,11 @@ def run():
         # Allow connections to neighbors of the target and start gates,
         # exept from nodes with a path
         for nb in computeNeighbors(g, start.id):
-            connectNonPathVertex(g, nb)
+            if not g.vertDict[nb].path and not g.vertDict[nb].gate:
+                connectNonPathVertex(g, nb)
         for nb in computeNeighbors(g, target.id):
-            connectNonPathVertex(g, nb)
+            if not g.vertDict[nb].path and not g.vertDict[nb].gate:
+                connectNonPathVertex(g, nb)
 
         # Use algorithm to compute a path between start and target.
         # start = algorithms.toLowestLayer(g, start)

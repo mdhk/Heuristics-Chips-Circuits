@@ -211,7 +211,6 @@ def removePath(g, p):
             connectNonGateVertex(g, v.id)
             v.path = None
 
-
 # Get input from user
 def user_input():
     print "In order to compute a solution for a certain circuit board, first \

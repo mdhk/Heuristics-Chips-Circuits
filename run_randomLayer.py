@@ -27,12 +27,11 @@ Steps:
 """
 
 from core import *
-from data.config2 import width as WIDTH, height as HEIGHT, gates
-from data.netlist import netlist_4 as netlist
-TOFIND = 46 # Loop until TOFIND paths are found.
-import algorithms
-import random, copy
-import hillclimbers
+from data.config1 import width as WIDTH, height as HEIGHT, gates
+from data.netlist import netlist_3 as netlist
+TOFIND = 50 # Loop until TOFIND paths are found.
+MAXITERATIONS = 500
+import algorithms, random, copy, hillclimbers
 
 DEPTH = 8
 SURF = WIDTH * HEIGHT
@@ -120,6 +119,7 @@ def run():
 
     # Find paths between the (updated) netlist vertex pairs.
     for n in newnetlist:
+    # for n in newnetlist[1:30]:
         start = g.vertDict[n[0]]
         target = g.vertDict[n[1]]
 
@@ -175,30 +175,42 @@ if __name__ == "__main__":
 
     found = []
     m, iterations = 0, 0
+    print 'To find: ' + str(TOFIND)
+    print 'Iterations until hillclimbing: ' + str(MAXITERATIONS)
     while True:
         g = run()
         iterations += 1
+        print iterations
         found.append(g.found)
         if g.found > m:
             print 'Current max: ' + str(g.found) + 'paths '
+            gMax = copy.deepcopy(g)
             m = g.found
-        if g.found is TOFIND:
+        # if g.found is TOFIND:
+        #     break
+        if (iterations >= MAXITERATIONS) or (g.found is TOFIND):
             break
 
     # import IPython; IPython.embed()
     n = len(netlist)
 
-    # # Hillclimber session
-    # found = g.found
-    # while not found == n:
-    #     gcopy = copy.deepcopy(g)
-    #     nRemovePaths = random.randint(2,15)
-    #     hillclimbers.standardHillClimber(gcopy, netlist, n, nRemovePaths)
-    #     if gcopy.found > g.found:
-    #         g = copy.deepcopy(g.found)
-    #         found = g.found
-    #         print found
-    #     print 'new: ' + str(gcopy.found)
+    # Hillclimber session
+    iterations = 0
+    found = g.found
+    g = gMax
+    print 'Starting hillclimber'
+    print 'Paths found at start hillclimber session: ' + str(gMax.found)
+    print 'Number of paths in netlist: ' + str(n)
+    while not (found == n) and (iterations <= MAXITERATIONS):
+        gcopy = copy.deepcopy(g)
+        nRemovePaths = random.randint(2,15)
+        hillclimbers.standardHillClimber(gcopy, n, nRemovePaths)
+        iterations += 1
+        if gcopy.found > g.found:
+            g = copy.deepcopy(gcopy)
+            found = g.found
+            print 'new: ' + str(found)
+        print 'No improvement: ' + str(gcopy.found)
 
     g.totalTime = time.time() - startTime
     print '\nTotal time: ' + str(g.totalTime) + ' seconds.\n'
