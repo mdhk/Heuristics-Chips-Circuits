@@ -57,6 +57,12 @@ f = 0
 # Count costs total
 c = 0
 totalTime = 0
+# paths on every vertex
+pathsvert = []
+
+
+for i in range(SURF*DEPTH):
+    pathsvert.append([])
 
 # Initialize visualization.
 screen = draw.initGrid(WIDTH, HEIGHT)
@@ -82,7 +88,7 @@ for n in newnet:
     # vertices without a pre-existing path.
     connectVertex(g, target)
 
-    message = 'Find path between ' + str(n[0] + 1) + ' and ' + str(n[1] + 1)
+    message = 'Find path between ' + str(n[0] + 1) + ' and ' + str(n[1] + 1) + ' ' + str(p)
     print(message.rjust(27)),
 
     # Use algorithm to compute a path between start and target.
@@ -99,6 +105,7 @@ for n in newnet:
     # Assign all vertices in the path (not the gates) the path id 
     for i in path[1:-1]:
         g.vertDict[i].path = p
+        pathsvert[i].append(p)
     p += 1
 
     if len(path) > 1:
@@ -121,6 +128,7 @@ for n in newnet:
     elapsedTime = time.time() - startTime
     totalTime += elapsedTime
 
+print 'Pathsvert: ' + str(pathsvert)
 print '\nTotal time: ' + str(totalTime) + ' seconds.'
 print '\nCosts algorithm: ' + str(c) + '.'
 print '\nSuccesfully connected ' + str(f) + ' of ' + str(len(netlist)) + '\
