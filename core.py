@@ -202,6 +202,26 @@ def numberOfPaths(netlist, gateList):
         nOfPathsList[n[1]] += 1
     return nOfPathsList
 
+def numberOfPathsDict(netlist):
+    nOfPathsDict = {}
+    for n in netlist:
+        for m in n:
+            if m in nOfPathsDict:
+                nOfPathsDict[m] += 1
+            else:
+                nOfPathsDict[m] = 1
+    return nOfPathsDict
+
+def nonGatePathNeighbors(g, gateList):
+    nOfNonGateNBs = {}
+    for i in gateList:
+        for n in computeNeighbors(g, i):
+            if n not in gateList and i not in nOfNonGateNBs and not g.vertDict[n].path:
+                nOfNonGateNBs[i] = 1
+            elif n not in gateList and not g.vertDict[n].path:
+                nOfNonGateNBs[i] += 1
+    return nOfNonGateNBs
+
 # Remove a given path with path id 'p' from the graph, and reconnect all
 # vertices in the path (to non-gates and non-path-occupied vertices).
 def removePath(g, p):

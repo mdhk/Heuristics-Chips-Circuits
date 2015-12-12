@@ -15,7 +15,6 @@ def standardHillClimber(gcopy, maxNPaths, removeNPaths):
             toFindPaths.append(i)
 
     toRemove = random.sample(foundPaths, removeNPaths)
-    
 
     # Remove the sampled paths
     for i in toRemove:

@@ -102,7 +102,8 @@ def aStarList(graph, start, targets, target):
         cur = pq.get()
 
         if cur in targets:
-            break
+            return cur
+            # break
 
         for next in graph.vertDict[cur].adjacent:
             newCost = costSoFar[cur] + 1
@@ -113,7 +114,7 @@ def aStarList(graph, start, targets, target):
                 pq.put(next, priority)
                 graph.vertDict[next].previous = cur
 
-    return cur
+    return 0
 
 """
 BFS
