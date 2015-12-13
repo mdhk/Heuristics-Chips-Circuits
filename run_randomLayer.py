@@ -4,29 +4,25 @@ CHIPS AND CIRCUITS
 run_randomLayer.py
 
 Steps:
-    while TOFIND paths are not found:
-        randomize netlist
+    Note: paths cannot go over gates or other paths.
 
+    while TOFIND paths are not found and iterations < MAX_LAYER_ITERATIONS:
+        Randomize netlist.
+        For all gates, if the number of required paths == the number of free
+            neighbors, reserve all neighbors to that gate and update the
+            start/target positions for each path to those neighbors.
+        For each netlist pair, compute the path to a single randomly chosen
+            layer l (between 0 and 7). Update the netlist to the two vertices in l.
+        Disconnect the immediate neighbors of all vertices in the netlist.
+        Iterating over each pair in the netlist:
+            Reconnect the immediate neighbors of the two vertices.
+            Find the shortest path between these two vertices.
+        Because in the first iteration an abundance of nodes may have been
+            disconnected, repeat the previous iterations once more for those paths
+            not yet found.
 
-
-        create graph
-        connect every vertex with its neighbor
-        disconnect connections to gates
-        compute the manhattan distance 'd' between each netlist gate pair 'n'
-        for each netlist gate pair 'n' with d > 4, choose a random layer 'l' between 1 and 7
-        for each n with d > 4, find the shortest part (breadth first) to layer
-        a random layer 'l' and create a list of node pairs with for each index
-            either n or the two nodes in layer l 
-        remove the precomputed paths.
-        # remove connections to the first neighbors of gates
-        randomize netlist
-        for each path in the netpair, compute the shortest path using
-            - aStar
-            - manhattan heuristic
-        disconnect connections to nodes in the path
-        if TOFIND paths found: break
-            - return Graph
-            - visualize the network
+    if not found TOFIND paths:
+        Hillclimber
 
 """
 
