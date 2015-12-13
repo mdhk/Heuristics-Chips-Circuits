@@ -5,6 +5,10 @@ run_randomLayer.py
 
 Steps:
     while TOFIND paths are not found:
+        randomize netlist
+
+
+
         create graph
         connect every vertex with its neighbor
         disconnect connections to gates
@@ -65,26 +69,26 @@ def run():
                 index = []
                 for i in range(N):
                     if newnetlist[i][0] == n:
-                        pathNumber.append(i)
+                        pathNumber.append(i + 1)
                         index.append(0)
                     elif newnetlist[i][1] == n:
                         index.append(1)
-                        pathNumber.append(i)
-                # Reserve each neighbor for a path and disconnect it.
+                        pathNumber.append(i + 1)
+                # Reserve each neighbor for a specific path and disconnect it.
                 ind = range(len(pathNumber))
                 random.shuffle(ind)
                 nb = list(g.vertDict[n].adjacent)
                 # import IPython; IPython.embed()
                 for i in ind:
                     g.vertDict[nb[i]].path = pathNumber[i]
-                    newnetlist[pathNumber[i]][index[i]] = nb[i]
+                    newnetlist[pathNumber[i]-1][index[i]] = nb[i]
                 disconnectVertex(g, nb)
 
     # import IPython; IPython.embed()
 
     # If possible, generate a shortest path from both gate pairs in the netlist
-    # iteration to a random layer. 
-    for i in range(len(netlist)):
+    # iteration to (the same) random layer. 
+    for i in range(N):
         # Depending on manhattan distance between netlist gate pairs. 
         if netlistMH[i] > MIN_MANHATTAN:
             # import IPython; IPython.embed()
@@ -145,51 +149,64 @@ def run():
             disconnectVertex(g, computeNeighbors(g, i[0]))
             disconnectVertex(g, computeNeighbors(g, i[1]))
 
-    # Find paths between the (updated) netlist vertex pairs.
-    for n in newnetlist:
-        start = g.vertDict[n[0]]
-        target = g.vertDict[n[1]]
+    g.newnetlist = copy.deepcopy(newnetlist)
 
-        # Reconnect neighbors of start and target node.
-        if D:
-            nb = computeNeighbors(g, start.id) + computeNeighbors(g, target.id)
-            for i in nb:
-                if not (g.vertDict[i].path) and not (g.vertDict[i].gate):
-                    connectVertex(g, i)
+    # Try to find the complete path list twice (some neighbors of
+    # starting/target nodes might be disconnected on the first iteration but
+    # connected on the second iteration.
+    for x in range(2):
+        p = 0
 
-        # Reconnect connections to target 
-        connectVertex(g, target.id)
-        # Reconnect connections from start to its neighbors
-        for nb in computeNeighbors(g, start.id):
-            if not g.vertDict[nb].path and not g.vertDict[nb].gate:
-                start.addNeighbor(nb)
+        for i in range(N):
+            if g.connectedPaths[i]:
+                newnetlist[i] = [0, 0]
 
-        # Compute path between start and target.
-        algorithms.aStar(g, start, target)
+        # Find paths between the (updated) netlist vertex pairs.
+        for n in newnetlist:
+            p += 1
+            if n == [0, 0]:
+                continue
+            start = g.vertDict[n[0]]
+            target = g.vertDict[n[1]]
 
-        # Extract the computed path and disconnect these vertices. 
-        path = []
-        path.append(target.id)
-        tracePath(g, target, path)
-        disconnectVertex(g, path)
+            # Reconnect neighbors of start and target node.
+            if D:
+                nb = computeNeighbors(g, start.id) + computeNeighbors(g, target.id)
+                for i in nb:
+                    if not (g.vertDict[i].path) and not (g.vertDict[i].gate):
+                        connectVertex(g, i)
 
-        if len(path) > 1:
-            g.found += 1
-            g.cost += len(path) - 1
-            g.connectedPaths[p - 1] = True
+            # Reconnect connections to target 
+            connectVertex(g, target.id)
+            # Reconnect connections from start to its neighbors
+            for nb in computeNeighbors(g, start.id):
+                if not g.vertDict[nb].path and not g.vertDict[nb].gate:
+                    start.addNeighbor(nb)
 
-        # Assign all vertices in the path (not the gates) the path id 
-        for i in path:
-            cur = g.vertDict[i]
-            if not cur.gate:
-                cur.path = p
-        p += 1
+            # Compute path between start and target.
+            algorithms.aStar(g, start, target)
 
-        # Prepare graph for next search.
-        for v in g:
-            v.previous = None
+            # Extract the computed path and disconnect these vertices. 
+            path = []
+            path.append(target.id)
+            tracePath(g, target, path)
+            disconnectVertex(g, path)
 
-    g.newnetlist = newnetlist
+            if len(path) > 1:
+                g.found += 1
+                g.cost += len(path) - 1
+                g.connectedPaths[p - 1] = True
+
+            # Assign all vertices in the path (not the gates) the path id 
+            for i in path:
+                cur = g.vertDict[i]
+                if not cur.gate:
+                    cur.path = p
+
+            # Prepare graph for next search.
+            for v in g:
+                v.previous = None
+
     g.netlist = netlist
 
     return g
@@ -227,7 +244,7 @@ if __name__ == "__main__":
     # from data.config1 import width as WIDTH, height as HEIGHT, gates
     # from data.netlist import netlist_3 as netlist
     # TOFIND = 50 # Loop until TOFIND paths are found.
-    MAX_LAYER_ITERATIONS = 50000
+    MAX_LAYER_ITERATIONS = 10000
     MAX_HILLCLIMBER = 500
     MIN_MANHATTAN = 3
 
@@ -235,9 +252,9 @@ if __name__ == "__main__":
     SURF = WIDTH * HEIGHT
     # Show visualization (V = 1) or not (V = 0)
     V = 1
-    # Disconnect neighbors (EXPERIMENTAL)
+    # Disconnect neighbors
     D = 1
-    # Optimize after initial run()
+    # Optimize after initial run() (Hillclimber)
     O = 1
     # Initialize variables that never change.
     gateList = []
@@ -247,6 +264,7 @@ if __name__ == "__main__":
     # Convert netlist to vertex id format
     netlist = netlistConvert(WIDTH, netlist, gates)
 
+    import pickle
 
     found = []
     m, iterations = 0, 0
@@ -255,22 +273,27 @@ if __name__ == "__main__":
     while True:
         g = run()
         iterations += 1
-        print iterations
+        if not iterations % 1000:
+            print iterations
+        # print iterations
         found.append(g.found)
         if g.found > m:
+            # with open('randomLayerNL6_Nfound6.pkl', 'wb') as output:
+            #     pickle.dump(g, output, pickle.HIGHEST_PROTOCOL)
 
             # notConnected = {}
             # for i in gateList:
             #     notConnected[i] = 0
 
             glist = []
-            print 'Current max: ' + str(g.found) + 'paths '
+            # print 'Current max: ' + str(g.found) + 'paths '
             # gMax = copy.deepcopy(g)
             m = g.found
         # if g.found is TOFIND:
         #     break
         if (g.found == m):
             glist.append(copy.deepcopy(g))
+            print 'Newly found: ' + str(m) + ', ' + str(len(glist)) + ' times.'
 
             # for i in range(len(g.connectedPaths)):
             #     if not g.connectedPaths[i]:
