@@ -1,37 +1,34 @@
 def convert(g):
+    # This script assumes that all paths in the netlist have been found.
     import json, core, random
 
     feed = []
     pathIDs = []
 
-    for v in g:
-        if v.path and v.path not in pathIDs:
-            pathIDs.append(v.path)
+    # This assumes that not all paths are found. 
+    # for v in g:
+    #     if v.path and v.path not in pathIDs:
+    #         pathIDs.append(v.path)
+    import IPython; IPython.embed();
 
-    print pathIDs
-    for i in pathIDs:
-        print i
+    N = len(g.netlist)
+    for i in range(1,N+1):
+        # print i
         points = []
         vertices = []
         path = []
         gate = 0
 
         for v in g:
-            if v.path == i:
+            if v.path == i and not v.gate:
                 vertices.append(v.id)
-                if v.gate == True:
-                    gate = v.id
 
-        # NOT ALL PATHS ARE FOUND! BUG ALERT!
-        # Gates do not have paths: therefore these will not be found
-        if not gate:
-            gate = random.choice(vertices)
 
         # import IPython; IPython.embed();
 
-        cur = gate
-        vertices.remove(gate)
-        path.append(gate)
+        # The first gate is where the tracing starts
+        cur = g.netlist[i - 1][0]
+        path.append(cur)
         for n in range(len(vertices)):
             for nb in core.computeNeighbors(g, cur):
                 if nb in vertices:
@@ -39,6 +36,7 @@ def convert(g):
                     vertices.remove(nb)
                     cur = nb
                     break
+        path.append(g.netlist[i - 1][1])
 
         for p in path:
             d = {}
