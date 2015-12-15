@@ -47,7 +47,7 @@ def run():
     random.shuffle(netlist)
 
     # Initialize found, time.
-    g.found,g.cost, totalTime = 0,0
+    g.found, totalTime = 0,0
     # Newnetlist will keep track of the 'new' positions of start/target
     # vertices of paths.
     newnetlist = copy.deepcopy(netlist)
