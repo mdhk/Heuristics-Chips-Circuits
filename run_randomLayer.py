@@ -342,6 +342,9 @@ if __name__ == "__main__":
         # if (iterations >= MAX_LAYER_ITERATIONS):
             break
 
+    statespace = compute_statespace(g, netlist, WIDTH)
+    print 'State space: ' + statespace
+
     print 'number of graphs with ' + str(m) + ': ' + str(len(glist))
 
     if O:
