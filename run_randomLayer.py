@@ -27,12 +27,10 @@ Steps:
 """
 
 def run():
-    # startTime = time.time()
 
     """
-    INITIALIZE GRAPH AND VARIABLES
+    Initialize graph and variables.
     """
-
     # Create graph and connect it. Keep track of what paths have been
     # connected.
     g = Graph(WIDTH, HEIGHT, DEPTH, SURF)
@@ -46,23 +44,23 @@ def run():
     # Randomize the order in which netlist paths are computed.
     random.shuffle(netlist)
 
-    # Initialize found, time.
-    g.found, totalTime = 0,0
     # Newnetlist will keep track of the 'new' positions of start/target
-    # vertices of paths.
+    # vertices of the netlist.
     newnetlist = copy.deepcopy(netlist)
     netlistMH = netlistManhattan(g, netlist)
 
-    # For each starting/target vertex, if the number of paths they are part of == number of free
-    # neighbors, reserve each neighbor for a specific path.
-    for iter in range(5):
-    
-        # Number of paths to find per vertex in newnetlist.
+    """
+    For each vertex in the newnetlist, appoint all its neighbors to that vertex
+    if the number of 'free' neighbors is equal to the number of paths required
+    for that vertex.
+    """
+    for _iter in range(5):
+        # Number of paths per vertex in newnetlist.
         nPaths = numberOfPathsDict(newnetlist)
-        # Number of 'free' neighbors per start/target vertex.
-        nNonGateNeighbors = nonGatePathNeighbors(g, nPaths)
+        # Number of 'free' neighbors per vertex in newnetlist.
+        nFreeNeighbors = nonGatePathNeighbors(g, nPaths)
         for n in nPaths:
-            if nPaths[n] == nNonGateNeighbors[n]:
+            if nPaths[n] == nFreeNeighbors[n]:
                 pathNumber, index = [], []
                 for i in range(N):
                     if newnetlist[i][0] == n:
@@ -71,7 +69,7 @@ def run():
                     elif newnetlist[i][1] == n:
                         index.append(1)
                         pathNumber.append(i + 1)
-                # Reserve each neighbor for a specific path and disconnect it.
+                # Appoint each neighbor of vertex n for a specific path and disconnect it.
                 ind = range(len(pathNumber))
                 random.shuffle(ind)
                 nb = list(g.vertDict[n].adjacent)
@@ -82,12 +80,15 @@ def run():
 
     netlistMH = netlistManhattan(g, newnetlist)
 
-    # For each netlist pair, create a path to the same random layer. 
+    """
+    For each pair in newnetlist, create a path to a single randomly chosen
+    layer.
+    """
     for i in range(N):
         if netlistMH[i] > MIN_MANHATTAN:
 
             # Choose random layer.
-            l = random.choice(range(0, 8))
+            l = random.choice(range(RLOWER, RUPPER))
             # List vertices in layer 'l'.
             lVertices = range(g.SURF * l, g.SURF * (l + 1))
 
@@ -127,6 +128,9 @@ def run():
             disconnectVertex(g, pathFirst)
             disconnectVertex(g, pathSecond)
 
+            prev0 = newnetlist[i][0]
+            prev1 = newnetlist[i][1]
+
             newnetlist[i][0] = foundFirst
             newnetlist[i][1] = foundSecond
 
@@ -137,41 +141,22 @@ def run():
             disconnectVertex(g, computeNeighbors(g, i[0]))
             disconnectVertex(g, computeNeighbors(g, i[1]))
 
-    g.newnetlist = copy.deepcopy(newnetlist)
-
-    # Try to find the complete path list twice (some neighbors of
-    # starting/target vertices might be disconnected on the first iteration but
-    # connected on the second iteration.
-    if D:
-        rounds = 2
-    else:
-        rounds = 1
-
+    """
+    In round 1, find for each pair in newnetlist their path (if possible).
+    In round 2, for those gate pairs in the netlist still unconnected, remove
+    their previously layed path (to a random layer) and try again.
+    """
+    rounds = 2
     for x in range(rounds):
 
-        # EXPERIMENTAL
-        # If there are paths reserved but not used, remove them.
-        if x == 1:
-            for i in range(N):
-                if not g.connectedPaths[i]:
-                    # print (i + 1)
-                    for v in g:
-                        if v.path == (i + 1):
-                            v.path = 0
-            for v in g:
-                if not v.path and not v.gate:
-                    connectVertex(g, v.id)
-            for i in range(N):
-                if g.connectedPaths[i]:
-                    newnetlist[i] = [0, 0]
-        # EXPERIMENTAL END
-
-        # Find paths between the (updated) netlist vertex pairs.
+        # Find paths between the newnetlist vertex pairs.
         p = 0
-        for n in newnetlist:
-            p += 1
-            if n == [0, 0]:
+        for i in range(N):
+            if g.connectedPaths[i]:
                 continue
+            n = newnetlist[i]
+            
+            p += 1
             start = g.vertDict[n[0]]
             target = g.vertDict[n[1]]
 
@@ -196,90 +181,55 @@ def run():
             path = []
             path.append(target.id)
             tracePath(g, target, path)
-            disconnectVertex(g, path)
+            disconnectVertex(g, [n[1]])
 
             if len(path) > 1:
-                g.found += 1
                 g.connectedPaths[p - 1] = True
-
-            # Assign all vertices in the path (not the gates) the path id 
-            for i in path:
-                cur = g.vertDict[i]
-                if not cur.gate:
-                    cur.path = p
+                disconnectVertex(g, path)
+                for i in path:
+                    cur = g.vertDict[i]
+                    if not cur.gate:
+                        cur.path = p
 
             # Prepare graph for next search.
             for v in g:
                 v.previous = None
 
-            # # EXPERIMENTAL
-            # # Make sure there are no redundant vertices in the path
-            # gtemp = copy.deepcopy(g)
-            # pathlist = []
-            # for v in gtemp:
-            #     if v.path == p:
-            #         pathlist.append(v.id)
-
-            # disconnectVertex(g, range(v.id))
-            # for v in gtemp: 
-            #     if v.id in pathlist:
-            #         for nb in computeNeighbors(g, v.id):
-            #             if nb in pathlist:
-            #                 v.addNeighbor()
-            #         disconnectVertex(g, [v.id])
-
-            # import IPython; IPython.embed()
-
-            # pathlist = []
-            # for v in g:
-            #     if v.path == p:
-            #         pathlist.append(v.id)
-            #         connectVertex(g, v.id)
-            #     else:
-            #         disconnectVertex(g, [v.id])
-
-            # nl = netlist[p-1]
-            # connectVertex(g, nl[1])
-            # algorithms.aStar(g, g.vertDict[nl[0]], g.vertDict[nl[1]])
-            # path = []
-            # path.append(nl[1])
-            # tracePath(g, g.vertDict[nl[1]], path)
-            # disconnectVertex(g, path)
-
-            # for v in g:
-            #     if not v.path and not v.gate:
-            #         connectVertex(g, v.id)
-            #     else:
-            #         disconnectVertex(g, [v.id])
-            # import IPython; IPython.embed()
-
-            # # EXPERIMENTAL END
+        # If there are paths reserved but not used, remove them.
+        if x == 0:
+            for i in range(N):
+                if not g.connectedPaths[i]:
+                    for v in g:
+                        if v.path == (i + 1):
+                            v.path = 0
+                    newnetlist[i] = netlist[i]
+                else:
+                    newnetlist[i] = [0, 0]
+            for v in g:
+                if not v.path and not v.gate:
+                    connectVertex(g, v.id)
 
     g.cost = 0
     for v in g:
         if v.path:
             g.cost += 1
+    g.found = 0
+    for i in g.connectedPaths:
+        if i:
+            g.found += 1
 
     g.netlist = netlist
 
     return g
 
 if __name__ == "__main__":
-    # startTime = time.time()
-
-    # # Keep track of what gates are difficult to connect:
-    # notConnected = {}
-    # for i in gateList:
-    #     notConnected[i] = 0
-
-    """
-    USER INPUT
-    """
 
     from core import *
     from data.netlist import *
     import algorithms, random, copy, hillclimbers
-
+    """
+    USER INPUT
+    """
     # get user input
     user_input = user_input()
 
@@ -294,19 +244,20 @@ if __name__ == "__main__":
     TOFIND = user_input["TOFIND"]
     N = len(netlist)
 
-    MAX_LAYER_ITERATIONS = 10000
+    MAX_LAYER_ITERATIONS = 2000
     MAX_HILLCLIMBER = 1000
-    # 2 OR 3?
+    RLOWER = 0 # Lower bound of randomly chosen layers 
+    RUPPER = 8 # Upper bound of randomly chosen layers 
     MIN_MANHATTAN = 4
 
     DEPTH = 8
     SURF = WIDTH * HEIGHT
     # Show visualization (V = 1) or not (V = 0)
     V = 1
-    # Disconnect neighbors # WERKT AVERECHTS
-    D = 0
+    # Disconnect neighbors
+    D = 1
     # Optimize after initial run() (Hillclimber)
-    O = 0
+    # O = 0
     # Initialize variables that never change.
     gateList = []
     for c in gates:
@@ -317,10 +268,10 @@ if __name__ == "__main__":
 
     import pickle
 
-    found = []
-    m, iterations = 0, 0
+    m, iterations, found = 0, 0, []
     print 'To find: ' + str(TOFIND)
     print 'Iterations until hillclimbing: ' + str(MAX_LAYER_ITERATIONS)
+    startTime = time.time()
     while True:
         g = run()
         iterations += 1
@@ -330,38 +281,39 @@ if __name__ == "__main__":
         if g.found > m:
             glist = []
             m = g.found
-            # # Save newly (max) found object as ..pkl
-            # with open('randomLayerNL6_Nfound6.pkl', 'wb') as output:
-            #     pickle.dump(g, output, pickle.HIGHEST_PROTOCOL)
+            # Save newly (max) found object as ..pkl
+            with open('randomLayerNL3_50found15dec.pkl', 'wb') as output:
+                pickle.dump(g, output, pickle.HIGHEST_PROTOCOL)
         if (g.found == m):
             glist.append(copy.deepcopy(g))
             print 'Newly found: ' + str(m) + ', ' + str(len(glist)) + ' times.'
-
-        if (g.found is TOFIND) or (iterations >= MAX_LAYER_ITERATIONS):
-        # if (g.found >= 65): #or (iterations >= MAX_LAYER_ITERATIONS):
+        # if (g.found is TOFIND) or (iterations >= MAX_LAYER_ITERATIONS):
         # if (iterations >= MAX_LAYER_ITERATIONS):
+        if (g.found is TOFIND):
             break
+    import IPython; IPython.embed()
 
+    print 'Time elapsed: ' + str(time.time() - startTime)
     print 'number of graphs with ' + str(m) + ': ' + str(len(glist))
 
-    if O:
-        # Hillclimber session
-        for m in range(len(glist)):
-            iterations = 0
-            found = g.found
-            g = copy.deepcopy(glist[m])
-            print 'Starting hillclimber'
-            print 'Paths found at start hillclimber session: ' + str(g.found)
-            print 'Number of paths in netlist: ' + str(N)
-            while not (found == N) and (iterations <= MAX_HILLCLIMBER):
-                gcopy = copy.deepcopy(g)
-                nRemovePaths = random.randint(2,15)
-                hillclimbers.standardHillClimber(gcopy, N, nRemovePaths)
-                iterations += 1
-                if gcopy.found > g.found:
-                    g = copy.deepcopy(gcopy)
-                    found = g.found
-                    print 'new: ' + str(found)
+    # if O:
+    #     # Hillclimber session
+    #     for m in range(len(glist)):
+    #         iterations = 0
+    #         found = g.found
+    #         g = copy.deepcopy(glist[m])
+    #         print 'Starting hillclimber'
+    #         print 'Paths found at start hillclimber session: ' + str(g.found)
+    #         print 'Number of paths in netlist: ' + str(N)
+    #         while not (found == N) and (iterations <= MAX_HILLCLIMBER):
+    #             gcopy = copy.deepcopy(g)
+    #             nRemovePaths = random.randint(2,15)
+    #             hillclimbers.standardHillClimber(gcopy, N, nRemovePaths)
+    #             iterations += 1
+    #             if gcopy.found > g.found:
+    #                 g = copy.deepcopy(gcopy)
+    #                 found = g.found
+    #                 print 'new: ' + str(found)
 
     print 'found: ' + str(found)
     print 'g.found: ' + str(g.found)
@@ -410,27 +362,28 @@ if __name__ == "__main__":
     # import pylab
     # pylab.savefig('frequencyBar.png')
 
-    # Frequency chart of solutions per iteration, with normal fitted.
-
-    import numpy as np
-    from scipy.stats import norm
-    import matplotlib.pyplot as plt
-    data = found
-    mu, std = norm.fit(data)
-    plt.hist(data, bins=25, normed=True, alpha=0.6, color='g')
-    xmin, xmax = plt.xlim()
-    x = np.linspace(xmin, xmax, 100)
-    p = norm.pdf(x, mu, std)
-    plt.plot(x, p, 'k', linewidth = 2)
-    title = "Fit results: mu = %.2f, std = %.2f" % (mu, std)
-    plt.title(title)
-    import pylab
-    pylab.savefig('frequencyBarNormDist.png')
-
     # Save jsonThreejs.json file (based on g) for 3D visualization.
     
     import toThreejs
     toThreejs.convert(g)
+
+    # Frequency chart of solutions per iteration, with normal fitted.
+
+    # import numpy as np
+    # from scipy.stats import norm
+    # import matplotlib.pyplot as plt
+    # data = found
+    # mu, std = norm.fit(data)
+    # plt.hist(data, bins=25, normed=True, alpha=0.6, color='g')
+    # xmin, xmax = plt.xlim()
+    # x = np.linspace(xmin, xmax, len(data))
+    # p = norm.pdf(x, mu, std)
+    # plt.plot(x, p, 'k', linewidth = 2)
+    # title = "Fit results: mu = %.2f, std = %.2f" % (mu, std)
+    # plt.title(title)
+    # import pylab
+    # pylab.savefig('frequencyBarNormDist.png')
+
 
     # import IPython; IPython.embed()
 
