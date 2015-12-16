@@ -294,6 +294,9 @@ if __name__ == "__main__":
     import IPython; IPython.embed()
 
     print 'Time elapsed: ' + str(time.time() - startTime)
+    statespace = compute_statespace(g, netlist, WIDTH)
+    print 'State space: ' + statespace
+
     print 'number of graphs with ' + str(m) + ': ' + str(len(glist))
 
     # if O:
