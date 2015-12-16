@@ -360,11 +360,10 @@ def compute_statespace(g, netlist, WIDTH):
     for i in range(len(netlist_dist)):
         length = netlist_dist[i]["y"]
         width = netlist_dist[i]["x"]
-        state_space = math.factorial(length + width) / (math.factorial(length) * math.factorial(width))
+        state_space = math.factorial(length + width) / (math.factorial(length) \
+            * math.factorial(width))
         total_statespace += state_space
 
     total_statespace = total_statespace * math.factorial(70)
-
-    print 'State space: ' + total_statespace
 
     return total_statespace
