@@ -5,7 +5,7 @@ De GitHub repository behorende tot deze opdracht kan gevonden worden via: https:
 
 Deze files bevatten onze aanpak van de case 'Chips and Circuits', door Hasine, Marianne en Maurits.
 
-De aanpak is zoveel mogelijk modulair gehouden, zodat verschillende algoritmen van dezelfde functies gebruik kunnen maken.
+De aanpak is zoveel mogelijk modulair gehouden, zodat bij verschillende methoden van dezelfde functies gebruik gemaakt kan worden.
 Alle scripts zijn hoofdzakelijk geschreven in Python v2.7.x.
 
 Benodigde externe libraries:
