@@ -18,12 +18,22 @@ Verder zijn voor analyse matplotlib en numpy gebruikt.
 
 visualizations
 
-    - 2D visualizatie van de grid.
+    2D visualizatie van de grid.
 
 data
 
-    - oorspronkelijke data: info over de grootte van de grids, posities van gates en de netlists.
+    oorspronkelijke data: info over de grootte van de grids, posities van gates en de netlists.
 
 ###Scripts
 
+#### Algoritmes
 
+run_Sort.py
+run_Cross.py
+run_Disconnect.py
+run_randomLayer.py
+
+#### Modules
+
+core.py
+algorithms.py
