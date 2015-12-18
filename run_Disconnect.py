@@ -157,34 +157,7 @@ def run():
 if __name__ == "__main__":
     startTime = time.time()
 
-    from core import *
-    from data.netlist import *
-    import algorithms
-    import random
-
-    # get user input
-    user_input = user_input()
-
-    # set config from user input
-    if user_input["config"] == 1:
-        from data.config1 import width as WIDTH, height as HEIGHT, gates
-    elif user_input["config"] == 2:
-        from data.config2 import width as WIDTH, height as HEIGHT, gates
-
-    # set netlist and number of paths to find from user input
-    netlist = netlists[user_input["netlist"] - 1]
-    TOFIND = user_input["TOFIND"]
-
-    DEPTH = 8
-    SURF = WIDTH * HEIGHT
-    # Show visualization (V = 1) or not (V = 0)
-    V = 1
-    # Initialize variables that never change.
-    gateList = []
-    for c in gates:
-        gateList.append(c[1] * WIDTH + c[0])
-
-    MAX_ITERATIONS = 2000
+    MAX_ITERATIONS = 500
     m, iterations, found, cost = 0, 0, [], []
     while True:
         iterations += 1
