@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<!-- Source(adapted from): view-source:http://threejs.org/examples/webgl_lines_colors.html -->
+<!-- NOTE: This script should be run from Firefox to have the greatest chance to work (without having to set up a server). -->
+<!-- The current visualization uses jsonThreejs.json (located in this folder) to visualize a solution of the network. --> 
+<!-- Specifically, this visualization shows a solution of Netlist 5 using the Random layers method. -->
+<html lang="en">
+	<head>
+		<title>EDITED three.js canvas - lines - colors</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			body {
+				background-color: #000000;
+				margin: 0px;
+				overflow: hidden;
+			}
+
+			a {
+				color:#0078ff;
+			}
+
+			#info {
+				position: absolute;
+				top: 10px; width: 100%;
+				color: #ffffff;
+				padding: 5px;
+				font-family: Monospace;
+				font-size: 13px;
+				text-align: center;
+				z-index:100;
+			}
+
+			a {
+				color: orange;
+				text-decoration: none;
+			}
+
+			a:hover {
+				color: #0080ff;
+			}
+
+		</style>
+		<script src="js/d3.min.js"></script>
+	</head>
+	<body>
+
+		<script src="build/three.min.js"></script>
+
+		<script src="js/renderers/Projector.js"></script>
+		<script src="js/renderers/CanvasRenderer.js"></script>
+
+		<script src="js/Detector.js"></script>
+		<script src="js/libs/stats.min.js"></script>
+		<script src="js/geometries/hilbert3D.js"></script>
+
+		<script>
+
+			if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+
+			var mouseX = 0, mouseY = 0,
+
+			windowHalfX = window.innerWidth / 2,
+			windowHalfY = window.innerHeight / 2,
+
+			camera, scene, renderer, material;
+
+			init();
+			animate();
+
+			function init() {
+
+				var i, container;
+
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
+
+				camera = new THREE.PerspectiveCamera( 33, window.innerWidth / window.innerHeight, 1, 10000 );
+				camera.position.z = 700;
+
+				scene = new THREE.Scene();
+
+				renderer = new THREE.CanvasRenderer();
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				container.appendChild( renderer.domElement );
+
+                // Load json data.
+                points = []
+                d3.json("jsonThreejs.json", function(error, json) {
+                    if (error) return console.warn(error);
+                    console.log(json)
+                    var p
+
+                    for (p = 0; p < json.length; p++ ){
+                        points = json[p];
+                        geometry3 = new THREE.Geometry()
+                        colors3 = [];
+
+                        // Random color.
+                        var c = '#'+Math.floor(Math.random()*16777215).toString(16);
+
+                        for ( i = 0; i < points.length; i ++ ) {
+                            geometry3.vertices.push( points[ i ] );
+                            colors3[ i ] = new THREE.Color( c );
+                        }
+                        geometry3.colors = colors3;
+
+                        material = new THREE.LineBasicMaterial( { color: 0xffffff, opacity: 1, linewidth: 3, vertexColors: THREE.VertexColors } );
+
+                        var line, p, d = 225;
+
+                        line = new THREE.Line(geometry3, material );
+                        line.scale.x = line.scale.y = line.scale.z =  2;
+                        line.position.x = 0;
+                        line.position.y = 0 + 100;
+                        line.position.z = 0;
+                        scene.add( line );
+                                
+                    }
+
+                    document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+                    document.addEventListener( 'touchstart', onDocumentTouchStart, false );
+                    document.addEventListener( 'touchmove', onDocumentTouchMove, false );
+                    document.addEventListener( 'keydown', onDocumentKeyDown, false );
+
+                    window.addEventListener( 'resize', onWindowResize, false );
+                    })
+
+			}
+
+			function onWindowResize() {
+
+				windowHalfX = window.innerWidth / 2;
+				windowHalfY = window.innerHeight / 2;
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+			}
+
+			function onDocumentMouseMove( event ) {
+				mouseX = event.clientX - windowHalfX;
+				mouseY = event.clientY - windowHalfY;
+			}
+
+            var autoTurn = false
+			function onDocumentKeyDown( event ) {
+                autoTurn = !autoTurn;
+			}
+
+			function onDocumentTouchStart( event ) {
+				if ( event.touches.length > 1 ) {
+					event.preventDefault();
+					mouseX = event.touches[ 0 ].pageX - windowHalfX;
+					mouseY = event.touches[ 0 ].pageY - windowHalfY;
+				}
+			}
+
+			function onDocumentTouchMove( event ) {
+
+				if ( event.touches.length == 1 ) {
+					event.preventDefault();
+					mouseX = event.touches[ 0 ].pageX - windowHalfX;
+					mouseY = event.touches[ 0 ].pageY - windowHalfY;
+				}
+			}
+
+			function animate() {
+				requestAnimationFrame( animate );
+				render();
+			}
+
+			function render() {
+				camera.position.x += ( mouseX - camera.position.x ) * .05;
+				camera.position.y += ( - mouseY + 200 - camera.position.y ) * .05;
+				camera.lookAt( scene.position );
+				var time = Date.now() * 0.0005;
+				for ( var i = 0; i < scene.children.length; i ++ ) {
+					var object = scene.children[ i ];
+					if ( autoTurn ) object.rotation.y = time * (0.5);
+				}
+				renderer.render(scene, camera );
+			}
+
+		</script>
+	</body>
+</html>
+
