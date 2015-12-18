@@ -26,14 +26,27 @@ data
 
 ###Scripts
 
-#### Algoritmes
+#### Methoden
+
+Gebruiksaanwijzing van de methoden:
+
+Na het runnen van een van de methodes wordt gevraagd om input: de juiste chip en netlist kunnen hier gekozen worden. 
+Aan de hand van de in het script hard-gecodeerde variabelen zal het script wel/geen visualizatie tonen en een bepaald aantal iteraties runnen.
 
 run_Sort.py
+
 run_Cross.py
+
 run_Disconnect.py
+
 run_randomLayer.py
 
 #### Modules
 
 core.py
+
+Core bevat functies die een Graph kunnen maken en aanpassen (bijvoorbeeld om connecties tussen vertices te creeeren of wegnemen). Ook bevinden zich hier functies om berekeningen uit te voeren, zoals het berekenen van de manhattan distance tussen een paar vertices.
+
 algorithms.py
+
+Algorithms bevat manieren om het (kortste) pad te berekenen tussen twee vertices: Breadth First search en AStar, met bijbehorende heuristiek.
