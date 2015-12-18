@@ -1,5 +1,5 @@
 # Heuristics-Chips-Circuits
-De GitHub repository behorende tot deze opdracht kan gevonden worden via: http://heuristieken.nl/wiki/index.php?title=Chips_%26_Circuits
+De GitHub repository behorende tot deze opdracht kan gevonden worden via: https://github.com/mdhk/Heuristics-Chips-Circuits 
 
 ## Informatie:
 
@@ -14,12 +14,14 @@ Verder zijn voor analyse matplotlib en numpy gebruikt.
 
 ## Scripts en folders:
 
-Folders:
+###Folders:
 
 visualizations
     - 2D visualizatie van de grid.
 
 data
     - oorspronkelijke data: info over de grootte van de grids, posities van gates en de netlists.
+
+###Scripts:
 
 
