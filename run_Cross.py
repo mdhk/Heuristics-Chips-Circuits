@@ -86,7 +86,6 @@ def solve(g,netlist, vertices_shortest_path):
         print(message.rjust(27)),
 
 
-
         # Use algorithm to compute a path between start and target.
         algorithm(g, start, target)
 
@@ -115,13 +114,6 @@ def solve(g,netlist, vertices_shortest_path):
         # Prepare graph for next search.
         for v in g:
             v.previous = None
-
-
-        # # Fill grid for subsequent visualization.
-        # if len(path) > 1:
-        #     for i in path[1:-1]:
-        #         grid[(i % SURF) / WIDTH][i % WIDTH][i / SURF] = 1
-        # draw.drawGrid(grid, screen, depth)
 
     if (f == 0):
         stop = 1
@@ -185,9 +177,7 @@ MESSAGES TO USER
 
 print '\nCosts algorithm: ' + str(c) + '.'
 print '\nTotal time: ' + str(totalTime) + ' seconds.'
-# print '\nLength every path: ' + str(pathlen)
 print '\nSuccesfully connected ' + str(tp) + ' of ' + str(len(netlist)) + ' required paths.'
-
 print '\nSize surface: ' + str(SURF) + '.'
 print '\nShowing layer: ' + str(depth)
 

@@ -1,6 +1,9 @@
 """
 CHIPS AND CIRCUITS
 """
+# to debug some function, use this:
+# import IPython;
+# IPython.embed();
 
 from core import *
 from data.netlist import *
@@ -18,6 +21,7 @@ elif user_input["config"] == 2:
 # set netlist and number of paths to find from user input
 netlist = netlists[user_input["netlist"] - 1]
 TOFIND = user_input["TOFIND"]
+
 
 """
 VARIABLES and STRINGS
@@ -40,11 +44,6 @@ totalTime = 0
 """
 INITIALIZE GRAPH AND VISUALIZATION
 """
-# to debug some function, use this:
-# import IPython;
-# IPython.embed(); 
-
-
 # Create graph and connect it.
 g = Graph(WIDTH, HEIGHT, DEPTH, SURF)
 connectGraph(g)

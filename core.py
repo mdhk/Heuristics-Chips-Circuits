@@ -14,7 +14,6 @@ disconnecting vertices (e.g. gates and paths)
 import pygame, sys, time, random
 import visualizations.pygameGrid as draw
 from algorithms import aStar as algorithm
-import math
 
 class Graph:
     def __init__(self, width, height, depth, surf):
@@ -124,30 +123,6 @@ def tracePath(g, v, path):
         tracePath(g, g.vertDict[v.previous], path)
         return
 
-# # Remove connections to nodes in the found path, and state what path a
-# # given node participates in.
-# def applyPath(g, start, target, p):
-#     # Compute path.
-#     target = g.vertDict[target]
-#     path = []
-#     path.append(target.id)
-
-#     tracePath(g, target, path)
-
-#     # Delete connections to nodes in the path.
-#     disconnectVertex(g, path)
-
-#     for i in path:
-#         g.vertDict[i].path = p
-
-#     # Prepare graph for next search.
-#     for v in g:
-#         v.distance = sys.maxint
-#         v.visited = False
-#         v.previous = None
-
-#     return path
-
 
 def verticesWithShortestPath(g, pathlen, pathsvert, vertices_shortest_path):
     # amount paths on every vertex
@@ -178,11 +153,6 @@ def verticesWithShortestPath(g, pathlen, pathsvert, vertices_shortest_path):
             if (verticesWithShortestPath.shortest_path == pathsvert[vertex][path]):
                 vertices_shortest_path.append(vertex)
 
-    print '\nThe most paths are going over vertex: ' + str(x)
-    print '\nPaths over ' + str(x) + ': ' + str(y)
-    print '\nLengths paths over ' + str(x) + ': ' + str(z)
-    print '\nMin length: ' + str(v) + ' from path ' + str(verticesWithShortestPath.shortest_path)
-    print '\nVertices shortest path: ' + str(vertices_shortest_path)
     # print '\nPaths on every vertex: ' + str(pathsvert)
     # print '\nTotal paths on every vertex: ' + str(totalpathsvert)
 
@@ -314,10 +284,11 @@ def netlistConvert2(g, netlist, gateList):
         new_netlist.append((gateList[i[0]],gateList[i[1]]))
     return new_netlist
 
+# returns for every element in the netlist, the Manhattan distance between the two gates.
 def netlistCalcDist(g, new_netlist):
     netlistManhattan = []   
     for j in new_netlist:
-        netlistManhattan.append({"x": abs(g.vertDict[j[0]].x - g.vertDict[j[1]].x),  "y": abs(g.vertDict[j[0]].y - g.vertDict[j[1]].y)})
+        netlistManhattan.append(abs(g.vertDict[j[0]].x - g.vertDict[j[1]].x) + abs(g.vertDict[j[0]].y - g.vertDict[j[1]].y))
     return netlistManhattan
 
 def short2longNetlist(new_netlist, netlistManhattan):
@@ -355,19 +326,3 @@ def mostConnexionNetlist(g, netlist, gateList):
         del numpaths[index_most_con]
         del gateList[index_most_con]
     return most_connexions_netlist
-
-def compute_statespace(g, netlist, WIDTH):
-    new_netlist = netlistConvert(WIDTH, netlist, netlist)
-    netlist_dist = netlistCalcDist(g, new_netlist)
-
-    total_statespace = 0
-    for i in range(len(netlist_dist)):
-        length = netlist_dist[i]["y"]
-        width = netlist_dist[i]["x"]
-        state_space = math.factorial(length + width) / (math.factorial(length) \
-            * math.factorial(width))
-        total_statespace += state_space
-
-    total_statespace = total_statespace * math.factorial(70)
-
-    return total_statespace

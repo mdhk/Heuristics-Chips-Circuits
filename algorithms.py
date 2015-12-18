@@ -35,25 +35,6 @@ def normalManhattan(target, next, current):
     # Output is delta x, delta y and delta z
     return abs(target.x - next.x) + abs(target.y - next.y) + abs(target.z - next.z)
 
-def weirdManhattan(target, next, current):
-    initial = abs(target.x - next.x) + abs(target.y - next.y) + abs(target.z - next.z)
-    bias = 0
-    if current.z > next.z:
-        bias = 100 
-    return initial + bias
-
-# DOES NOT WORK YET
-def biasManhattan(target, next, current):
-    manh = abs(target.x - next.x) + abs(target.y - next.y) + next.z
-    bias = 0
-    if (next.z > current.z or next.z < current.z):
-       bias = -10 * (abs(target.z - next.z))
-    if (current.z == next.z):
-        bias = 10 * (abs(target.x - next.x) + abs(target.y - next.y))
-    heur = manh + bias
-    return heur
-
-
 
 """
 aStar
@@ -137,42 +118,3 @@ def bfs(graph, start, targets):
                     graph.vertDict[v].previous = current
                 if (v in targets):
                     return v
-
-"""
-DIJKSTRA
-"""
-
-import heapq
-
-def dijkstra(graph, start, target):
-    start.setDistance(0)
-
-    unvisitedQueue = [(v.distance, v) for v in graph]
-    heapq.heapify(unvisitedQueue)
-
-    while len(unvisitedQueue):
-        uv = heapq.heappop(unvisitedQueue)
-        current = uv[1]
-        current.visited = True
-
-        for next in current.adjacent:
-            next = graph.vertDict[next]
-            if next.visited:
-                continue
-            new_dist = current.distance + 1
-
-            if new_dist < next.distance:
-                next.distance = new_dist
-                next.previous = current.id
-        
-        # Note: probably not optimal to clear queue and build it up again every
-        # time.. 
-        while len(unvisitedQueue):
-            heapq.heappop(unvisitedQueue)
-        unvisitedQueue = [(v.distance, v) for v in graph if not
-                v.visited]
-        heapq.heapify(unvisitedQueue)
-
-        # When target has been visited, break
-        if target.visited:
-            break
