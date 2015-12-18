@@ -1,7 +1,7 @@
 # Heuristics-Chips-Circuits
 De GitHub repository behorende tot deze opdracht kan gevonden worden via: https://github.com/mdhk/Heuristics-Chips-Circuits 
 
-## Informatie:
+## Informatie
 
 Deze files bevatten onze aanpak van de case 'Chips and Circuits', door Hasine, Marianne en Maurits.
 
@@ -12,16 +12,18 @@ Benodigde externe libraries:
 Om de 2D visualizatie te kunnen runnen is Pygame noodzakelijk.
 Verder zijn voor analyse matplotlib en numpy gebruikt.
 
-## Scripts en folders:
+## Scripts en folders
 
-###Folders:
+###Folders
 
 visualizations
+
     - 2D visualizatie van de grid.
 
 data
+
     - oorspronkelijke data: info over de grootte van de grids, posities van gates en de netlists.
 
-###Scripts:
+###Scripts
 
 
