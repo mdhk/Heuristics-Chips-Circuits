@@ -5,7 +5,10 @@ CHIPS AND CIRCUITS
 from core import *
 from data.config1 import width as WIDTH, height as HEIGHT, gates
 from data.netlist import netlist_1 as netlist
+<<<<<<< HEAD
 from random import randint
+=======
+>>>>>>> bf8f8d58e9f3e977f8e3cdde53c9e8248d5d9600
 
 
 DEPTH = 8
@@ -76,8 +79,13 @@ def solve(g,netlist, vertices_shortest_path):
         # vertices without a pre-existing path.
         connectNonGateVertex(g, target.id)
 
+<<<<<<< HEAD
         message = 'Find path between ' + str(n[0]) + ' and ' + str(n[1])
         print(message.rjust(27)),
+=======
+        # message = 'Find path between ' + str(n[0] + 1) + ' and ' + str(n[1] + 1)
+        # print(message.rjust(27)),
+>>>>>>> bf8f8d58e9f3e977f8e3cdde53c9e8248d5d9600
 
 
         # Use algorithm to compute a path between start and target.
@@ -96,10 +104,14 @@ def solve(g,netlist, vertices_shortest_path):
 
 
         if len(path) > 1:
+<<<<<<< HEAD
             print p, path
+=======
+            # print path
+>>>>>>> bf8f8d58e9f3e977f8e3cdde53c9e8248d5d9600
             f += 1
-        else:
-            print '          PATH NOT FOUND '
+        # else:
+        #     print '          PATH NOT FOUND '
 
 
         p += 1
@@ -114,10 +126,16 @@ def solve(g,netlist, vertices_shortest_path):
             for i in path[1:-1]:
                 grid[(i % SURF) / WIDTH][i % WIDTH][i / SURF] = 1
         draw.drawGrid(grid, screen, depth)
+<<<<<<< HEAD
     if (f == 0):
         stop = 1
     return stop
     
+=======
+
+    # print '\nLength every path: ' + str(pathlen)
+    # print 'Succesfully connected ' + str(f) + ' of ' + str(len(netlist)) + ' required paths.'
+>>>>>>> bf8f8d58e9f3e977f8e3cdde53c9e8248d5d9600
 
 """
 SOLVE

@@ -34,6 +34,7 @@
 \usepackage{courier} % Required for the courier font
 \usepackage{lipsum} % Used for inserting dummy 'Lorem ipsum' text into the template
 \usepackage{tocloft}
+\usepackage{amsmath}
 
 % Margins
 \topmargin=-0.45in
@@ -56,7 +57,7 @@
 \renewcommand\headrulewidth{0.4pt} % Size of the header rule
 \renewcommand\footrulewidth{0.4pt} % Size of the footer rule
 
-\setlength\parindent{0pt} % Removes all indentation from paragraphs
+\setlength\parindent{25pt} % Removes all indentation from paragraphs
 
 %----------------------------------------------------------------------------------------
 %	CODE INCLUSION CONFIGURATION
@@ -162,8 +163,10 @@
 	\textmd{\textbf{\hmwkTitle}}\\
 	\vspace{0.1in}\large{\textit{\hmwkAuthorName}} \\
 	\normalsize\vspace{0.1in}\small{\hmwkClass, `\hmwkClassTime'\\ \hmwkClassInstructor\\ \hmwkDueDate} \\
+	\vfill \vfill \vfill
+	\includegraphics[width=0.75\columnwidth]{Circuit-board}
 	\vfill
-	\includegraphics[width=0.85\columnwidth]{Circuit-board}
+	\includegraphics[width=0.75\columnwidth]{3dviz}
 	\vfill
 }
 
@@ -172,6 +175,7 @@
 %----------------------------------------------------------------------------------------
 
 \begin{document}
+	\pagenumbering{gobble}
 	
 	\maketitle
 	
@@ -182,6 +186,7 @@
 	%\setcounter{tocdepth}{1} % Uncomment this line if you don't want subsections listed in the ToC
 	
 	\newpage
+	\pagenumbering{arabic}
 	\renewcommand{\cftdot}{.}
 	\renewcommand{\contentsname}{INHOUDSOPGAVE}
 	\tableofcontents
@@ -195,7 +200,16 @@
 
 	\section{1. Inleiding}
 	
-	Hallo hallo
+	Elektronische chips (of \textit{ge\"\i ntegreerde circuits}) zijn te vinden in vrijwel elk elektronisch apparaat, van computers tot telefoons en magnetrons. Ze worden gebruikt om verschillende functies binnen deze apparaten uit te voeren, zoals het bijhouden van de tijd, maar ook bijvoorbeeld logische berekeningen. Computers kunnen met geen mogelijkheid zonder chips, en het optimaal configureren van deze chips is dus van essentieel belang. In dit verslag zullen we beschrijven hoe we de optimale configuratie van de circuits op een chip computationeel hebben proberen te simuleren, en de resultaten presenteren die daaruit zijn voortgekomen.
+	\par
+	Een chip bestaat uit een klein siliconen plaatje met een aantal logische gates, die op een gespecificeerde manier met elkaar zijn verbonden door elektrische paden. Een chip kan bestaan uit meerdere lagen, waarbij alleen op de bovenste laag gates zitten; de elektrische paden kunnen dan over meerdere lagen lopen. Voor onze simulatie hebben we twee verschillende chipconfiguraties gebruikt, met verschillende groottes en hoeveelheden gates. Voor beide configuraties konden de gates op drie verschillende manieren verbonden konden worden. De zes lijsten van met elkaar te verbinden gates noemen we netlists. De netlists specificeerden steeds een tiental van 30 tot 70 elektrische paden die gelegd moesten worden. De totale lengte van de paden moet zo kort mogelijk zijn, maar de te leggen paden mogen elkaar niet kruisen. Bovendien kunnen de paden uitwijken naar lagere lagen van de chip, maar in totaal kan de chip niet uit meer dan 8 lagen bestaan. ?? ZIE AFBEELDING ??
+	\par
+	De toestandsruimte met alle mogelijke paden is enorm: voor alleen alle mogelijke kortste paden bij de kleinste configuratie in onze simulatie (een chip van 18 bij 13 met 25 gates) is bijvoorbeeld al 1.763114 * 10105. Het beschreven probleem is daarom een NP-hard probleem - dat wil zeggen dat het niet in polynomiale tijd is op te lossen door middel van een brute force techniek (het simpelweg uitproberen van alle mogelijke opties). Het gebruik van slimme algoritmes en goed gekozen heuristieken is daarom belangrijk om toch binnen een redelijke tijd een werkbare oplossing te kunnen vinden.
+	\par
+	Voor onze simulatie hebben we verschillende zoekalgoritmen en heuristieken vergeleken. In het hoofdstuk ‘Methodes’ zullen we die bespreken en vergelijken. In de hoofdstukken ‘Resultaten’ en ‘Conclusie’ zullen we vervolgens onze beste resultaten presenteren en advies geven voor verdere mogelijke optimalisaties van chipconfiguraties.
+	$\sum_{i=1}^{70} \frac{(|\Delta x[i]| + |\Delta y[i]|)!}{|\Delta x[i]|! * |\Delta y[i]|!} * 70!$
+	
+	
 	
 	\section{2. Methodes}
 	
