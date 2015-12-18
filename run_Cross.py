@@ -124,7 +124,7 @@ def solve(g,netlist, vertices_shortest_path):
 SOLVE
 """
 # Count costs total
-c = 0    
+cost = 0    
 startTime = time.time()
 # Counts found paths 
 tp = 0
@@ -157,7 +157,7 @@ for i in range(len(new_netlist)):
     tp += 1
     
     new_netlist.pop(verticesWithShortestPath.shortest_path)
-    c += len(vertices_shortest_path) + 1
+    cost += len(vertices_shortest_path) + 1
     pathlen = []
     vertices_shortest_path = []
     verticesWithShortestPath.shortest_path = 0
@@ -167,6 +167,8 @@ for i in range(len(new_netlist)):
     if (stop == 1):
         break
 
+for i in total_vertices_shortest_path:
+    cost += len(i)
 
 elapsedTime = time.time() - startTime
 totalTime += elapsedTime
@@ -175,7 +177,7 @@ totalTime += elapsedTime
 MESSAGES TO USER
 """
 
-print '\nCosts algorithm: ' + str(c) + '.'
+print '\nCosts algorithm: ' + str(cost) + '.'
 print '\nTotal time: ' + str(totalTime) + ' seconds.'
 print '\nSuccesfully connected ' + str(tp) + ' of ' + str(len(netlist)) + ' required paths.'
 print '\nSize surface: ' + str(SURF) + '.'

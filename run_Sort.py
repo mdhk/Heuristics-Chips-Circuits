@@ -36,7 +36,8 @@ p = 0
 # Count found paths
 f = 0
 # Count costs total
-c = 0
+cost = 0
+mincost = 0
 depth = 0 
 totalTime = 0
 
@@ -113,7 +114,7 @@ for n in newnet:
     if len(path) > 1:
         print path
         f += 1
-        c += len(path) - 1
+        cost += len(path) - 1
     else:
         print '          PATH NOT FOUND '
 
@@ -126,7 +127,7 @@ for n in newnet:
     totalTime += elapsedTime
 
 print '\nTotal time: ' + str(totalTime) + ' seconds.'
-print '\nCosts algorithm: ' + str(c) + '.'
+print '\nCosts algorithm: ' + str(cost) + '.'
 print '\nSuccesfully connected ' + str(f) + ' of ' + str(len(netlist)) + '\
  required paths.'
 print '\nSize surface: ' + str(SURF) + '.'

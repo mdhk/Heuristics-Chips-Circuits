@@ -289,83 +289,14 @@ if __name__ == "__main__":
         # if (iterations >= MAX_LAYER_ITERATIONS):
         if (g.found is TOFIND):
             break
-    import IPython; IPython.embed()
-
-    # with open('randomLayerNL1_2000Cost.pkl', 'wb') as output:
-    #     pickle.dump(cost, output, pickle.HIGHEST_PROTOCOL)
-    # with open('randomLayerNL1_2000Found.pkl', 'wb') as output:
-    #     pickle.dump(found, output, pickle.HIGHEST_PROTOCOL)
+   
 
     print 'Time elapsed: ' + str(time.time() - startTime)
-    # statespace = compute_statespace(g, netlist, WIDTH)
-    # print 'State space: ' + statespace
-
-    # with open('randomLayer_resultsNL6.pkl', 'wb') as output:
-    #     pickle.dump(glist, output, pickle.HIGHEST_PROTOCOL)
-
     print 'number of graphs with ' + str(m) + ': ' + str(len(glist))
-
-    # if O:
-    #     # Hillclimber session
-    #     for m in range(len(glist)):
-    #         iterations = 0
-    #         found = g.found
-    #         g = copy.deepcopy(glist[m])
-    #         print 'Starting hillclimber'
-    #         print 'Paths found at start hillclimber session: ' + str(g.found)
-    #         print 'Number of paths in netlist: ' + str(N)
-    #         while not (found == N) and (iterations <= MAX_HILLCLIMBER):
-    #             gcopy = copy.deepcopy(g)
-    #             nRemovePaths = random.randint(2,15)
-    #             hillclimbers.standardHillClimber(gcopy, N, nRemovePaths)
-    #             iterations += 1
-    #             if gcopy.found > g.found:
-    #                 g = copy.deepcopy(gcopy)
-    #                 found = g.found
-    #                 print 'new: ' + str(found)
-
-    print 'found: ' + str(found)
-    print 'g.found: ' + str(g.found)
+    print 'found: ' + str(g.found)
+    print 'cost: ' + str(g.cost)
 
     """
     VISUALIZATIONS
-    """
-
-    # Frequency chart of solutions per iteration. 
-
-    # found.sort()
-    # from itertools import groupby
-    # foundSorted = [len(list(group)) for key, group in groupby(found)]
-    # import matplotlib.pyplot as plt
-    # plt.hist(found)
-    # import pylab
-    # pylab.savefig('frequencyBar.png')
-
-    # Save jsonThreejs.json file (based on g) for 3D visualization.
-    
-    import toThreejs
-    toThreejs.convert(g)
-
-    # Frequency chart of solutions per iteration, with normal fitted.
-
-    # import numpy as np
-    # from scipy.stats import norm
-    # import matplotlib.pyplot as plt
-    # data = found
-    # mu, std = norm.fit(data)
-    # plt.hist(data, bins=25, normed=True, alpha=0.6, color='g')
-    # xmin, xmax = plt.xlim()
-    # x = np.linspace(xmin, xmax, len(data))
-    # p = norm.pdf(x, mu, std)
-    # plt.plot(x, p, 'k', linewidth = 2)
-    # title = "Fit results: mu = %.2f, std = %.2f" % (mu, std)
-    # plt.title(title)
-    # import pylab
-    # pylab.savefig('frequencyBarNormDist.png')
-
-
-    # import IPython; IPython.embed()
-
-    # Draw 2D visualization.
-
+    """    
     draw.allVisualization(g, gates, TOFIND)

@@ -171,25 +171,12 @@ if __name__ == "__main__":
         if g.found is TOFIND or iterations >= MAX_ITERATIONS:
             break
 
-    # import pickle
-    # with open('mergeNL1_2000Cost.pkl', 'wb') as output:
-    #     pickle.dump(cost, output, pickle.HIGHEST_PROTOCOL)
-    # with open('mergeNL1_2000Found.pkl', 'wb') as output:
-    #     pickle.dump(found, output, pickle.HIGHEST_PROTOCOL)
 
     g.totalTime = time.time() - startTime
     print '\nTotal time: ' + str(g.totalTime) + ' seconds.\n'
     for p in g.paths:
         print g.paths[p]
+    print 'costs: ' + str(g.cost)
 
     if V:
         draw.allVisualization(g, gates, TOFIND)
-
-#     results.sort()
-#     from itertools import groupby
-#     resultsSorted = [len(list(group)) for key, group in groupby(results)]
-#     import matplotlib.pyplot as plt
-#     plt.hist(results)
-#     import pylab
-#     pylab.savefig('pathsfound.png')
-
