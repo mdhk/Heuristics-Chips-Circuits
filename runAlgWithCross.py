@@ -4,7 +4,8 @@ CHIPS AND CIRCUITS
 
 from core import *
 from data.config1 import width as WIDTH, height as HEIGHT, gates
-from data.netlist import netlist_3 as netlist
+from data.netlist import netlist_1 as netlist
+from random import randint
 
 
 DEPTH = 8
@@ -44,6 +45,7 @@ disconnectVertex(g, gateList)
 for i in gateList:
     g.vertDict[i].gate = True
 
+new_netlist = netlistConvert2(g, netlist, gateList)
 
 # Initialize visualization.
 screen = draw.initGrid(WIDTH, HEIGHT)
@@ -61,18 +63,20 @@ def solve(g,netlist, vertices_shortest_path):
     f = 0
     # Mark different paths with p
     p = 0
-    # Disconnects all vertices from the previous computed shortest path on the vertex with the most paths.
-    disconnectVertex(g, total_vertices_shortest_path)
-    for n in netlist:
+    stop = 0
+    # Disconnects all vertices from the previous computed shortest path.
+    for verticeslist in total_vertices_shortest_path:
+        disconnectVertex(g, verticeslist)
+    for n in new_netlist:
 
-        start = g.vertDict[gateList[n[0]]]
-        target = g.vertDict[gateList[n[1]]]
+        start = g.vertDict[n[0]]
+        target = g.vertDict[n[1]]
 
         # Allow connections to target gate (but only from non-gates and from
         # vertices without a pre-existing path.
         connectNonGateVertex(g, target.id)
 
-        message = 'Find path between ' + str(n[0] + 1) + ' and ' + str(n[1] + 1)
+        message = 'Find path between ' + str(n[0]) + ' and ' + str(n[1])
         print(message.rjust(27)),
 
 
@@ -88,15 +92,17 @@ def solve(g,netlist, vertices_shortest_path):
         for i in path[1:-1]:
             g.vertDict[i].path = p
             pathsvert[i].append(p)
-        p += 1
         pathlen.append(len(path) - 2)
 
 
         if len(path) > 1:
-            print path
+            print p, path
             f += 1
         else:
             print '          PATH NOT FOUND '
+
+
+        p += 1
 
         # Prepare graph for next search.
         for v in g:
@@ -108,9 +114,10 @@ def solve(g,netlist, vertices_shortest_path):
             for i in path[1:-1]:
                 grid[(i % SURF) / WIDTH][i % WIDTH][i / SURF] = 1
         draw.drawGrid(grid, screen, depth)
-
-    # print '\nLength every path: ' + str(pathlen)
-    print '\nSuccesfully connected ' + str(f) + ' of ' + str(len(netlist)) + ' required paths.'
+    if (f == 0):
+        stop = 1
+    return stop
+    
 
 """
 SOLVE
@@ -118,10 +125,12 @@ SOLVE
 # Count costs total
 c = 0    
 startTime = time.time()
-for i in range(len(netlist)):
-    solve(g, netlist, vertices_shortest_path)
+tp = 0
+for i in range(len(new_netlist)):
+    random.shuffle(new_netlist)
+    stop = solve(g, new_netlist, vertices_shortest_path)
     verticesWithShortestPath(g, pathlen, pathsvert, vertices_shortest_path)
-
+    
     # Initialize visualization.
     screen = draw.initGrid(WIDTH, HEIGHT)
     # Color all gates bright red.
@@ -135,13 +144,27 @@ for i in range(len(netlist)):
             pathsvert[v] = []
             grid[(v % SURF) / WIDTH][v % WIDTH][v / SURF] = 0
 
-    for j in range(len(vertices_shortest_path)):
-        total_vertices_shortest_path.append(vertices_shortest_path[j])
-        grid[(vertices_shortest_path[j] % SURF) / WIDTH][vertices_shortest_path[j] % WIDTH][vertices_shortest_path[j] / SURF] = 1
+    
+    total_vertices_shortest_path.append(vertices_shortest_path)
+    for i in total_vertices_shortest_path:
+        randColor = (randint(0, 254), randint(0, 255), randint(0, 255))
+        for j in range(len(vertices_shortest_path)):
+            grid[(vertices_shortest_path[j] % SURF) / WIDTH][vertices_shortest_path[j] % WIDTH][vertices_shortest_path[j] / SURF] = randColor
+    
+    tp += 1
+    
+    print '\ntotalvertshortestpath: ' + str(total_vertices_shortest_path)
+    new_netlist.pop(verticesWithShortestPath.shortest_path)
     c += len(vertices_shortest_path) + 1
-    netlist.pop(verticesWithShortestPath.shortest_path)
-
+    pathlen = []
+    vertices_shortest_path = []
+    verticesWithShortestPath.shortest_path = 0
+    
     draw.drawGrid(grid, screen, depth)
+    print 'stop : ' + str(stop)
+    if (stop == 1):
+        break
+
 
 
 elapsedTime = time.time() - startTime
@@ -149,6 +172,8 @@ totalTime += elapsedTime
 
 print '\nCosts algorithm: ' + str(c) + '.'
 print '\nTotal time: ' + str(totalTime) + ' seconds.'
+# print '\nLength every path: ' + str(pathlen)
+print '\nSuccesfully connected ' + str(tp) + ' of ' + str(len(netlist)) + ' required paths.'
 
 
 """

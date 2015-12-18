@@ -46,7 +46,12 @@ def drawGrid(grid, screen, depth):
     # Fill the grid. 
     for x in range(len(grid[0])):
         for y in range(len(grid)):
-            for z in range(DEPTH):    
+            for z in range(DEPTH):  
+                if grid[y][x][depth] != (255, 0, 0):
+                    pygame.draw.rect(screen, grid[y][x][depth],
+                            [(MARGIN + WIDTH) * x + MARGIN,
+                                (MARGIN + HEIGHT) * y + MARGIN,
+                                WIDTH,HEIGHT],1)  
                 if grid[y][x][z] == 1:
                     grid[y][x][z] = randColor
 

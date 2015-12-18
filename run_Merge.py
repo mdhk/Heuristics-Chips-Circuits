@@ -45,7 +45,7 @@ V = 1
 # Selective disconnect gateNeighbors
 # If 1, only the number of neighbors equal to the number of paths still to be
 # connected to/from a given gate are guaranteed to be unobstructed. 
-S = 0
+S = 1
 # Initialize variables that never change.
 gateList = []
 for c in gates:

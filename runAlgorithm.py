@@ -3,7 +3,7 @@ CHIPS AND CIRCUITS
 """
 
 from core import *
-from data.config1 import width as WIDTH, height as HEIGHT, gates
+from data.config2 import width as WIDTH, height as HEIGHT, gates
 from data.netlist import netlist_1 as netlist
 from algorithms import aStar as algorithm
 
@@ -64,6 +64,8 @@ grid = [[[0 for c in range(DEPTH)] for b in range(WIDTH)] for a in range(HEIGHT)
 # Color all gates bright red.
 for i in gates:
     grid[i[1]][i[0]][0] = (255, 0, 0)
+# for j not in gates:
+#     grid[j]
 
 depth = 0 
 
@@ -113,9 +115,9 @@ for n in newnet:
         v.previous = None
 
     # Fill grid for subsequent visualization.
-    if len(path) > 1:
-        for i in path[1:-1]:
-            grid[(i % SURF) / WIDTH][i % WIDTH][i / SURF] = 1
+    # if len(path) > 1:
+    #     for i in path[1:-1]:
+    #         grid[(i % SURF) / WIDTH][i % WIDTH][i / SURF] = 1
     draw.drawGrid(grid, screen, depth)
 
     elapsedTime = time.time() - startTime

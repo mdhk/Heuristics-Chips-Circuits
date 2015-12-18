@@ -15,8 +15,7 @@ INITIALIZE GRAPH AND VISUALIZATION
 """
 
 # to debug some function, use this:
-# import IPython;
-# IPython.embed(); 
+
 
 
 # Create graph and connect it.
@@ -76,19 +75,21 @@ depth = 0
 """
 SOLVE
 """
+print 'newnet: ' + str(newnet)
 
 
-
-for n in newnet:
+for n in range(len(newnet)):
     startTime = time.time()
-    start = n[0]
-    target = n[1]
+    import IPython;
+    IPython.embed(); 
+    start = newnet[n[0]]
+    target = newnet[n[1]]
     
     # Allow connections to target gate (but only from non-gates and from
     # vertices without a pre-existing path.
     connectVertex(g, target)
 
-    message = 'Find path between ' + str(n[0] + 1) + ' and ' + str(n[1] + 1) + ' ' + str(p)
+    message = 'Find path between ' + str(start) + ' and ' + str(target) + ' ' + str(p)
     print(message.rjust(27)),
 
     # Use algorithm to compute a path between start and target.
@@ -113,7 +114,18 @@ for n in newnet:
         f += 1
         c += len(path) - 1
     else:
+        print 'p: ' + str(p)
         print '          PATH NOT FOUND '
+        for v in range(len(pathsvert)):
+            if (pathsvert[v] == [p-2]):
+                pathsvert[v] = []
+                grid[(v % SURF) / WIDTH][v % WIDTH][v / SURF] = 0
+        newnet = newnet[(p-2):]
+        p -= 2
+        print 'newnet: ' + str(newnet) + 'and p: ' + str(p)
+        # random.shuffle(newnet)
+        # print 'newnet: ' + str(newnet)
+        
 
     # Prepare graph for next search.
     for v in g:

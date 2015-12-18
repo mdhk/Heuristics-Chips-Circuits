@@ -162,22 +162,26 @@ def verticesWithShortestPath(g, pathlen, pathsvert, vertices_shortest_path):
     z = []
     for i in y:
         z.append(pathlen[i])
-    # v returnt de lengte van de kortste pad
-    v = max(z)
-    # slaat de pad op die het kortst is 
-    index_shortest_path = z.index(v)
-    verticesWithShortestPath.shortest_path = y[index_shortest_path]
+    if (z == []):
+        return vertices_shortest_path
+    else:
+        # v returnt de lengte van de kortste pad
+        v = min(z)
+        # slaat de pad op die het kortst is 
+        index_shortest_path = z.index(v)
+        verticesWithShortestPath.shortest_path = y[index_shortest_path]
+
 
     for vertex in range(len(pathsvert)):
         for path in range(len(pathsvert[vertex])):
             if (verticesWithShortestPath.shortest_path == pathsvert[vertex][path]):
                 vertices_shortest_path.append(vertex)
 
-    # print '\nThe most paths are going over vertex: ' + str(x)
-    # print '\nPaths over ' + str(x) + ': ' + str(y)
-    # print '\nLengths paths over ' + str(x) + ': ' + str(z)
-    # print '\nMin length: ' + str(v) + ' from path ' + str(verticesWithShortestPath.shortest_path)
-    # print '\nVertices shortest path: ' + str(vertices_shortest_path)
+    print '\nThe most paths are going over vertex: ' + str(x)
+    print '\nPaths over ' + str(x) + ': ' + str(y)
+    print '\nLengths paths over ' + str(x) + ': ' + str(z)
+    print '\nMin length: ' + str(v) + ' from path ' + str(verticesWithShortestPath.shortest_path)
+    print '\nVertices shortest path: ' + str(vertices_shortest_path)
     # print '\nPaths on every vertex: ' + str(pathsvert)
     # print '\nTotal paths on every vertex: ' + str(totalpathsvert)
 
