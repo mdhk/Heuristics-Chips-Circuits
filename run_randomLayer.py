@@ -242,7 +242,6 @@ if __name__ == "__main__":
     N = len(netlist)
 
     MAX_LAYER_ITERATIONS = 2000
-    MAX_HILLCLIMBER = 1000
     RLOWER = 0 # Lower bound of randomly chosen layers 
     RUPPER = 8 # Upper bound of randomly chosen layers 
     MIN_MANHATTAN = 4
