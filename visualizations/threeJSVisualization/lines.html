@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<!-- Source(adapted from): view-source:http://threejs.org/examples/webgl_lines_colors.html -->
+<!-- NOTE: This script should be run from Firefox to have the greatest chance to work (without having to set up a server). -->
 <html lang="en">
 	<head>
 		<title>EDITED three.js canvas - lines - colors</title>
@@ -40,11 +42,6 @@
 	</head>
 	<body>
 
-		<!-- <div id="info"> -->
-			<!-- <a href="http://threejs.org" target="_blank">three.js</a> - color lines -->
-			<!-- [<a href="http://en.wikipedia.org/wiki/Hilbert_curve">Hilbert curve</a> thanks to <a href="http://www.openprocessing.org/visuals/?visualID=15599">Thomas Diewald</a>] -->
-		<!-- </div> -->
-
 		<script src="build/three.min.js"></script>
 
 		<script src="js/renderers/Projector.js"></script>
@@ -57,7 +54,6 @@
 		<script>
 
 			if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
-
 
 			var mouseX = 0, mouseY = 0,
 
@@ -116,18 +112,13 @@
                         line.position.x = 0;
                         line.position.y = 0 + 100;
                         line.position.z = 0;
-//                        line.position.x = points[0].x / 10;
-//                        line.position.y = points[0].y / 10;
-//                        line.position.z = points[0].z / 10;
                         scene.add( line );
                                 
                     }
 
-                    // event, function, useCapture (default F -> bubble phase)
                     document.addEventListener( 'mousemove', onDocumentMouseMove, false );
                     document.addEventListener( 'touchstart', onDocumentTouchStart, false );
                     document.addEventListener( 'touchmove', onDocumentTouchMove, false );
-                    //document.addEventListener( 'click', onDocumentMouseClick, false );
                     document.addEventListener( 'keydown', onDocumentKeyDown, false );
 
                     window.addEventListener( 'resize', onWindowResize, false );
@@ -186,7 +177,6 @@
 				var time = Date.now() * 0.0005;
 				for ( var i = 0; i < scene.children.length; i ++ ) {
 					var object = scene.children[ i ];
-					//if ( object instanceof THREE.Line ) object.rotation.y = time * ( i % 2 ? 1 : -1 );
 					if ( autoTurn ) object.rotation.y = time * (0.5);
 				}
 				renderer.render(scene, camera );
