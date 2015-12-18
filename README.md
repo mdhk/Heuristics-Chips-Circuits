@@ -17,4 +17,9 @@ Verder zijn voor analyse matplotlib en numpy gebruikt.
 Folders:
 
 visualizations
-Bevat de 2D visualizatie van pygame. 
+    - 2D visualizatie van de grid.
+
+data
+    - oorspronkelijke data: info over de grootte van de grids, posities van gates en de netlists.
+
+
