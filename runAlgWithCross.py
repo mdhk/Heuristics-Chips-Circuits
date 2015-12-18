@@ -4,7 +4,7 @@ CHIPS AND CIRCUITS
 
 from core import *
 from data.config1 import width as WIDTH, height as HEIGHT, gates
-from data.netlist import netlist_3 as netlist
+from data.netlist import netlist_1 as netlist
 
 
 DEPTH = 8
@@ -72,8 +72,8 @@ def solve(g,netlist, vertices_shortest_path):
         # vertices without a pre-existing path.
         connectNonGateVertex(g, target.id)
 
-        message = 'Find path between ' + str(n[0] + 1) + ' and ' + str(n[1] + 1)
-        print(message.rjust(27)),
+        # message = 'Find path between ' + str(n[0] + 1) + ' and ' + str(n[1] + 1)
+        # print(message.rjust(27)),
 
 
         # Use algorithm to compute a path between start and target.
@@ -93,10 +93,10 @@ def solve(g,netlist, vertices_shortest_path):
 
 
         if len(path) > 1:
-            print path
+            # print path
             f += 1
-        else:
-            print '          PATH NOT FOUND '
+        # else:
+        #     print '          PATH NOT FOUND '
 
         # Prepare graph for next search.
         for v in g:
@@ -110,7 +110,7 @@ def solve(g,netlist, vertices_shortest_path):
         draw.drawGrid(grid, screen, depth)
 
     # print '\nLength every path: ' + str(pathlen)
-    print '\nSuccesfully connected ' + str(f) + ' of ' + str(len(netlist)) + ' required paths.'
+    # print 'Succesfully connected ' + str(f) + ' of ' + str(len(netlist)) + ' required paths.'
 
 """
 SOLVE

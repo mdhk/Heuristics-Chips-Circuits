@@ -1,12 +1,10 @@
 """
- Example program to show using an array to back a grid on-screen.
- 
- Sample Python/Pygame Programs
- Simpson College Computer Science
- http://programarcadegames.com/
+ This script requires pygame to visualize a single layer of the grid at a time.
+ allVisualization will allow the user to run the visualization with a single
+ command. 
+
+ source:
  http://simpson.edu/computer-science/
- 
- Explanation video: http://youtu.be/mdTeqiWyFnc
 """
 import pygame
 from random import randint
@@ -36,6 +34,7 @@ def initGrid(width,height):
  
 def drawGrid(grid, screen, depth):
 
+    # Compute a random color for a new path to be displayed.
     randColor = (randint(0, 254), randint(0, 255), randint(0, 255))
 
     MARGIN = 5;
@@ -43,7 +42,7 @@ def drawGrid(grid, screen, depth):
     HEIGHT = 20;
     DEPTH = 8;
 
-    # Fill the grid. 
+    # Fill the grid with a color at the required positions. 
     for x in range(len(grid[0])):
         for y in range(len(grid)):
             for z in range(DEPTH):    
@@ -64,9 +63,12 @@ def drawGrid(grid, screen, depth):
                             (MARGIN + HEIGHT) * y + MARGIN,
                             WIDTH,HEIGHT])
  
-    # Go ahead and update the screen with what we've drawn.
     pygame.display.flip()
 
+"""
+allVisualization allows the complete visualization to be created for a given
+(preferably finished) grid g. 
+"""
 def allVisualization(g, gates, TOFIND):
     import random
 
@@ -84,8 +86,6 @@ def allVisualization(g, gates, TOFIND):
         for v in g:
             if v.path == p and not v.gate:
                 grid[v.y][v.x][v.z] = randcolor
-                # Onhandig dat dit elke keer moet worden geroepen, maar dat komt
-                # omdat de kleur per call elke keer 1x random wordt beslist. 
                 drawGrid(grid, screen, depth)
 
     # import IPython; IPython.embed()
@@ -106,8 +106,3 @@ def allVisualization(g, gates, TOFIND):
                 depth -= 1
                 drawGrid(grid, screen, depth)
                 print 'Showing layer: ' + str(depth)
-
- 
-# Be IDLE friendly. If you forget this line, the program will 'hang'
-# on exit.
-# pygame.quit()

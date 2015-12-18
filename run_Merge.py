@@ -45,7 +45,7 @@ V = 1
 # Selective disconnect gateNeighbors
 # If 1, only the number of neighbors equal to the number of paths still to be
 # connected to/from a given gate are guaranteed to be unobstructed. 
-S = 0
+S = 1
 # Initialize variables that never change.
 gateList = []
 for c in gates:
@@ -147,13 +147,14 @@ def run():
             g.vertDict[i].path = p
         p += 1
 
-        # Disconnect connections to the neighbors of start and target
-        # NOTE: should be improved to e.g. not happen when the given gate does
-        # not need any more paths. And should take into account neighboring
-        # gates.
+        # Disconnect connections to specific neighbors of start and target
         if S:
-            disconnectVertex(g, selectedNeighbors[gateList.index(start.id)])
-            disconnectVertex(g, selectedNeighbors[gateList.index(target.id)])
+            pGate[n[0]] -= 1
+            if pGate[n[0]]:
+                disconnectVertex(g, selectedNeighbors[gateList.index(start.id)])
+            pGate[n[1]] -= 1
+            if pGate[n[1]]:
+                disconnectVertex(g, selectedNeighbors[gateList.index(target.id)])
         else:
             disconnectVertex(g, computeNeighbors(g, start.id))
             disconnectVertex(g, computeNeighbors(g, target.id))
@@ -169,8 +170,10 @@ def run():
             v.previous = None
     
     # import IPython; IPython.embed()
-
-    g.cost = c
+    g.cost = 0
+    for v in g:
+        if v.path and not v.gate:
+            g.cost += 1
     g.found = f
 
     return g
@@ -178,18 +181,28 @@ def run():
 if __name__ == "__main__":
     startTime = time.time()
 
+    MAX_ITERATIONS = 2000
     found = []
-    m = 0
+    m, iterations, found, cost = 0, 0, [], []
     while True:
+        iterations += 1
         g = run()
+        found.append(g.found)
+        cost.append(g.cost)
         if g.found > m:
-            found.append(g.found)
+            # found.append(g.found)
             print 'Current max: ' + str(g.found) + 'paths '
             m = g.found
         if g.found is TOFIND:
+        # if iterations >= MAX_ITERATIONS:
             break
 
-    # import IPython; IPython.embed()
+    # import pickle
+    # with open('mergeNL1_2000Cost.pkl', 'wb') as output:
+    #     pickle.dump(cost, output, pickle.HIGHEST_PROTOCOL)
+    # with open('mergeNL1_2000Found.pkl', 'wb') as output:
+    #     pickle.dump(found, output, pickle.HIGHEST_PROTOCOL)
+    import IPython; IPython.embed()
 
     g.totalTime = time.time() - startTime
     print '\nTotal time: ' + str(g.totalTime) + ' seconds.\n'

@@ -21,9 +21,6 @@ Steps:
             disconnected, repeat the previous iterations once more for those paths
             not yet found.
 
-    if not found TOFIND paths:
-        Hillclimber
-
 """
 
 def run():
@@ -144,7 +141,7 @@ def run():
     """
     In round 1, find for each pair in newnetlist their path (if possible).
     In round 2, for those gate pairs in the netlist still unconnected, remove
-    their previously layed path (to a random layer) and try again.
+    their path to a random layer and try again from the initial gates.
     """
     rounds = 2
     for x in range(rounds):
@@ -268,7 +265,7 @@ if __name__ == "__main__":
 
     import pickle
 
-    m, iterations, found = 0, 0, []
+    cost, m, iterations, found = [], 0, 0, []
     print 'To find: ' + str(TOFIND)
     print 'Iterations until hillclimbing: ' + str(MAX_LAYER_ITERATIONS)
     startTime = time.time()
@@ -278,12 +275,13 @@ if __name__ == "__main__":
         if not iterations % 1000:
             print iterations
         found.append(g.found)
+        cost.append(g.cost)
         if g.found > m:
             glist = []
             m = g.found
             # Save newly (max) found object as ..pkl
-            with open('randomLayerNL3_50found15dec.pkl', 'wb') as output:
-                pickle.dump(g, output, pickle.HIGHEST_PROTOCOL)
+            # with open('randomLayerNL3_50found15dec.pkl', 'wb') as output:
+                # pickle.dump(g, output, pickle.HIGHEST_PROTOCOL)
         if (g.found == m):
             glist.append(copy.deepcopy(g))
             print 'Newly found: ' + str(m) + ', ' + str(len(glist)) + ' times.'
@@ -293,9 +291,17 @@ if __name__ == "__main__":
             break
     import IPython; IPython.embed()
 
+    # with open('randomLayerNL1_2000Cost.pkl', 'wb') as output:
+    #     pickle.dump(cost, output, pickle.HIGHEST_PROTOCOL)
+    # with open('randomLayerNL1_2000Found.pkl', 'wb') as output:
+    #     pickle.dump(found, output, pickle.HIGHEST_PROTOCOL)
+
     print 'Time elapsed: ' + str(time.time() - startTime)
-    statespace = compute_statespace(g, netlist, WIDTH)
-    print 'State space: ' + statespace
+    # statespace = compute_statespace(g, netlist, WIDTH)
+    # print 'State space: ' + statespace
+
+    # with open('randomLayer_resultsNL6.pkl', 'wb') as output:
+    #     pickle.dump(glist, output, pickle.HIGHEST_PROTOCOL)
 
     print 'number of graphs with ' + str(m) + ': ' + str(len(glist))
 
@@ -320,36 +326,6 @@ if __name__ == "__main__":
 
     print 'found: ' + str(found)
     print 'g.found: ' + str(g.found)
-
-    # Output checker
-
-    # g = glist.pop()
-    # pathsfound = []
-    # for i in range(N):
-    #     path = []
-    #     cur = g.netlist[i][0]
-    #     target = g.netlist[i][1]
-    #     complete = False
-    #     # import IPython; IPython.embed()
-    #     # while not complete:
-    #     iterations = 0
-    #     while not complete and not (iterations == 10000):
-    #         iterations += 1
-    #         for nb in computeNeighbors(g, cur):
-    #             if nb == target:
-    #                 path.append(nb)
-    #                 # print path
-    #                 complete = True
-    #                 pathsfound.append(i + 1)
-    #             if g.vertDict[nb].path is (i + 1) and nb not in path:
-    #                 # print nb
-    #                 path.append(nb)
-    #                 cur = nb
-    #         # import IPython; IPython.embed()
-    #     # print path
-    #     # print pathsfound
-
-    # import IPython; IPython.embed()
 
     """
     VISUALIZATIONS
